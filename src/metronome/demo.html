@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <title>اختبار يدوي — محرك المترونوم</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 480px; margin: 40px auto; padding: 0 16px; }
+    h1 { font-size: 1.1rem; }
+    section { margin-bottom: 32px; padding: 16px; border: 1px solid #ddd; border-radius: 8px; }
+    .metronome-beat-indicators { display: flex; gap: 8px; margin: 12px 0; }
+    .metronome-beat-dot { width: 20px; height: 20px; border-radius: 50%; background: #ddd; }
+    .metronome-beat-dot.active { background: #999; }
+    .metronome-beat-dot.accent.active { background: #0f6e56; }
+    button { padding: 8px 20px; font-size: 1rem; cursor: pointer; }
+    .metronome-mini-bpm { width: 60px; }
+  </style>
+</head>
+<body>
+  <h1>اختبار يدوي — محرك المترونوم الوحيد (لا اعتماديات، لا خادم)</h1>
+  <p>هذي صفحة تحقق سمعي يدوي فقط، ليست جزءًا من واجهة الإنتاج. تتحقق من: دقة النقر
+    (بدون انجراف تحت ضغط المتصفح)، النبرة المختلفة على النبضة الأولى، وأن كلا الواجهتين
+    (الكاملة والمصغّرة) تستخدمان نفس المحرك دون تكرار منطق.</p>
+
+  <section>
+    <h2>الواجهة الكاملة (الصفحة #5)</h2>
+    <div id="full-mount"></div>
+  </section>
+
+  <section>
+    <h2>الواجهة المصغّرة (الصفحة #2 — داخل المعايرة)</h2>
+    <div id="mini-mount"></div>
+  </section>
+
+  <script type="module">
+    import { mountFullMetronome } from "./metronome-ui-full.js";
+    import { mountMiniMetronome } from "./metronome-ui-mini.js";
+
+    mountFullMetronome(document.getElementById("full-mount"), { bpm: 80 });
+    mountMiniMetronome(document.getElementById("mini-mount"), { bpm: 80 });
+  </script>
+</body>
+</html>
