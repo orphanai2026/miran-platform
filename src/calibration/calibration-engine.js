@@ -224,4 +224,49 @@ export class PersonalReferenceStore {
   getFrozenReference(fingering, register) {
     return this._frozenSnapshots.get(pitchKey(fingering, register)) ?? null;
   }
+
+  // ================= تصدير/استيراد (للتخزين المحلي في الواجهة) =================
+  // دوال عامة بديلة عن الوصول المباشر للحقول الداخلية (_samplesByKey إلخ)
+  // من خارج الصنف — تُبقي التخزين المحلي (مثل sample-store.js في صفحة #2)
+  // معزولًا عن تفاصيل التنفيذ الداخلية.
+
+  /** كل العينات المخزَّنة، بصيغة خام قابلة لإعادة البناء عبر CalibrationSample. */
+  exportAllSamples() {
+    const all = [];
+    for (const samples of this._samplesByKey.values()) {
+      for (const s of samples) {
+        all.push({
+          pitchHz: s.pitchHz,
+          fingering: s.fingering,
+          register: s.register,
+          toleranceCents: s.toleranceCents,
+          neyType: s.neyType,
+          timestampMs: s.timestampMs,
+        });
+      }
+    }
+    return all;
+  }
+
+  /** كل اللقطات المعتمدة، بمفتاح "إصبعة::سجل" — للتخزين/الاستعادة. */
+  exportAllFrozenSnapshots() {
+    const out = {};
+    for (const [key, val] of this._frozenSnapshots.entries()) out[key] = val;
+    return out;
+  }
+
+  /** كل الأسماء المُعلَّمة (استثناء القرار 1)، بمفتاح "إصبعة::سجل". */
+  exportAllTaughtNames() {
+    const out = {};
+    for (const [key, val] of this._taughtNames.entries()) out[key] = val;
+    return out;
+  }
+
+  /**
+   * يستعيد لقطة مُصدَّرة سابقًا مباشرة (بدون إعادة اجتياز شرط الاعتماد) —
+   * تُستخدم فقط لإعادة بناء حالة سبق اعتمادها فعليًا من تخزين محلي.
+   */
+  restoreFrozenSnapshot(fingering, register, snapshot) {
+    this._frozenSnapshots.set(pitchKey(fingering, register), snapshot);
+  }
 }
