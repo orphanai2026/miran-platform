@@ -6,20 +6,22 @@
 
 ## legacy-miran/
 
-نسخة كاملة غير معدَّلة من مستودع مِران الأصلي (`github.com/orphanai2026/miran`)، منقولة
-بالكامل كمرجع مصدري محفوظ. **`index.html` هو الملف الأصلي بكل محتواه (4255 سطر).**
+نسخة من مستودع مِران الأصلي (`github.com/orphanai2026/miran`)، منقولة كمرجع مصدري
+محفوظ ثم **مُفكَّكة فعليًا** (انظر `SPLIT-NOTES.md`) دون أي تغيير سلوكي.
 
-**⚠️ ملاحظة مهمة عند الاستخدام لاحقًا:** هذا الملف يحوي أقسامًا متعددة بعلامات `====`:
+**✅ التفكيك تم بالكامل.** `index.html` كان يحوي كل الكود (منهج + محرك صوت + تمارين +
+معايرة قديمة) داخل `<script>` واحد بطول 4255 سطرًا. الآن `index.html` هو غلاف HTML فقط،
+يحمّل نفس الكود مقسّمًا على ملفات `<script src>` خارجية، **بنفس ترتيب التنفيذ الأصلي
+حرفيًا** — لا تغيير سلوكي، فقط فصل فيزيائي. التفاصيل الكاملة (خرائط الأسطر، التحقق
+البايتي، سبب الأمان) في `SPLIT-NOTES.md`.
 
-| القسم | الحالة |
-|---|---|
-| `CURRICULUM (days as DATA)` | ✅ محمي — جزء من قرار "بلا إعادة بناء" |
-| `AUDIO + PITCH (validated engine)` | ✅ محمي |
-| `TRANSITION EXERCISE`, `EXCHANGE EXERCISE`, `BREATH`, `RHYTHM`, `RHYTHM-DROP` | ✅ محمي |
-| `CALIBRATION` (سطر 1752) | ⚠️ **لا يُعتمد كأساس** — المعايرة تُبنى من جديد بروح RECORD-N (`src/calibration/`)، حسب القرار المعماري، وليست جزءًا من قرار "النقل كما هو" |
-
-**لم يُفكَّك الملف بعد** إلى وحدات منفصلة (منهج/محرك صوت/معايرة) — هذا قرار بنيوي
-يحتاج تأكيدًا صريحًا في محادثة تنفيذ لاحقة، وليس جزءًا من هذي المرحلة (النقل الأولي فقط).
+| القسم | الوجهة | الحالة |
+|---|---|---|
+| `CURRICULUM (days as DATA)` | `js/curriculum-data.js` | ✅ محمي — جزء من قرار "بلا إعادة بناء" |
+| `AUDIO + PITCH (validated engine)` | `js/audio-pitch-engine.js` | ✅ محمي |
+| `SESSION`, `TRANSITION`, `EXCHANGE`, `BREATH`, `RHYTHM`, `RHYTHM-DROP` | `js/session.js`، `js/transition-exercise.js`، `js/exchange-exercise.js`، `js/breath-exercise.js`، `js/rhythm-exercise.js`، `js/rhythm-drop-exercise.js` | ✅ محمي |
+| الدرويش، الحفظ المحلي، التوجيه، عرض الرئيسية، تصدير التقدّم، الإقلاع | `js/dervish-companion.js`، `js/persistence.js`، `js/view-routing.js`، `js/home-render.js`، `js/export-progress.js`، `js/boot.js` | ✅ محمي |
+| `CALIBRATION` (القديم) | `legacy-calibration-do-not-reuse/old-calibration.js` | ⚠️ **معزول فيزيائيًا، لا يُعتمد كأساس** — لا يزال مُحمَّلاً ويعمل كما كان (شاشة المعايرة القديمة في الواجهة تحتاجه حاليًا)، لكنه في مجلد منفصل تمامًا يوضح أنه لا علاقة له بالمعايرة الجديدة في `src/calibration/` ولا يُبنى عليه أي شيء |
 
 ## اختبارات خط الأساس (tests/) — جاهزة الآن كشبكة أمان قبل أي تفكيك
 
