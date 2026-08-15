@@ -107,5 +107,22 @@ await test(
   }
 );
 
+await test(
+  "استمرارية التفضيلات: تغيير BPM والميزان ثم إعادة تحميل الصفحة يستعيد نفس القيمتين",
+  async (page) => {
+    await page.locator(".metronome-beats-select").selectOption("6");
+    const slider = page.locator(".metronome-bpm-slider");
+    await slider.fill("140");
+    await slider.dispatchEvent("input");
+    await page.waitForTimeout(50);
+
+    await page.reload({ waitUntil: "load" });
+
+    assert.equal(await page.locator(".metronome-bpm-value").textContent(), "140");
+    assert.equal(await page.locator(".metronome-beats-select").inputValue(), "6");
+    assert.equal(await page.locator(".metronome-beat-dot").count(), 6);
+  }
+);
+
 console.log(`\n${passed} ناجح، ${failed} فاشل.`);
 process.exitCode = failed > 0 ? 1 : 0;

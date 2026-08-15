@@ -7,14 +7,16 @@
  * التسجيل" الموثّق في سجل القرارات (القسم 7، الصفحة #2).
  */
 import { MetronomeEngine } from "./metronome-engine.js";
+import { loadMetronomePrefs, saveMetronomePrefs } from "./metronome-prefs.js";
 
 /**
  * @param {HTMLElement} container
- * @param {Object} [initialOptions]
+ * @param {Object} [initialOptions] - للتفضيلات المحفوظة الأولوية على bpm الافتراضي هنا (لا على initialOptions.bpm صراحة إن مُرِّر).
  * @returns {{ engine: MetronomeEngine, destroy: () => void }}
  */
 export function mountMiniMetronome(container, initialOptions = {}) {
-  const engine = new MetronomeEngine({ beatsPerMeasure: 4, ...initialOptions });
+  const savedPrefs = loadMetronomePrefs();
+  const engine = new MetronomeEngine({ beatsPerMeasure: 4, ...initialOptions, ...(savedPrefs.bpm ? { bpm: savedPrefs.bpm } : {}) });
 
   container.innerHTML = `
     <div class="metronome-mini" dir="rtl">
@@ -30,6 +32,7 @@ export function mountMiniMetronome(container, initialOptions = {}) {
     const bpm = Number(bpmInput.value);
     if (Number.isFinite(bpm) && bpm > 0) {
       engine.setBpm(bpm);
+      saveMetronomePrefs({ bpm });
     } else {
       bpmInput.value = String(engine.bpm); // تراجع عن قيمة غير صالحة
     }

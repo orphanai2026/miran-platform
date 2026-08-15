@@ -7,15 +7,17 @@
  * في كل مكان يُستخدم فيه المترونوم.
  */
 import { MetronomeEngine } from "./metronome-engine.js";
+import { loadMetronomePrefs, saveMetronomePrefs } from "./metronome-prefs.js";
 
 /**
  * يبني واجهة مترونوم كاملة داخل عنصر حاوٍ معطى.
  * @param {HTMLElement} container
- * @param {Object} [initialOptions] - يُمرَّر مباشرة إلى MetronomeEngine.
+ * @param {Object} [initialOptions] - يُمرَّر مباشرة إلى MetronomeEngine (له الأولوية على التفضيلات المحفوظة).
  * @returns {{ engine: MetronomeEngine, destroy: () => void }}
  */
 export function mountFullMetronome(container, initialOptions = {}) {
-  const engine = new MetronomeEngine(initialOptions);
+  const savedPrefs = loadMetronomePrefs();
+  const engine = new MetronomeEngine({ ...savedPrefs, ...initialOptions });
 
   container.innerHTML = `
     <div class="metronome-full" dir="rtl">
@@ -27,10 +29,10 @@ export function mountFullMetronome(container, initialOptions = {}) {
       <div class="metronome-beats-control">
         <label>عدد النبضات بالميزان</label>
         <select class="metronome-beats-select">
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4" selected>4</option>
-          <option value="6">6</option>
+          <option value="2" ${engine.beatsPerMeasure === 2 ? "selected" : ""}>2</option>
+          <option value="3" ${engine.beatsPerMeasure === 3 ? "selected" : ""}>3</option>
+          <option value="4" ${engine.beatsPerMeasure === 4 ? "selected" : ""}>4</option>
+          <option value="6" ${engine.beatsPerMeasure === 6 ? "selected" : ""}>6</option>
         </select>
       </div>
       <div class="metronome-beat-indicators"></div>
@@ -67,11 +69,14 @@ export function mountFullMetronome(container, initialOptions = {}) {
     const bpm = Number(bpmSliderEl.value);
     engine.setBpm(bpm);
     bpmValueEl.textContent = String(bpm);
+    saveMetronomePrefs({ bpm });
   });
 
   beatsSelectEl.addEventListener("change", () => {
-    engine.setBeatsPerMeasure(Number(beatsSelectEl.value));
+    const beatsPerMeasure = Number(beatsSelectEl.value);
+    engine.setBeatsPerMeasure(beatsPerMeasure);
     renderIndicators();
+    saveMetronomePrefs({ beatsPerMeasure });
   });
 
   toggleBtn.addEventListener("click", () => {
