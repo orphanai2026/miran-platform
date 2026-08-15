@@ -4,108 +4,132 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>الدليل التعليمي — مِران</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet" />
   <style>
-    :root { color-scheme: light; }
+    :root {
+      color-scheme: light;
+      --cream: #FAF6EC;
+      --ink: #1C1C1A;
+      --ink-soft: #5F5E5A;
+      --teal: #0F6E56;
+      --teal-deep: #085041;
+      --teal-tint: #E1F0EB;
+      --amber: #BA7517;
+      --amber-tint: #F8ECD8;
+      --rose-tint: #F3DEDE;
+      --hairline: rgba(28, 28, 26, 0.1);
+    }
+    * { box-sizing: border-box; }
     body {
-      font-family: "Cairo", "Tajawal", system-ui, sans-serif;
-      max-width: 620px;
-      margin: 32px auto;
-      padding: 0 16px;
+      font-family: "Tajawal", system-ui, sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      margin: 0;
       line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
     }
-    h1 { font-size: 1.3rem; margin-bottom: 4px; }
-    .page-sub { color: #555; margin-top: 0; font-size: 0.9rem; }
-
-    .layers { display: flex; flex-direction: column; gap: 14px; margin: 24px 0; }
-    .layer-card { border: 1px solid #e5e5e5; border-radius: 10px; padding: 16px; }
-    .layer-card h2 { font-size: 1.05rem; margin: 0 0 6px; display: flex; align-items: center; gap: 8px; }
-    .layer-badge {
-      display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 700;
-    }
-    .layer-1 .layer-badge { background: #d9f0e8; color: #0f6e56; }
-    .layer-2 .layer-badge { background: #fdeecb; color: #8a5a12; }
-    .layer-3 .layer-badge { background: #f0e0e0; color: #8a2a2a; }
-    .layer-card p { margin: 6px 0 0; color: #444; font-size: 0.95rem; }
-    .layer-card ul { margin: 8px 0 0; padding-inline-start: 20px; color: #444; font-size: 0.95rem; }
-
-    .teacher-recommendation {
-      margin-top: 28px; padding: 18px; border-radius: 10px;
-      background: #faf6ec; border: 1px solid #ba7517;
-    }
-    .teacher-recommendation h2 { font-size: 1.05rem; margin: 0 0 8px; color: #1c1c1a; }
-    .teacher-recommendation p { margin: 0; color: #333; font-size: 0.95rem; }
+    .page-shell { max-width: 680px; margin: 0 auto; padding: 28px 20px 64px; }
 
     .site-nav {
-      display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 22px; padding-bottom: 14px;
-      border-bottom: 1px solid #e5e5e5;
+      display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 32px; padding-bottom: 16px;
+      border-bottom: 1px solid var(--hairline);
     }
     .site-nav-link {
-      padding: 6px 12px; border-radius: 999px; font-size: 0.82rem; text-decoration: none;
-      color: #444; background: #f5f5f5;
+      padding: 7px 14px; border-radius: 999px; font-size: 0.82rem; font-weight: 500;
+      text-decoration: none; color: var(--ink-soft); background: transparent;
     }
-    .site-nav-link:hover { background: #ececec; }
-    .site-nav-link.active { background: #1c1c1a; color: #fff; }
+    .site-nav-link:hover { background: var(--teal-tint); color: var(--teal-deep); }
+    .site-nav-link.active { background: var(--ink); color: var(--cream); }
+
+    h1 { font-family: "Cairo", "Tajawal", sans-serif; font-weight: 800; font-size: 1.7rem; margin: 0 0 8px; }
+    .page-sub { color: var(--ink-soft); margin: 0 0 20px; font-size: 0.92rem; }
+    p { color: var(--ink); }
+
+    .layers { display: flex; flex-direction: column; gap: 14px; margin: 24px 0; }
+    .layer-card { background: #fff; border: 1px solid var(--hairline); border-radius: 14px; padding: 18px 20px; }
+    .layer-card h2 { font-family: "Cairo", sans-serif; font-size: 1.02rem; margin: 0 0 8px; display: flex; align-items: center; gap: 8px; }
+    .layer-badge {
+      display: inline-block; padding: 3px 12px; border-radius: 999px; font-size: 0.75rem; font-weight: 700;
+    }
+    .layer-1 .layer-badge { background: var(--teal-tint); color: var(--teal-deep); }
+    .layer-2 .layer-badge { background: var(--amber-tint); color: #7a4c0d; }
+    .layer-3 .layer-badge { background: var(--rose-tint); color: #7a2a2a; }
+    .layer-card p { margin: 6px 0 0; color: var(--ink-soft); font-size: 0.92rem; }
+    .layer-card ul { margin: 8px 0 0; padding-inline-start: 20px; color: var(--ink-soft); font-size: 0.92rem; }
+    .layer-card li { margin-bottom: 4px; }
+
+    .teacher-recommendation {
+      margin-top: 28px; padding: 20px 22px; border-radius: 14px;
+      background: var(--amber-tint);
+    }
+    .teacher-recommendation h2 { font-family: "Cairo", sans-serif; font-size: 1.02rem; margin: 0 0 8px; color: var(--ink); }
+    .teacher-recommendation p { margin: 0; color: #5c3d0a; font-size: 0.92rem; }
   </style>
 </head>
 <body>
-  <!--
-    شريط التنقّل هنا HTML ثابت يدويًا، لا وحدة nav.js المستوردة في بقية
-    الصفحات — هذي الصفحة الوحيدة بلا JavaScript إطلاقًا بقرار صريح (القرار 6:
-    "نص إرشادي ثابت، لا تفاعلي"). البنية والأصناف مطابقة لبقية الصفحات يدويًا.
-  -->
-  <nav class="site-nav" dir="rtl" aria-label="تنقّل رئيسي">
-    <a class="site-nav-link" href="../01-home/index.html" data-nav-key="home">الرئيسية</a>
-    <a class="site-nav-link" href="../02-calibration/index.html" data-nav-key="calibration">المعايرة</a>
-    <a class="site-nav-link" href="../03-exercises/index.html" data-nav-key="exercises">التمارين</a>
-    <a class="site-nav-link" href="../04-maqamat-guide/index.html" data-nav-key="maqamat">المقامات</a>
-    <a class="site-nav-link" href="../05-metronome/index.html" data-nav-key="metronome">المترونوم</a>
-    <a class="site-nav-link" href="../06-library-export/index.html" data-nav-key="library">المكتبة</a>
-    <a class="site-nav-link" href="../07-settings-sync/index.html" data-nav-key="settings">الإعدادات</a>
-    <a class="site-nav-link active" href="../08-teaching-guide/index.html" data-nav-key="teaching" aria-current="page">الدليل</a>
-  </nav>
-  <h1>الدليل التعليمي</h1>
-  <p class="page-sub">حدود ما تضمنه هذي المنصة — بوضوح، قبل أن تحتاجه</p>
+  <div class="page-shell">
+    <!--
+      شريط التنقّل هنا HTML ثابت يدويًا، لا وحدة nav.js المستوردة في بقية
+      الصفحات — هذي الصفحة الوحيدة بلا JavaScript إطلاقًا بقرار صريح (القرار 6:
+      "نص إرشادي ثابت، لا تفاعلي"). البنية والأصناف مطابقة لبقية الصفحات يدويًا.
+    -->
+    <nav class="site-nav" dir="rtl" aria-label="تنقّل رئيسي">
+      <a class="site-nav-link" href="../01-home/index.html" data-nav-key="home">الرئيسية</a>
+      <a class="site-nav-link" href="../02-calibration/index.html" data-nav-key="calibration">المعايرة</a>
+      <a class="site-nav-link" href="../03-exercises/index.html" data-nav-key="exercises">التمارين</a>
+      <a class="site-nav-link" href="../04-maqamat-guide/index.html" data-nav-key="maqamat">المقامات</a>
+      <a class="site-nav-link" href="../05-metronome/index.html" data-nav-key="metronome">المترونوم</a>
+      <a class="site-nav-link" href="../06-library-export/index.html" data-nav-key="library">المكتبة</a>
+      <a class="site-nav-link" href="../07-settings-sync/index.html" data-nav-key="settings">الإعدادات</a>
+      <a class="site-nav-link active" href="../08-teaching-guide/index.html" data-nav-key="teaching" aria-current="page">الدليل</a>
+    </nav>
 
-  <p>
-    تُبنى مِران على ثلاث طبقات واضحة الحدود (القرار 6). الطبقتان الأولى والثانية
-    مبنيتان أو مخطَّط لبنائهما بالكامل داخل المنصة. الطبقة الثالثة <strong>لا تُبنى
-    أصلًا</strong> — هذا قرار صريح، لا نقص مؤقت.
-  </p>
+    <h1>الدليل التعليمي</h1>
+    <p class="page-sub">حدود ما تضمنه هذي المنصة — بوضوح، قبل أن تحتاجه</p>
 
-  <div class="layers">
-    <div class="layer-card layer-1">
-      <h2><span class="layer-badge">الطبقة 1 — مضمونة بالكامل</span></h2>
-      <ul>
-        <li>دقة النغمة (المعايرة الشخصية، المرجع الموثَّق لكل عازف)</li>
-        <li>إتقان الآلة (نفَس، سرعة، إيقاع، نقر، طلاقة حركية)</li>
-        <li>هيكل السلالم والمقامات (شرقية وغربية)</li>
-      </ul>
-    </div>
-
-    <div class="layer-card layer-2">
-      <h2><span class="layer-badge">الطبقة 2 — مضمونة، لاحقة</span></h2>
-      <p>تعليم النوتة الموسيقية — مهارة قواعدية قابلة للأتمتة، تُبنى بعد اكتمال الطبقة الأولى.</p>
-    </div>
-
-    <div class="layer-card layer-3">
-      <h2><span class="layer-badge">الطبقة 3 — خارج الضمان، لا تُبنى</span></h2>
-      <ul>
-        <li>الأغاني (أداء وتفسير)</li>
-        <li>التقاسيم والارتجال</li>
-        <li>النضج التعبيري</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="teacher-recommendation">
-    <h2>عند وصولك لهذي المرحلة</h2>
     <p>
-      لا تحاول مِران تعليم الأداء أو التفسير أو الارتجال أو النضج التعبيري —
-      هذي مهارات تحتاج أذنًا بشرية حية وحوارًا مباشرًا لا تستطيع أي منصة رقمية
-      تعويضه. إن أتقنت الطبقتين الأولى والثانية وشعرت أنك جاهز للخطوة التالية،
-      التوصية الصريحة: <strong>ابحث عن معلم بشري</strong> يرافقك في هذي المرحلة
-      تحديدًا. هذا ليس قصورًا في المنصة — هذا حدٌّ مقصود ومُعلَن منذ التصميم.
+      تُبنى مِران على ثلاث طبقات واضحة الحدود (القرار 6). الطبقتان الأولى والثانية
+      مبنيتان أو مخطَّط لبنائهما بالكامل داخل المنصة. الطبقة الثالثة <strong>لا تُبنى
+      أصلًا</strong> — هذا قرار صريح، لا نقص مؤقت.
     </p>
+
+    <div class="layers">
+      <div class="layer-card layer-1">
+        <h2><span class="layer-badge">الطبقة 1 — مضمونة بالكامل</span></h2>
+        <ul>
+          <li>دقة النغمة (المعايرة الشخصية، المرجع الموثَّق لكل عازف)</li>
+          <li>إتقان الآلة (نفَس، سرعة، إيقاع، نقر، طلاقة حركية)</li>
+          <li>هيكل السلالم والمقامات (شرقية وغربية)</li>
+        </ul>
+      </div>
+
+      <div class="layer-card layer-2">
+        <h2><span class="layer-badge">الطبقة 2 — مضمونة، لاحقة</span></h2>
+        <p>تعليم النوتة الموسيقية — مهارة قواعدية قابلة للأتمتة، تُبنى بعد اكتمال الطبقة الأولى.</p>
+      </div>
+
+      <div class="layer-card layer-3">
+        <h2><span class="layer-badge">الطبقة 3 — خارج الضمان، لا تُبنى</span></h2>
+        <ul>
+          <li>الأغاني (أداء وتفسير)</li>
+          <li>التقاسيم والارتجال</li>
+          <li>النضج التعبيري</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="teacher-recommendation">
+      <h2>عند وصولك لهذي المرحلة</h2>
+      <p>
+        لا تحاول مِران تعليم الأداء أو التفسير أو الارتجال أو النضج التعبيري —
+        هذي مهارات تحتاج أذنًا بشرية حية وحوارًا مباشرًا لا تستطيع أي منصة رقمية
+        تعويضه. إن أتقنت الطبقتين الأولى والثانية وشعرت أنك جاهز للخطوة التالية،
+        التوصية الصريحة: <strong>ابحث عن معلم بشري</strong> يرافقك في هذي المرحلة
+        تحديدًا. هذا ليس قصورًا في المنصة — هذا حدٌّ مقصود ومُعلَن منذ التصميم.
+      </p>
+    </div>
   </div>
 </body>
 </html>
