@@ -102,6 +102,60 @@
       color: var(--teal-deep); background: var(--teal-tint); border-radius: 999px; padding: 2px 10px;
     }
     .glossary-empty { color: var(--ink-soft); font-size: 0.9rem; padding: 20px 0; }
+
+    .theory-section {
+      margin-top: 48px; padding-top: 32px; border-top: 1px solid var(--hairline);
+    }
+    .theory-section-head h2 { font-size: 1.2rem; margin: 0 0 6px; }
+    .theory-section-note { color: var(--ink-soft); font-size: 0.85rem; margin: 0 0 18px; max-width: 62ch; }
+    .theory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; align-items: start; }
+    .theory-card { background: #fff; border: 1px solid var(--hairline); border-radius: 14px; padding: 16px 18px; }
+    .theory-card.open { grid-column: 1 / -1; }
+    .theory-card-title { font-family: "Cairo", sans-serif; font-weight: 700; font-size: 1rem; margin: 0 0 6px; }
+    .theory-card-summary { font-size: 0.85rem; color: var(--ink-soft); margin: 0 0 12px; line-height: 1.5; }
+    .theory-card-toggle {
+      font-family: "Cairo", sans-serif; font-size: 0.82rem; font-weight: 600; color: var(--teal-deep);
+      background: var(--teal-tint); border: none; border-radius: 999px; padding: 6px 14px; cursor: pointer;
+    }
+    .theory-card-body { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--hairline); }
+
+    .theory-facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; margin-bottom: 12px; }
+    .theory-fact {
+      background: #f6f3ea; border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 4px;
+    }
+    .theory-fact strong { font-family: "Cairo", sans-serif; font-size: 0.85rem; }
+    .theory-fact span { font-size: 0.82rem; color: var(--ink-soft); line-height: 1.5; }
+    .theory-fact--accent { background: var(--amber-tint); }
+
+    .theory-note-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; margin-bottom: 12px; }
+    .theory-note-chip {
+      background: var(--teal-tint); border-radius: 10px; padding: 8px 10px; text-align: center;
+      display: flex; flex-direction: column; gap: 2px;
+    }
+    .theory-note-chip strong { font-family: "Cairo", sans-serif; font-size: 0.85rem; color: var(--teal-deep); }
+    .theory-note-chip span { font-size: 0.7rem; color: var(--ink-soft); }
+    .theory-note-chip-cents { font-weight: 600; }
+
+    .theory-meter-table { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+    .theory-meter-row {
+      display: flex; gap: 12px; align-items: baseline; background: #f6f3ea; border-radius: 8px; padding: 8px 12px;
+      font-size: 0.85rem;
+    }
+    .theory-meter-frac { font-family: "Cairo", sans-serif; font-weight: 700; min-width: 3.2em; }
+    .theory-meter-kind { color: var(--teal-deep); font-weight: 600; min-width: 6em; }
+    .theory-meter-detail { color: var(--ink-soft); }
+
+    .theory-register-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; margin-bottom: 12px; }
+    .theory-register-chip { background: var(--amber-tint); border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; }
+    .theory-register-chip strong { font-family: "Cairo", sans-serif; font-size: 0.85rem; color: #7a4c0d; }
+    .theory-register-chip span { font-size: 0.78rem; color: var(--ink-soft); }
+
+    .theory-source-note, .theory-redirect-note { font-size: 0.8rem; color: var(--ink-soft); margin: 6px 0 0; }
+    .theory-jump-link {
+      display: inline-block; margin-top: 8px; font-size: 0.85rem; font-weight: 600; color: var(--teal-deep);
+      text-decoration: none;
+    }
+    .theory-jump-link:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -111,6 +165,18 @@
     <p class="page-sub">السلم (سلسلة الأجناس) والسِّير اللحني لكل مقام — علامة "؟" تعني سِّيرًا غير مصادَق عليه سمعيًا بعد (القرار 5)</p>
 
     <div id="app"></div>
+
+    <section class="theory-section">
+      <div class="theory-section-head">
+        <h2>مرجع نظري سريع</h2>
+        <p class="theory-section-note">
+          نقل كامل تقسيمات مكتبة RECORD-N الموسيقية (٨ أقسام، بنفس ترتيبها) — بصياغة مُعاد كتابتها لمِران.
+          قسم "المقامات الشرقية" يحيل لمستعرض المقامات أعلاه (لا تكرار للبيانة)، وقسم "المصطلحات الموسيقية"
+          يحيل لقاموس المصطلحات أسفل الصفحة.
+        </p>
+      </div>
+      <div id="theoryApp"></div>
+    </section>
 
     <section class="glossary-section">
       <div class="glossary-section-head">
@@ -127,9 +193,11 @@
   <script type="module">
     import { mountNav } from "../../shared/nav.js";
     import { mountMaqamatPage } from "./maqamat-page.js";
+    import { mountTheoryReferencePanel } from "./theory-reference-panel.js";
     import { mountGlossaryPanel } from "./glossary-panel.js";
     mountNav(document.getElementById("siteNav"), "maqamat");
     mountMaqamatPage(document.getElementById("app"));
+    mountTheoryReferencePanel(document.getElementById("theoryApp"));
     mountGlossaryPanel(document.getElementById("glossaryApp"));
   </script>
 </body>
