@@ -1,21 +1,26 @@
 /**
  * page-smoke.test.mjs
  * ============================================================
- * اختبار دخان (smoke) لصفحة #3 (التمارين) — نقطة دخول رقيقة (meta refresh)
- * تُعيد التوجيه فورًا لـ src/exercises/legacy-miran/index.html الموجود
- * والمُختبر فعليًا (baseline-regression.test.mjs، 9/9 ناجح).
+ * اختبار دخان (smoke) لصفحة #3 (التمارين) — إطار مضمّن (iframe) يحمّل
+ * src/exercises/legacy-miran/index.html الموجود والمُختبر فعليًا
+ * (baseline-regression.test.mjs، 9/9 ناجح)، تحت شريط علوي ثابت برابط رجوع
+ * لصفحة #1 (الرئيسية) — القضية المُصلَحة هذي المرحلة: التوجيه الفوري القديم
+ * (meta refresh) كان يُخرج المستخدم من المنصة كليًا بلا أي طريق رجوع سوى
+ * زر رجوع المتصفح.
  *
- * **لماذا نقطة دخول لا صفحة مبنية من جديد:** القرار الصريح في سجل القرارات
+ * **لماذا إطار مضمّن لا صفحة مبنية من جديد:** القرار الصريح في سجل القرارات
  * (القسم 4 والقسم 7) هو "منقول كاملًا من مِران، بلا تعديل بنيوي" — منهج
- * الـ74 يومًا منقول ومُختبر بالفعل في `src/exercises/legacy-miran/`، وهو
- * ملف محمي (`src/exercises/**` في ARCHITECTURE.md) لا يُعدَّل إلا بقرار
- * صريح جديد. إعادة بنائه هنا كانت ستخالف "بلا تعديل بنيوي" حرفيًا.
+ * الـ74 يومًا منقول ومُختبر بالفعل في src/exercises/legacy-miran/، وهو
+ * ملف محمي (src/exercises/** في ARCHITECTURE.md) لا يُعدَّل إلا بقرار
+ * صريح جديد. الإطار المضمّن يحمّل ذلك الملف حرفيًا بلا أي تعديل عليه —
+ * شريط الرجوع عنصر في صفحة #3 نفسها فقط (آمنة للتعديل الحر).
  *
- * **نطاق مقصود:** التحقق أن التوجيه يعمل فعليًا ويصل لصفحة المنهج الحقيقية
- * العاملة (لا رابط معطَّل)، بلا تكرار اختبارات baseline-regression نفسها.
+ * نطاق مقصود: الإطار المضمّن يحمّل صفحة المنهج الحقيقية العاملة بلا 404 ولا
+ * استثناء JS، شريط الرجوع موجود ويشير لصفحة #1 بالمسار النسبي الصحيح، بلا
+ * تكرار اختبارات baseline-regression نفسها.
  *
  * يُشغَّل بـ: node src/ui/pages/03-exercises/tests/page-smoke.test.mjs
- * **يتطلب خادمًا محليًا** يخدم جذر المستودع:
+ * يتطلب خادمًا محليًا يخدم جذر المستودع:
  *   python3 -m http.server 8934   # من جذر المستودع
  */
 import { chromium } from "playwright";
@@ -28,14 +33,23 @@ let passed = 0;
 let failed = 0;
 
 async function test(name, fn) {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  const consoleErrors = [];
+  page.on("pageerror", (err) => consoleErrors.push(err.message));
+  page.on("console", (msg) => {
+    if (msg.type() === "error") consoleErrors.push(msg.text());
+  });
   try {
-    await fn();
+    await fn(page, consoleErrors);
     passed++;
     console.log(`✓ ${name}`);
   } catch (err) {
     failed++;
     console.error(`✗ ${name}`);
     console.error(`  ${err.message}`);
+  } finally {
+    await browser.close();
   }
 }
 
@@ -45,40 +59,27 @@ function realErrors(consoleErrors) {
   );
 }
 
-await test("مصدر الصفحة يحتوي meta refresh ورابط رجوع يدوي للمسار النسبي الصحيح", async () => {
-  // نقرأ HTML الخام مباشرة (لا متصفحًا) — التحويل فوري (content="0") لذا أي
-  // فحص DOM حي في متصفح يتسابق مع التنقّل التلقائي نفسه.
-  const res = await fetch(ENTRY_URL);
-  const html = await res.text();
-  assert.match(html, /http-equiv="refresh"/);
-  assert.match(html, /url=\.\.\/\.\.\/\.\.\/exercises\/legacy-miran\/index\.html/);
-  assert.match(html, /href="\.\.\/\.\.\/\.\.\/exercises\/legacy-miran\/index\.html"/);
+await test("شريط الرجوع موجود ويشير لصفحة #1 (الرئيسية) بالمسار الصحيح", async (page) => {
+  await page.goto(ENTRY_URL, { waitUntil: "load" });
+  const back = page.locator(".exercises-back");
+  await assert.doesNotReject(back.waitFor({ state: "visible", timeout: 2000 }));
+  assert.equal(await back.getAttribute("href"), "../01-home/index.html");
 });
 
 await test(
-  "التنقّل الفعلي من نقطة الدخول يصل لصفحة المنهج الحقيقية العاملة (بلا 404، بلا استثناء JS)",
-  async () => {
-    const browser = await chromium.launch();
-    const page = await browser.newPage();
-    const consoleErrors = [];
-    page.on("pageerror", (err) => consoleErrors.push(err.message));
-    page.on("console", (msg) => {
-      if (msg.type() === "error") consoleErrors.push(msg.text());
-    });
-    try {
-      await page.goto(ENTRY_URL);
-      // ننتظر وصول الرابط النهائي فعليًا (قد يحدث فورًا أو خلال أجزاء من الثانية).
-      await page.waitForURL(/legacy-miran\/index\.html/, { timeout: 5000 });
-      await page.waitForLoadState("load");
-      assert.equal(
-        realErrors(consoleErrors).length,
-        0,
-        `أخطاء كونسول بعد التوجيه: ${realErrors(consoleErrors).join(" | ")}`
-      );
-      await assert.doesNotReject(page.locator("#view-home").waitFor({ state: "visible", timeout: 3000 }));
-    } finally {
-      await browser.close();
-    }
+  "الإطار المضمّن يحمّل صفحة المنهج الحقيقية العاملة (بلا 404، بلا استثناء JS)",
+  async (page, consoleErrors) => {
+    await page.goto(ENTRY_URL, { waitUntil: "load" });
+    const frame = page.frameLocator(".exercises-frame");
+    await assert.doesNotReject(
+      frame.locator("#view-home").waitFor({ state: "visible", timeout: 5000 }),
+      "لم يظهر #view-home داخل الإطار المضمّن — تحقق من مسار src"
+    );
+    assert.equal(
+      realErrors(consoleErrors).length,
+      0,
+      `أخطاء كونسول بعد تحميل الإطار: ${realErrors(consoleErrors).join(" | ")}`
+    );
   }
 );
 
