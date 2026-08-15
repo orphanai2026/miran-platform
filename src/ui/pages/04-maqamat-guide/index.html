@@ -75,11 +75,6 @@
     .sayr-badge.sayr-validated { background: var(--teal-tint); color: var(--teal-deep); }
     .sayr-detail, .sayr-source { margin-top: 6px; font-size: 0.85rem; color: var(--ink-soft); }
 
-    .glossary-section {
-      margin-top: 48px; padding-top: 32px; border-top: 1px solid var(--hairline);
-    }
-    .glossary-section-head h2 { font-size: 1.2rem; margin: 0 0 6px; }
-    .glossary-section-note { color: var(--ink-soft); font-size: 0.85rem; margin: 0 0 18px; max-width: 60ch; }
     .glossary-search {
       width: 100%; padding: 11px 16px; border-radius: 10px; border: 1px solid var(--hairline);
       font-family: "Tajawal", sans-serif; font-size: 0.92rem; background: #fff; margin-bottom: 12px;
@@ -172,21 +167,10 @@
         <p class="theory-section-note">
           نقل كامل تقسيمات مكتبة RECORD-N الموسيقية (٨ أقسام، بنفس ترتيبها) — بصياغة مُعاد كتابتها لمِران.
           قسم "المقامات الشرقية" يحيل لمستعرض المقامات أعلاه (لا تكرار للبيانة)، وقسم "المصطلحات الموسيقية"
-          يحيل لقاموس المصطلحات أسفل الصفحة.
+          مدمَج بالكامل داخل بطاقته الخاصة — قاموس البحث والفلترة يظهر عند فتح القسم مباشرة.
         </p>
       </div>
       <div id="theoryApp"></div>
-    </section>
-
-    <section class="glossary-section">
-      <div class="glossary-section-head">
-        <h2>قاموس المصطلحات</h2>
-        <p class="glossary-section-note">
-          مصطلحات النغم والقياس والتدوين والإيقاع والمقام المستخدمة في هذا الدليل — استفادةً من مكتبة
-          مصطلحات RECORD-N، بصياغة مُعاد كتابتها لمِران.
-        </p>
-      </div>
-      <div id="glossaryApp"></div>
     </section>
   </div>
 
@@ -194,11 +178,9 @@
     import { mountNav } from "../../shared/nav.js";
     import { mountMaqamatPage } from "./maqamat-page.js";
     import { mountTheoryReferencePanel } from "./theory-reference-panel.js";
-    import { mountGlossaryPanel } from "./glossary-panel.js";
     mountNav(document.getElementById("siteNav"), "maqamat");
     mountMaqamatPage(document.getElementById("app"));
     mountTheoryReferencePanel(document.getElementById("theoryApp"));
-    mountGlossaryPanel(document.getElementById("glossaryApp"));
   </script>
 </body>
 </html>

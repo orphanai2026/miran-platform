@@ -88,6 +88,52 @@ export const JINS_SABA = defineJins({
   source: SOURCE_MAQAMWORLD + " — ⚠️ جنس استثنائي، يحتاج تحققًا موسّعًا قبل الاعتماد النهائي",
 });
 
+export const JINS_SIKAH = defineJins({
+  name: "سيكا",
+  // موثّق حرفيًا من maqamworld.com/en/jins/sikah.php: "Jins Sikah is a
+  // 3-note jins. Notated here with its tonic on E and its ghammaz on G."
+  // جنس ثلاثي (بُعدان فقط)، مطابق لما ذكره Yedid (2013): "the Sikah jins
+  // (3⁄4, 1 tones) is an offshoot of the Rast jins".
+  intervalPattern: [INTERVAL_TYPES.THREE_QUARTER, INTERVAL_TYPES.WHOLE],
+  source: SOURCE_MAQAMWORLD + " (jins/sikah.php) + Yedid, Maqamat (2013)",
+});
+
+export const JINS_KURD = defineJins({
+  name: "كرد",
+  // موثّق من maqamworld.com/en/jins/kurd.php: "Jins Kurd is a 4-note jins.
+  // Notated here with its tonic on D and its ghammaz on G." — يماثل النصف
+  // السفلي من مقام فريجي الغربي (بُعد نصفي أول مميّز، ثم بُعدان كاملان).
+  intervalPattern: [INTERVAL_TYPES.HALF, INTERVAL_TYPES.WHOLE, INTERVAL_TYPES.WHOLE],
+  source: SOURCE_MAQAMWORLD + " (jins/kurd.php)",
+});
+
+export const JINS_NAHAWAND = defineJins({
+  name: "نهاوند",
+  // موثّق: يماثل نمط "Aeolian" الغربي (Yedid 2013: "the Nahawand jins
+  // (1, 1⁄2, 1 tones)") — جنس رباعي بلا أرباع تون، الأقرب للسلم الغربي
+  // من بين كل الأجناس الرئيسية.
+  intervalPattern: [INTERVAL_TYPES.WHOLE, INTERVAL_TYPES.HALF, INTERVAL_TYPES.WHOLE],
+  source: SOURCE_MAQAMWORLD + " + Yedid, Maqamat (2013)",
+});
+
+export const JINS_NIKRIZ = defineJins({
+  name: "نكريز",
+  // موثّق من maqamworld.com/en/jins/nikriz.php: "Jins Nikriz is a 5-note
+  // jins. Notated here with its tonic on C and its ghammaz on G." — بُعد
+  // ونصف زائد (augmented second) مميّز مشترك مع جنس حجاز، بين الدرجتين
+  // الثالثة والرابعة (تقريبًا Eb-F# على قرار C حسب مصادر ثانوية متعددة).
+  // ⚠️ ملاحظة توثيقية: نكريز مستبعد صراحة كخيار للجنس العلوي في مقام صبا
+  // تحديدًا (القرار 5) — هذا لا يمنع وجوده كجنس/مقام مستقل هنا؛ الاستبعاد
+  // في القرار 5 محصور بمسار صبا فقط، لا بالجنس نفسه.
+  intervalPattern: [
+    INTERVAL_TYPES.WHOLE,
+    INTERVAL_TYPES.HALF,
+    INTERVAL_TYPES.AUGMENTED_SECOND,
+    INTERVAL_TYPES.HALF,
+  ],
+  source: SOURCE_MAQAMWORLD + " (jins/nikriz.php) + مصادر ثانوية للبُعد الزائد بين الدرجتين 3-4",
+});
+
 // ============ المقامات (Maqamat) ============
 
 export const MAQAM_AJAM = defineMaqam({
@@ -161,5 +207,94 @@ export const MAQAM_SABA = defineMaqam({
   sayr: null,
 });
 
-export const ALL_MAQAMAT = Object.freeze([MAQAM_AJAM, MAQAM_RAST, MAQAM_HIJAZ, MAQAM_BAYATI, MAQAM_SABA]);
-export const ALL_JINS = Object.freeze([JINS_AJAM, JINS_BAYATI, JINS_HIJAZ, JINS_RAST, JINS_UPPER_RAST, JINS_SABA]);
+/**
+ * مقام سيكا — موثّق حرفيًا من maqamworld.com/en/maqam/sikah.php: "Maqam
+ * Sikah ... starts with the root Jins Sikah on the tonic, followed by Jins
+ * Upper Rast on the 3rd degree ... then Jins Rast on the 6th degree (which
+ * is a secondary ghammaz)." ثلاثة أجناس متتالية، يعيد استخدام JINS_UPPER_RAST
+ * وJINS_RAST الموجودين أصلًا (لا تكرار).
+ */
+export const MAQAM_SIKAH = defineMaqam({
+  name: "سيكا",
+  jinsChain: [
+    { jins: JINS_SIKAH, startDegree: 1 },
+    { jins: JINS_UPPER_RAST, startDegree: 3 },
+    { jins: JINS_RAST, startDegree: 6 },
+  ],
+  qarar: "مي",
+  ghammaz: "صول",
+  sayr: null,
+});
+
+/**
+ * مقام كرد — موثّق حرفيًا من maqamworld.com/en/maqam/kurd.php: "Its scale
+ * starts with the root Jins Kurd on the tonic, followed by Jins Nahawand
+ * on the 4th degree."
+ */
+export const MAQAM_KURD = defineMaqam({
+  name: "كرد",
+  jinsChain: [
+    { jins: JINS_KURD, startDegree: 1 },
+    { jins: JINS_NAHAWAND, startDegree: 4 },
+  ],
+  qarar: "ري",
+  ghammaz: "صول",
+  sayr: null,
+});
+
+/**
+ * مقام نهاوند — موثّق حرفيًا من maqamworld.com/en/maqam/nahawand.php: "Its
+ * scale starts with the root Jins Nahawand on the tonic, followed by
+ * either Jins Hijaz or Jins Kurd on the 5th degree." نختار كرد كخيار أبسط
+ * ابتدائيًا (نفس منطق اختيار عجم علوي لمقام عجم أعلاه).
+ */
+export const MAQAM_NAHAWAND = defineMaqam({
+  name: "نهاوند",
+  jinsChain: [
+    { jins: JINS_NAHAWAND, startDegree: 1 },
+    { jins: JINS_KURD, startDegree: 5 },
+  ],
+  qarar: "دو",
+  ghammaz: "صول",
+  sayr: null,
+});
+
+/**
+ * مقام نكريز — موثّق حرفيًا من maqamworld.com/en/maqam/nikriz.php: "Its
+ * scale starts with the root Jins Nikriz on the tonic, followed by Jins
+ * Nahawand on the 5th degree."
+ */
+export const MAQAM_NIKRIZ = defineMaqam({
+  name: "نكريز",
+  jinsChain: [
+    { jins: JINS_NIKRIZ, startDegree: 1 },
+    { jins: JINS_NAHAWAND, startDegree: 5 },
+  ],
+  qarar: "دو",
+  ghammaz: "صول",
+  sayr: null,
+});
+
+export const ALL_MAQAMAT = Object.freeze([
+  MAQAM_AJAM,
+  MAQAM_RAST,
+  MAQAM_HIJAZ,
+  MAQAM_BAYATI,
+  MAQAM_SABA,
+  MAQAM_SIKAH,
+  MAQAM_KURD,
+  MAQAM_NAHAWAND,
+  MAQAM_NIKRIZ,
+]);
+export const ALL_JINS = Object.freeze([
+  JINS_AJAM,
+  JINS_BAYATI,
+  JINS_HIJAZ,
+  JINS_RAST,
+  JINS_UPPER_RAST,
+  JINS_SABA,
+  JINS_SIKAH,
+  JINS_KURD,
+  JINS_NAHAWAND,
+  JINS_NIKRIZ,
+]);

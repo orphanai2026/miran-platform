@@ -7,6 +7,7 @@
  * لا تلمس أيًا منهما، وتُركَّب في حاوٍ منفصل ثالث بنفس الصفحة.
  */
 import { THEORY_TOPICS } from "./theory-reference-data.js";
+import { mountGlossaryPanel } from "./glossary-panel.js";
 
 function renderFacts(facts) {
   if (!facts) return "";
@@ -92,12 +93,7 @@ function renderTopicDetail(topic) {
     `;
   }
   if (topic.linksToGlossary) {
-    return `
-      <p class="theory-redirect-note">
-        ${topic.summary}
-      </p>
-      <a href="#glossaryApp" class="theory-jump-link" data-jump="glossaryApp">↓ الانتقال لقاموس المصطلحات أسفل الصفحة</a>
-    `;
+    return `<div id="theoryGlossaryMount" class="theory-glossary-mount"></div>`;
   }
   return `
     ${renderFacts(topic.facts)}
@@ -137,6 +133,10 @@ export function mountTheoryReferencePanel(container) {
         ${THEORY_TOPICS.map((t) => renderCard(t, expandedId)).join("")}
       </div>
     `;
+    if (expandedId === "glossary") {
+      const mount = container.querySelector("#theoryGlossaryMount");
+      if (mount) mountGlossaryPanel(mount);
+    }
   }
 
   render();

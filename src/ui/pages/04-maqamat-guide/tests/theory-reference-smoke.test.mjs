@@ -105,13 +105,16 @@ await test(
   }
 );
 
-await test("قسم 'المصطلحات الموسيقية' يحيل لقاموس المصطلحات فقط — بلا بطاقات مصطلح مكررة", async (page) => {
-  await page.locator('[data-toggle="glossary"]').click();
-  await page.waitForTimeout(30);
-  const card = page.locator('.theory-card[data-topic-id="glossary"]');
-  await assert.doesNotReject(card.locator(".theory-jump-link").waitFor({ state: "visible" }));
-  assert.equal(await card.locator(".glossary-card").count(), 0);
-});
+await test(
+  "قسم 'المصطلحات الموسيقية' مدمَج بالكامل داخل بطاقته — قاموس المصطلحات الحقيقي (26 مصطلحًا) يظهر عند الفتح",
+  async (page) => {
+    await page.locator('[data-toggle="glossary"]').click();
+    await page.waitForTimeout(30);
+    const card = page.locator('.theory-card[data-topic-id="glossary"]');
+    await assert.doesNotReject(card.locator("#glossarySearch").waitFor({ state: "visible", timeout: 2000 }));
+    assert.equal(await card.locator(".glossary-card").count(), 26);
+  }
+);
 
 console.log(`\n${passed} ناجح، ${failed} فاشل.`);
 process.exitCode = failed > 0 ? 1 : 0;

@@ -55,9 +55,9 @@ await test("الصفحة تُحمَّل بلا أخطاء JS حقيقية", asyn
   assert.equal(realErrors(consoleErrors).length, 0, `أخطاء كونسول: ${realErrors(consoleErrors).join(" | ")}`);
 });
 
-await test("قائمة المقامات تعرض 5 أزرار (عدد ALL_MAQAMAT الحالي)", async (page) => {
+await test("قائمة المقامات تعرض 9 أزرار (عدد ALL_MAQAMAT الحالي — تسعة، بعد إضافة سيكا وكرد ونهاوند ونكريز)", async (page) => {
   const buttons = page.locator(".maqam-list-btn");
-  assert.equal(await buttons.count(), 5);
+  assert.equal(await buttons.count(), 9);
 });
 
 await test("أول مقام مُحدَّد تلقائيًا عند التحميل (عجم، أول عنصر في ALL_MAQAMAT)", async (page) => {
