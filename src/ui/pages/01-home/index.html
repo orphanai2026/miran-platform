@@ -98,6 +98,32 @@
       direction: ltr; display: inline-block; background: var(--amber-tint); color: #633806;
       padding: 2px 8px; border-radius: 6px; font-size: 0.76rem;
     }
+
+    .staged-verify-section {
+      margin-top: 40px; padding-top: 28px; border-top: 1px solid var(--hairline);
+    }
+    .staged-verify-section h2 { font-family: "Cairo", sans-serif; font-weight: 700; font-size: 1rem; margin: 0 0 6px; }
+    .staged-verify-section-note { color: var(--ink-soft); font-size: 0.85rem; margin: 0 0 16px; }
+    .staged-verify-idle {
+      color: var(--ink-soft); font-size: 0.9rem; padding: 18px; text-align: center;
+      background: #fff; border: 1px dashed var(--hairline); border-radius: 12px; margin: 0;
+    }
+    .staged-verify-prompt {
+      background: #fff; border: 1px solid var(--hairline); border-radius: 14px; padding: 20px; text-align: center;
+    }
+    .staged-verify-note { margin: 0 0 14px; font-size: 0.95rem; }
+    .staged-verify-note strong { color: var(--teal-deep); font-family: "Cairo", sans-serif; }
+    .staged-verify-live {
+      font-family: "Cairo", sans-serif; font-size: 2rem; font-weight: 800;
+      font-variant-numeric: tabular-nums; color: var(--ink-soft); margin-bottom: 4px;
+    }
+    .staged-verify-live.ok { color: var(--teal-deep); }
+    .staged-verify-status { min-height: 1.3em; font-size: 0.85rem; color: var(--ink-soft); margin: 0 0 14px; }
+    .staged-verify-progress { display: flex; gap: 8px; justify-content: center; margin-bottom: 16px; }
+    .staged-verify-dot {
+      width: 14px; height: 14px; border-radius: 50%; background: #ece7d8; border: 2px solid var(--hairline);
+    }
+    .staged-verify-dot.filled { background: var(--teal); border-color: var(--teal); }
   </style>
 </head>
 <body>
@@ -117,13 +143,23 @@
     </svg>
 
     <div id="app"></div>
+
+    <section class="staged-verify-section">
+      <h2>الاختبار المرحلي</h2>
+      <p class="staged-verify-section-note">
+        بعد إتقان نغمة في التمارين، أعد عزفها هنا للتأكيد — تسجيل تلقائي واحد يُعتمَد بعد قراءات متتالية متفقة (القرار 9.3).
+      </p>
+      <div id="stagedVerifyApp"></div>
+    </section>
   </div>
 
   <script type="module">
     import { mountNav } from "../../shared/nav.js";
     import { mountHomePage } from "./home-page.js";
+    import { mountStagedVerificationPanel } from "./staged-verification-panel.js";
     mountNav(document.getElementById("siteNav"), "home");
     mountHomePage(document.getElementById("app"));
+    mountStagedVerificationPanel(document.getElementById("stagedVerifyApp"));
   </script>
   </body>
 </html>
