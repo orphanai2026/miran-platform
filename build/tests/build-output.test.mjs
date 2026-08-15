@@ -118,15 +118,26 @@ await test("06-library-export عبر file://: تُحمَّل بلا أخطاء،
   await assert.doesNotReject(page.locator("#libraryEmpty").waitFor({ state: "visible", timeout: 3000 }));
 });
 
-await test("07-settings-sync عبر file://: تُحمَّل بلا أخطاء، كود المزامنة يظهر ويثبت بعد إعادة التحميل", async (page, errs) => {
-  await page.goto(fileUrl("07-settings-sync/index.html"), { waitUntil: "load" });
+await test(
+  "07-settings-sync عبر file://: نائمة (القرار 9.6) لكن لا تزال تعمل فعليًا لو زارها أحد بالرابط المباشر",
+  async (page, errs) => {
+    await page.goto(fileUrl("07-settings-sync/index.html"), { waitUntil: "load" });
+    await page.waitForTimeout(300);
+    assert.equal(realErrors(errs).length, 0, `أخطاء: ${realErrors(errs).join(" | ")}`);
+    const before = (await page.locator("#settingsUserId").textContent()).trim();
+    assert.match(before, /^[0-9a-f-]{20,}$/i);
+    await page.reload({ waitUntil: "load" });
+    const after = (await page.locator("#settingsUserId").textContent()).trim();
+    assert.equal(before, after);
+  }
+);
+
+await test("09-about عبر file://: تُحمَّل بلا أخطاء، رابط المستودع وقائمة المساهمين تظهر", async (page, errs) => {
+  await page.goto(fileUrl("09-about/index.html"), { waitUntil: "load" });
   await page.waitForTimeout(300);
   assert.equal(realErrors(errs).length, 0, `أخطاء: ${realErrors(errs).join(" | ")}`);
-  const before = (await page.locator("#settingsUserId").textContent()).trim();
-  assert.match(before, /^[0-9a-f-]{20,}$/i);
-  await page.reload({ waitUntil: "load" });
-  const after = (await page.locator("#settingsUserId").textContent()).trim();
-  assert.equal(before, after);
+  await assert.doesNotReject(page.locator(".about-repo-link").waitFor({ state: "visible", timeout: 3000 }));
+  assert.ok((await page.locator(".about-contributor").count()) >= 1);
 });
 
 // ==================== الصفحتان بلا وحدات ES (نسخ فقط) ====================
@@ -158,16 +169,47 @@ await test("08-teaching-guide عبر file://: تُحمَّل بلا أخطاء،
 // ==================== تنقّل فعلي بين صفحتين، بلا خادم بالكامل ====================
 
 await test(
-  "تنقّل فعلي عبر file://: الضغط على رابط 'الإعدادات' من صفحة الرئيسية المدموجة يصل لصفحة #7 المدموجة، بلا خادم إطلاقًا",
+  "تنقّل فعلي عبر file://: الضغط على رابط 'من نحن' من صفحة الرئيسية المدموجة يصل لصفحة #9 المدموجة، بلا خادم إطلاقًا",
   async (page, errs) => {
     await page.goto(fileUrl("01-home/index.html"), { waitUntil: "load" });
-    await page.locator('.site-nav-link[data-nav-key="settings"]').click();
-    await page.waitForURL(/07-settings-sync\/index\.html/, { timeout: 5000 });
+    await page.locator('.site-nav-link[data-nav-key="about"]').click();
+    await page.waitForURL(/09-about\/index\.html/, { timeout: 5000 });
     await page.waitForLoadState("load");
     await page.waitForTimeout(300);
     assert.equal(realErrors(errs).length, 0, `أخطاء بعد التنقّل: ${realErrors(errs).join(" | ")}`);
-    await assert.doesNotReject(page.locator("#settingsUserId").waitFor({ state: "visible", timeout: 3000 }));
+    await assert.doesNotReject(page.locator(".about-repo-link").waitFor({ state: "visible", timeout: 3000 }));
     assert.ok(page.url().startsWith("file://"), "يجب أن يبقى التنقّل عبر file:// بلا أي خادم");
+  }
+);
+
+await test("القرار 9.6 في مخرجات الدمج: لا رابط settings إطلاقًا في شريط التنقّل", async (page) => {
+  await page.goto(fileUrl("01-home/index.html"), { waitUntil: "load" });
+  assert.equal(await page.locator('.site-nav-link[data-nav-key="settings"]').count(), 0);
+});
+
+// ==================== مكتبة الاستماع المرجعية (القرار 9.2) — مسار الصوت المُعاد كتابته ====================
+
+await test(
+  "02-calibration عبر file://: قسم الاستماع المرجعي يظهر بحالته الفارغة الصحيحة (لا ملفات بعد)",
+  async (page, errs) => {
+    await page.goto(fileUrl("02-calibration/index.html"), { waitUntil: "load" });
+    await page.waitForTimeout(300);
+    assert.equal(realErrors(errs).length, 0, `أخطاء: ${realErrors(errs).join(" | ")}`);
+    await assert.doesNotReject(
+      page.locator("#calibReferenceNotes .reference-audio-empty").waitFor({ state: "visible", timeout: 2000 })
+    );
+  }
+);
+
+await test(
+  "04-maqamat-guide عبر file://: قسم استماع المقام يظهر بحالته الفارغة الصحيحة (لا ملفات بعد)",
+  async (page, errs) => {
+    await page.goto(fileUrl("04-maqamat-guide/index.html"), { waitUntil: "load" });
+    await page.waitForTimeout(300);
+    assert.equal(realErrors(errs).length, 0, `أخطاء: ${realErrors(errs).join(" | ")}`);
+    await assert.doesNotReject(
+      page.locator("#maqamReferenceAudio .reference-audio-empty").waitFor({ state: "visible", timeout: 2000 })
+    );
   }
 );
 

@@ -99,18 +99,44 @@
       background: #fff; border: 1px solid var(--hairline);
     }
     .calib-status > div { margin-bottom: 8px; font-size: 0.9rem; }
+
+    .reference-section {
+      margin-top: 40px; padding-top: 28px; border-top: 1px solid var(--hairline);
+    }
+    .reference-section h2 { font-family: "Cairo", sans-serif; font-weight: 700; font-size: 1rem; margin: 0 0 6px; }
+    .reference-section-note { color: var(--ink-soft); font-size: 0.85rem; margin: 0 0 16px; }
+    .reference-audio-empty {
+      color: var(--ink-soft); font-size: 0.88rem; padding: 16px; text-align: center;
+      background: #fff; border: 1px dashed var(--hairline); border-radius: 12px;
+    }
+    .reference-audio-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+    .reference-audio-item {
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      background: #fff; border: 1px solid var(--hairline); border-radius: 10px; padding: 10px 14px;
+    }
+    .reference-audio-label { font-family: "Cairo", sans-serif; font-weight: 600; font-size: 0.9rem; min-width: 3em; }
+    .reference-audio-item audio { flex: 1; min-width: 180px; height: 32px; }
+    .reference-audio-hz { font-size: 0.78rem; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
   </style>
 </head>
 <body>
   <div class="page-shell">
     <div id="siteNav"></div>
     <div id="app"></div>
+
+    <section class="reference-section">
+      <h2>استماع مرجعي — النغمات الـ25</h2>
+      <p class="reference-section-note">تسجيلات ناي حقيقية من الخبراء لكل نغمة (القرار 9.2) — مرجع استماع، لا جزء من الاختبار.</p>
+      <div id="calibReferenceNotes"></div>
+    </section>
   </div>
   <script type="module">
     import { mountNav } from "../../shared/nav.js";
     import { mountCalibrationPage } from "./calibration-page.js";
+    import { mountReferenceNotesPanel } from "./reference-notes-panel.js";
     mountNav(document.getElementById("siteNav"), "calibration");
     mountCalibrationPage(document.getElementById("app"));
+    mountReferenceNotesPanel(document.getElementById("calibReferenceNotes"));
   </script>
 </body>
 </html>

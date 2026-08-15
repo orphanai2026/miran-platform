@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>من نحن — مِران</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      color-scheme: light;
+      --cream: #FAF6EC;
+      --ink: #1C1C1A;
+      --ink-soft: #5F5E5A;
+      --teal: #0F6E56;
+      --teal-deep: #085041;
+      --teal-tint: #E1F0EB;
+      --amber: #BA7517;
+      --amber-tint: #F8ECD8;
+      --hairline: rgba(28, 28, 26, 0.1);
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Tajawal", system-ui, sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      margin: 0;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+    .page-shell { max-width: 640px; margin: 0 auto; padding: 28px 20px 64px; }
+
+    .site-nav {
+      display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 32px; padding-bottom: 16px;
+      border-bottom: 1px solid var(--hairline);
+    }
+    .site-nav-link {
+      padding: 7px 14px; border-radius: 999px; font-size: 0.82rem; font-weight: 500;
+      text-decoration: none; color: var(--ink-soft); background: transparent;
+    }
+    .site-nav-link:hover { background: var(--teal-tint); color: var(--teal-deep); }
+    .site-nav-link.active { background: var(--ink); color: var(--cream); }
+
+    h1 { font-family: "Cairo", "Tajawal", sans-serif; font-weight: 800; font-size: 1.7rem; margin: 0 0 24px; }
+
+    .about-block { margin: 0 0 28px; }
+    .about-block h2 { font-family: "Cairo", sans-serif; font-weight: 700; font-size: 1.05rem; margin: 0 0 10px; }
+    .about-block p { margin: 0; color: var(--ink-soft); font-size: 0.92rem; }
+
+    .about-principles { margin: 0; padding-inline-start: 20px; color: var(--ink-soft); font-size: 0.9rem; }
+    .about-principles li { margin-bottom: 6px; }
+
+    .about-repo-link {
+      display: inline-block; color: var(--teal-deep); font-weight: 600; text-decoration: none;
+      direction: ltr; text-align: start;
+    }
+    .about-repo-link:hover { text-decoration: underline; }
+
+    .about-contributors-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+    .about-contributor {
+      background: #fff; border: 1px solid var(--hairline); border-radius: 12px; padding: 14px 16px;
+      display: flex; flex-direction: column; gap: 2px;
+    }
+    .about-contributor-name { font-family: "Cairo", sans-serif; font-weight: 700; font-size: 0.95rem; }
+    .about-contributor-role { color: var(--teal-deep); font-size: 0.82rem; font-weight: 600; }
+    .about-contributor-note { color: var(--ink-soft); font-size: 0.82rem; }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <div id="siteNav"></div>
+    <h1>من نحن</h1>
+    <div id="app"></div>
+  </div>
+  <script type="module">
+    import { mountNav } from "../../shared/nav.js";
+    import { mountAboutPage } from "./about-page.js";
+    mountNav(document.getElementById("siteNav"), "about");
+    mountAboutPage(document.getElementById("app"));
+  </script>
+</body>
+</html>

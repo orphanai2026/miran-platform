@@ -2,14 +2,18 @@
  * nav-smoke.test.mjs
  * ============================================================
  * اختبار دخان (smoke) للتنقّل العام الموحَّد (`src/ui/shared/nav.js`) —
- * أول ملف مشترك في `src/ui/shared/`. يستورده كل صفحات المنصة السبع
- * المبنية عبر JS (صفحة #8 وحدها بلا JS، لها نسخة HTML ثابتة يدويًا من نفس
- * البنية — مُختبرة بشكل منفصل هنا أيضًا).
+ * أول ملف مشترك في `src/ui/shared/`. يستورده كل الصفحات الحية عبر JS
+ * (صفحة #8 وحدها بلا JS، لها نسخة HTML ثابتة يدويًا من نفس البنية —
+ * مُختبرة بشكل منفصل هنا أيضًا).
+ *
+ * **تحديث (القرار 9.6):** صفحة #7 (الإعدادات) أُزيلت من التنقّل الحي —
+ * الرابط الثامن الآن "من نحن" (`09-about/`، القرار 9.5) بدلها. العدد
+ * الإجمالي يبقى 8 روابط.
  *
  * **نطاق مقصود:** كل الروابط الثمانية موجودة بمساراتها الصحيحة على صفحتين
  * ممثلتين (الرئيسية والمقامات)، تمييز الصفحة الحالية صحيح على كل منهما،
  * وتنقّل فعلي حقيقي عبر الشريط من صفحة لأخرى يصل بنجاح، بالإضافة لتحقق من
- * نسخة صفحة #8 الثابتة يدويًا.
+ * نسخة صفحة #8 الثابتة يدويًا، وتأكيد صريح إن رابط "settings" لم يعد موجودًا.
  *
  * يُشغَّل بـ: node src/ui/shared/tests/nav-smoke.test.mjs
  * **يتطلب خادمًا محليًا** يخدم جذر المستودع:
@@ -47,8 +51,8 @@ const EXPECTED_KEYS = [
   "maqamat",
   "metronome",
   "library",
-  "settings",
   "teaching",
+  "about",
 ];
 
 await test("صفحة #1 (الرئيسية): كل روابط التنقّل الثمانية موجودة، والحالية (home) مُبرَزة", async (page) => {
@@ -74,15 +78,23 @@ await test("صفحة #4 (المقامات): الرابط الحالي المُب
 });
 
 await test(
-  "تنقّل فعلي: الضغط على رابط 'الإعدادات' من صفحة الرئيسية يصل فعليًا لصفحة #7 العاملة",
+  "تنقّل فعلي: الضغط على رابط 'من نحن' من صفحة الرئيسية يصل فعليًا لصفحة #9 العاملة",
   async (page) => {
     await page.goto(`${PAGES_ROOT}/01-home/index.html`, { waitUntil: "load" });
-    await page.locator('.site-nav-link[data-nav-key="settings"]').click();
-    await page.waitForURL(/07-settings-sync\/index\.html/, { timeout: 5000 });
+    await page.locator('.site-nav-link[data-nav-key="about"]').click();
+    await page.waitForURL(/09-about\/index\.html/, { timeout: 5000 });
     await page.waitForLoadState("load");
-    await assert.doesNotReject(page.locator("#settingsUserId").waitFor({ state: "visible", timeout: 3000 }));
+    await assert.doesNotReject(page.locator(".about-repo-link").waitFor({ state: "visible", timeout: 3000 }));
     const active = page.locator(".site-nav-link.active");
-    assert.equal(await active.getAttribute("data-nav-key"), "settings");
+    assert.equal(await active.getAttribute("data-nav-key"), "about");
+  }
+);
+
+await test(
+  "القرار 9.6: صفحة #7 (الإعدادات) لم تعد في شريط التنقّل — لا رابط settings إطلاقًا",
+  async (page) => {
+    await page.goto(`${PAGES_ROOT}/01-home/index.html`, { waitUntil: "load" });
+    assert.equal(await page.locator('.site-nav-link[data-nav-key="settings"]').count(), 0);
   }
 );
 

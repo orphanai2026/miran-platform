@@ -31,7 +31,7 @@
  *
  * يُشغَّل بـ: node build/build.mjs
  */
-import { readFileSync, writeFileSync, mkdirSync, rmSync, readdirSync, statSync, copyFileSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, rmSync, readdirSync, statSync, copyFileSync, existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -218,10 +218,21 @@ function main() {
   const pagesRoot = path.join(REPO_ROOT, "src", "ui", "pages");
   const results = [];
 
-  const moduleDrivenPages = ["01-home", "02-calibration", "04-maqamat-guide", "05-metronome", "06-library-export", "07-settings-sync"];
+  const moduleDrivenPages = ["01-home", "02-calibration", "04-maqamat-guide", "05-metronome", "06-library-export", "07-settings-sync", "09-about"];
   for (const pageName of moduleDrivenPages) {
     const r = buildModulePage(path.join(pagesRoot, pageName), pageName);
     results.push({ pageName, ...r });
+  }
+
+  // إعادة كتابة مسار الصوت المرجعي (القرار 9.2) في الصفحات التي تستهلكه —
+  // نفس أسلوب buildRedirectPage تمامًا (استبدال نصي حرفي بعد الدمج، لا حل
+  // جديد). REFERENCE_AUDIO_BASE ثابتة المصدر في src/ui/shared/reference-audio-path.js.
+  const REFERENCE_AUDIO_PAGES = ["02-calibration", "04-maqamat-guide"];
+  for (const pageName of REFERENCE_AUDIO_PAGES) {
+    const outPath = path.join(DIST_DIR, pageName, "index.html");
+    let html = readFileSync(outPath, "utf-8");
+    html = html.replaceAll("../../../../data/reference-library/audio/", "../data/reference-library/audio/");
+    writeFileSync(outPath, html, "utf-8");
   }
 
   results.push({ pageName: "03-exercises", ...buildRedirectPage(path.join(pagesRoot, "03-exercises"), "03-exercises") });
@@ -241,6 +252,14 @@ function main() {
   const legacySrc = path.join(REPO_ROOT, "src", "exercises", "legacy-miran");
   const legacyDest = path.join(DIST_DIR, "exercises", "legacy-miran");
   copyDirRecursive(legacySrc, legacyDest);
+
+  // نسخ مكتبة الاستماع المرجعية (القرار 9.2) — فارغة حاليًا (audio/ لا يحوي
+  // إلا .gitkeep)، لكن الخطوة جاهزة لحظة إضافة ملفات فعلية بلا أي تعديل هنا.
+  const refAudioSrc = path.join(REPO_ROOT, "data", "reference-library", "audio");
+  const refAudioDest = path.join(DIST_DIR, "data", "reference-library", "audio");
+  if (existsSync(refAudioSrc)) {
+    copyDirRecursive(refAudioSrc, refAudioDest);
+  }
 
   console.log("=== نتيجة الدمج ===\n");
   for (const r of results.sort((a, b) => a.pageName.localeCompare(b.pageName))) {

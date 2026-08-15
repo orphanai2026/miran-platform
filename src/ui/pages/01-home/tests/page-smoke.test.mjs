@@ -90,8 +90,8 @@ await test(
       "../04-maqamat-guide/index.html",
       "../05-metronome/index.html",
       "../06-library-export/index.html",
-      "../07-settings-sync/index.html",
       "../08-teaching-guide/index.html",
+      "../09-about/index.html",
     ];
     for (const href of expectedHrefs) {
       const link = page.locator(`.home-quick-link[href="${href}"]`);

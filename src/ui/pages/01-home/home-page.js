@@ -26,8 +26,8 @@ const QUICK_LINKS = [
   { href: "../04-maqamat-guide/index.html", label: "دليل المقامات", note: "السلم والسِّير" },
   { href: "../05-metronome/index.html", label: "المترونوم", note: "مستقل، بجدولة lookahead" },
   { href: "../06-library-export/index.html", label: "المكتبة والتصدير", note: "مراجعة العينات، تصدير JSON" },
-  { href: "../07-settings-sync/index.html", label: "الإعدادات والمزامنة", note: "كود المزامنة، إعدادات السماحية" },
   { href: "../08-teaching-guide/index.html", label: "الدليل التعليمي", note: "حدود المنصة، متى تحتاج معلمًا" },
+  { href: "../09-about/index.html", label: "من نحن", note: "عن المشروع والمساهمين" },
 ];
 
 /** يقرأ تقدّم المنهج مباشرة من مفتاح localStorage الخام — بلا استيراد لأي ملف محمي. */
