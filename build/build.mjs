@@ -22,8 +22,10 @@
  *
  * **المخرجات:** `build/dist/{01-home ... 08-teaching-guide}/index.html`
  * (ثماني ملفات مستقلة تمامًا، بلا `<script type="module">`، بلا استيراد
- * وحدات — تفتح مباشرة بالنقر المزدوج عبر `file://` بلا أي خادم)، بالإضافة
- * لنسخة كاملة من `src/exercises/legacy-miran/` (بلا تعديل بنيوي، مجرد نسخ)
+ * وحدات — تفتح مباشرة بالنقر المزدوج عبر `file://` بلا أي خادم)، + صفحة
+ * إدارية تاسعة (`build/dist/admin/expert-intake/index.html`، القرار 9.4 —
+ * نفس معالجة الدمج، لكنها خارج خريطة الصفحات الثماني ولا رابط لها من أي
+ * صفحة تعليمية)، بالإضافة لنسخة كاملة من `src/exercises/legacy-miran/` (بلا تعديل بنيوي، مجرد نسخ)
  * مع تعديل مسارين نسبيين فقط في صفحة #3 (إعادة التوجيه) ليطابقا عمق مجلد
  * `dist/` الجديد بدل عمق `src/ui/pages/` الأصلي.
  *
@@ -224,6 +226,16 @@ function main() {
 
   results.push({ pageName: "03-exercises", ...buildRedirectPage(path.join(pagesRoot, "03-exercises"), "03-exercises") });
   results.push({ pageName: "08-teaching-guide", ...buildStaticPage(path.join(pagesRoot, "08-teaching-guide"), "08-teaching-guide") });
+
+  // صفحة الخبير الإدارية (src/ui/admin/) — ليست من الصفحات الثماني، لكنها
+  // تحتاج نفس معالجة الدمج (وحدة ES) لتعمل عبر GitHub Pages فعليًا، لا
+  // تبقى شغلًا محليًا بلا رابط منشور. تُخرَج لمسار متداخل dist/admin/...
+  // لتمييزها بصريًا عن الصفحات الثماني في مخرجات الدمج (القرار 9.4).
+  const adminRoot = path.join(REPO_ROOT, "src", "ui", "admin");
+  results.push({
+    pageName: "admin/expert-intake",
+    ...buildModulePage(path.join(adminRoot, "expert-intake"), "admin/expert-intake"),
+  });
 
   // نسخ منهج مِران الأصلي كاملًا كما هو — لا تعديل بنيوي (ملف محمي، القسم 4).
   const legacySrc = path.join(REPO_ROOT, "src", "exercises", "legacy-miran");

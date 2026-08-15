@@ -35,8 +35,12 @@ let passed = 0;
 let failed = 0;
 
 async function test(name, fn) {
-  const browser = await chromium.launch();
-  const page = await browser.newPage();
+  const browser = await chromium.launch({
+    args: ["--use-fake-device-for-media-stream", "--use-fake-ui-for-media-stream"],
+  });
+  const context = await browser.newContext();
+  await context.grantPermissions(["microphone"]).catch(() => {});
+  const page = await context.newPage();
   const consoleErrors = [];
   page.on("pageerror", (err) => consoleErrors.push(err.message));
   page.on("console", (msg) => {
@@ -85,11 +89,11 @@ await test("02-calibration عبر file://: تُحمَّل بلا أخطاء، ا
   assert.notEqual(await toggle.textContent(), before);
 });
 
-await test("04-maqamat-guide عبر file://: تُحمَّل بلا أخطاء، 5 مقامات، تنقّل بين المقامات يعمل", async (page, errs) => {
+await test("04-maqamat-guide عبر file://: تُحمَّل بلا أخطاء، 8 مقامات، تنقّل بين المقامات يعمل", async (page, errs) => {
   await page.goto(fileUrl("04-maqamat-guide/index.html"), { waitUntil: "load" });
   await page.waitForTimeout(300);
   assert.equal(realErrors(errs).length, 0, `أخطاء: ${realErrors(errs).join(" | ")}`);
-  assert.equal(await page.locator(".maqam-list-btn").count(), 5);
+  assert.equal(await page.locator(".maqam-list-btn").count(), 8);
   await page.locator('.maqam-list-btn[data-maqam-name="صبا"]').click();
   await page.waitForTimeout(50);
   assert.equal((await page.locator("#maqamDetailsName").textContent()).trim(), "صبا");
@@ -127,14 +131,21 @@ await test("07-settings-sync عبر file://: تُحمَّل بلا أخطاء، 
 
 // ==================== الصفحتان بلا وحدات ES (نسخ فقط) ====================
 
-await test("03-exercises عبر file://: التوجيه التلقائي يصل فعليًا لمنهج legacy-miran المنسوخ في dist", async (page, errs) => {
-  await page.goto(fileUrl("03-exercises/index.html"));
-  await page.waitForURL(/exercises\/legacy-miran\/index\.html/, { timeout: 5000 });
-  await page.waitForLoadState("load");
-  await page.waitForTimeout(300);
-  assert.equal(realErrors(errs).length, 0, `أخطاء بعد التوجيه: ${realErrors(errs).join(" | ")}`);
-  await assert.doesNotReject(page.locator("#view-home").waitFor({ state: "visible", timeout: 3000 }));
-});
+await test(
+  "03-exercises عبر file://: إطار مضمّن يحمّل منهج legacy-miran المنسوخ في dist، وشريط رجوع يعمل",
+  async (page, errs) => {
+    await page.goto(fileUrl("03-exercises/index.html"), { waitUntil: "load" });
+    await page.waitForTimeout(300);
+    assert.equal(realErrors(errs).length, 0, `أخطاء: ${realErrors(errs).join(" | ")}`);
+    const back = page.locator(".exercises-back");
+    assert.equal(await back.getAttribute("href"), "../01-home/index.html");
+    const frame = page.frameLocator(".exercises-frame");
+    await assert.doesNotReject(
+      frame.locator("#view-home").waitFor({ state: "visible", timeout: 3000 }),
+      "لم يظهر #view-home داخل الإطار المضمّن في dist"
+    );
+  }
+);
 
 await test("08-teaching-guide عبر file://: تُحمَّل بلا أخطاء، الطبقات الثلاث والتنقّل الثابت موجودان", async (page, errs) => {
   await page.goto(fileUrl("08-teaching-guide/index.html"), { waitUntil: "load" });
@@ -157,6 +168,19 @@ await test(
     assert.equal(realErrors(errs).length, 0, `أخطاء بعد التنقّل: ${realErrors(errs).join(" | ")}`);
     await assert.doesNotReject(page.locator("#settingsUserId").waitFor({ state: "visible", timeout: 3000 }));
     assert.ok(page.url().startsWith("file://"), "يجب أن يبقى التنقّل عبر file:// بلا أي خادم");
+  }
+);
+
+// ==================== الصفحة الإدارية (خارج خريطة الصفحات الثماني) ====================
+
+await test(
+  "admin/expert-intake عبر file:// بلا خادم: تُحمَّل بلا أخطاء، العنصر الأول صحيح (ميكروفون وهمي)",
+  async (page, errs) => {
+    await page.goto(fileUrl("admin/expert-intake/index.html"), { waitUntil: "load" });
+    await page.waitForTimeout(300);
+    assert.equal(realErrors(errs).length, 0, `أخطاء: ${realErrors(errs).join(" | ")}`);
+    assert.match(await page.locator("#intakeProgress").textContent(), /^1 \/ 33/);
+    assert.equal((await page.locator("#intakeItemLabel").textContent()).trim(), "دو");
   }
 );
 
