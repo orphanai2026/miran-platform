@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>مِران</title>
+  <style>
+    :root { color-scheme: light; }
+    body {
+      font-family: "Cairo", "Tajawal", system-ui, sans-serif;
+      max-width: 640px;
+      margin: 32px auto;
+      padding: 0 16px;
+      line-height: 1.6;
+    }
+    h1 { font-size: 1.5rem; margin-bottom: 4px; }
+    .page-sub { color: #555; margin-top: 0; font-size: 0.9rem; }
+
+    .home-section { margin: 24px 0; }
+    .home-section h2 { font-size: 1.05rem; margin: 0 0 12px; color: #333; }
+
+    .home-progress-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px;
+    }
+    .home-progress-item {
+      border: 1px solid #e5e5e5; border-radius: 10px; padding: 14px; text-align: center;
+    }
+    .home-progress-value { display: block; font-size: 1.6rem; font-weight: 700; color: #0f6e56; }
+    .home-progress-label { display: block; margin-top: 4px; font-size: 0.8rem; color: #666; }
+
+    .home-quick-links { display: flex; flex-direction: column; gap: 8px; }
+    .home-quick-link {
+      display: flex; justify-content: space-between; align-items: center; gap: 10px;
+      border: 1px solid #e5e5e5; border-radius: 8px; padding: 12px 14px;
+      text-decoration: none; color: #1c1c1a;
+    }
+    .home-quick-link:hover { border-color: #0f6e56; }
+    .home-quick-link.primary { background: #1c1c1a; color: #fff; border-color: #1c1c1a; }
+    .home-quick-link.primary .home-quick-link-note { color: #ccc; }
+    .home-quick-link-label { font-weight: 700; }
+    .home-quick-link-note { font-size: 0.8rem; color: #777; }
+
+    .home-user-id-note { margin-top: 24px; font-size: 0.78rem; color: #999; }
+    .home-user-id-note code { direction: ltr; display: inline-block; }
+  </style>
+</head>
+<body>
+  <h1>مِران</h1>
+  <p class="page-sub">منصة تعليم الناي الشرقي — نظرة عامة وتقدّمك حتى الآن</p>
+
+  <div id="app"></div>
+
+  <script type="module">
+    import { mountHomePage } from "./home-page.js";
+    mountHomePage(document.getElementById("app"));
+  </script>
+</body>
+</html>
