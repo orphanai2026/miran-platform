@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>المكتبة والتصدير — مِران</title>
+  <style>
+    :root { color-scheme: light; }
+    body {
+      font-family: "Cairo", "Tajawal", system-ui, sans-serif;
+      max-width: 560px;
+      margin: 32px auto;
+      padding: 0 16px;
+      line-height: 1.6;
+    }
+    h1 { font-size: 1.3rem; margin-bottom: 4px; }
+    .page-sub { color: #555; margin-top: 0; font-size: 0.9rem; }
+
+    .library-list { list-style: none; padding: 0; margin: 20px 0; display: flex; flex-direction: column; gap: 10px; }
+    .library-entry { border: 1px solid #e5e5e5; border-radius: 8px; padding: 10px 12px; }
+    .library-entry-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .library-fingering { font-weight: 700; }
+    .library-register { color: #777; font-size: 0.85rem; }
+    .library-badge { margin-inline-start: auto; padding: 3px 10px; border-radius: 999px; font-size: 0.8rem; font-weight: 600; }
+    .library-badge-frozen { background: #d9f0e8; color: #0f6e56; }
+    .library-badge-pending { background: #f0f0f0; color: #777; }
+    .library-counts { margin-top: 6px; font-size: 0.85rem; color: #555; }
+    .library-taught { margin-top: 4px; font-size: 0.85rem; color: #ba7517; }
+
+    .library-empty { color: #777; margin: 24px 0; }
+
+    .btn-primary {
+      padding: 10px 22px; font-size: 1rem; border-radius: 8px; border: none;
+      background: #1c1c1a; color: #fff; cursor: pointer;
+    }
+    .btn-primary:disabled { opacity: 0.5; cursor: default; }
+    .library-export-hint { margin-top: 10px; color: #0f6e56; font-size: 0.9rem; min-height: 1.4em; }
+  </style>
+</head>
+<body>
+  <h1>المكتبة والتصدير</h1>
+  <p class="page-sub">مراجعة العينات المسجَّلة من صفحة المعايرة الشخصية، وحالة كل نغمة — مع تصدير JSON (أرقام قياس فقط، لا صوت)</p>
+
+  <div id="app"></div>
+
+  <script type="module">
+    import { mountLibraryPage } from "./library-page.js";
+    mountLibraryPage(document.getElementById("app"));
+  </script>
+</body>
+</html>
