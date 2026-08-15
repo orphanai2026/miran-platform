@@ -11,7 +11,6 @@ import {
   MAQAM_SIKAH,
   MAQAM_KURD,
   MAQAM_NAHAWAND,
-  MAQAM_NIKRIZ,
   ALL_MAQAMAT,
   ALL_JINS,
   JINS_SABA,
@@ -19,7 +18,6 @@ import {
   JINS_SIKAH,
   JINS_KURD,
   JINS_NAHAWAND,
-  JINS_NIKRIZ,
 } from "./maqam-data.js";
 
 let passed = 0;
@@ -195,16 +193,17 @@ test("جنس راست علوي: نمط أبعاده أول 3 أبعاد من ر�
   ]);
 });
 
-// ============ إضافة لاحقة: أربعة مقامات جديدة لإكمال التسعة الأساسية ============
-// المالك طلب صراحة إكمال العدد إلى 9 (التسعة أجناس/مقامات الأساسية الأكثر
-// اتفاقًا بين المصادر — راجع "Inside Arabic Music" لـSami Abu Shumays:
-// عجم، بياتي، حجاز، كرد، نهاوند، نكريز، راست، صبا، سيكا). كانت خمسة موجودة
-// (عجم، راست، حجاز، بياتي، صبا) — أُضيف سيكا وكرد ونهاوند ونكريز، كل واحد
-// بتحقق ويب مباشر من maqamworld.com أثناء هذي المرحلة (القرار 5).
+// ============ إضافة لاحقة: إكمال المقامات الثمانية الأساسية ============
+// المالك طلب صراحة إكمال العدد إلى 8 (الأساسية) — كانت خمسة موجودة (عجم،
+// راست، حجاز، بياتي، صبا)؛ أُضيف سيكا وكرد ونهاوند بتحقق ويب مباشر من
+// maqamworld.com أثناء هذي المرحلة (القرار 5). نكريز أُضيف في محاولة أولى
+// ثم حُذف صراحة بطلب لاحق من المالك (العدد الأساسي 8 لا 9) — راجع
+// src/maqamat/README.md للتفاصيل الكاملة، بما فيها توضيح أن استبعاد نكريز
+// في القرار 5 خاص بمسار صبا فقط، لا حذفًا عامًا لوجوده كجنس.
 
-test("العدد الإجمالي الآن 9 مقامات و10 أجناس", () => {
-  assert.equal(ALL_MAQAMAT.length, 9);
-  assert.equal(ALL_JINS.length, 10);
+test("العدد الإجمالي الآن 8 مقامات و9 أجناس", () => {
+  assert.equal(ALL_MAQAMAT.length, 8);
+  assert.equal(ALL_JINS.length, 9);
 });
 
 test("جنس سيكا: نمط ثلاثي (بُعدان: ثلاثة أرباع ثم بُعد كامل) — maqamworld.com/en/jins/sikah.php", () => {
@@ -217,15 +216,6 @@ test("جنس كرد: نمط رباعي (نصف بُعد ثم بُعدان كام
 
 test("جنس نهاوند: نمط رباعي (بُعد كامل، نصف بُعد، بُعد كامل)", () => {
   assert.deepEqual(JINS_NAHAWAND.intervalPattern, [INTERVAL_TYPES.WHOLE, INTERVAL_TYPES.HALF, INTERVAL_TYPES.WHOLE]);
-});
-
-test("جنس نكريز: نمط خماسي (5 درجات، 4 أبعاد) يتضمن البُعد الزائد المميّز — maqamworld.com/en/jins/nikriz.php", () => {
-  assert.deepEqual(JINS_NIKRIZ.intervalPattern, [
-    INTERVAL_TYPES.WHOLE,
-    INTERVAL_TYPES.HALF,
-    INTERVAL_TYPES.AUGMENTED_SECOND,
-    INTERVAL_TYPES.HALF,
-  ]);
 });
 
 test("مقام سيكا: ثلاثة أجناس متتالية (سيكا←راست علوي على الدرجة 3←راست على الدرجة 6) كما وثّقته MaqamWorld حرفيًا", () => {
@@ -249,14 +239,8 @@ test("مقام نهاوند: جنس نهاوند ثم كرد على الدرجة
   assert.equal(MAQAM_NAHAWAND.jinsChain[1].startDegree, 5);
 });
 
-test("مقام نكريز: جنس نكريز ثم نهاوند على الدرجة 5 — maqamworld.com/en/maqam/nikriz.php", () => {
-  assert.equal(MAQAM_NIKRIZ.jinsChain.length, 2);
-  assert.equal(MAQAM_NIKRIZ.jinsChain[1].jins.name, "نهاوند");
-  assert.equal(MAQAM_NIKRIZ.jinsChain[1].startDegree, 5);
-});
-
-test("كل المقامات التسعة sayr = null (لم تُصادَق عليها بعد) — لا استثناء للأربعة الجديدة", () => {
-  for (const m of [MAQAM_SIKAH, MAQAM_KURD, MAQAM_NAHAWAND, MAQAM_NIKRIZ]) {
+test("كل المقامات الثمانية sayr = null (لم تُصادَق عليها بعد) — لا استثناء للثلاثة الجديدة الباقية", () => {
+  for (const m of [MAQAM_SIKAH, MAQAM_KURD, MAQAM_NAHAWAND]) {
     assert.equal(m.sayr, null, `مقام ${m.name} يجب أن يبقى sayr=null حتى المصادقة السمعية`);
   }
 });

@@ -116,24 +116,6 @@ export const JINS_NAHAWAND = defineJins({
   source: SOURCE_MAQAMWORLD + " + Yedid, Maqamat (2013)",
 });
 
-export const JINS_NIKRIZ = defineJins({
-  name: "نكريز",
-  // موثّق من maqamworld.com/en/jins/nikriz.php: "Jins Nikriz is a 5-note
-  // jins. Notated here with its tonic on C and its ghammaz on G." — بُعد
-  // ونصف زائد (augmented second) مميّز مشترك مع جنس حجاز، بين الدرجتين
-  // الثالثة والرابعة (تقريبًا Eb-F# على قرار C حسب مصادر ثانوية متعددة).
-  // ⚠️ ملاحظة توثيقية: نكريز مستبعد صراحة كخيار للجنس العلوي في مقام صبا
-  // تحديدًا (القرار 5) — هذا لا يمنع وجوده كجنس/مقام مستقل هنا؛ الاستبعاد
-  // في القرار 5 محصور بمسار صبا فقط، لا بالجنس نفسه.
-  intervalPattern: [
-    INTERVAL_TYPES.WHOLE,
-    INTERVAL_TYPES.HALF,
-    INTERVAL_TYPES.AUGMENTED_SECOND,
-    INTERVAL_TYPES.HALF,
-  ],
-  source: SOURCE_MAQAMWORLD + " (jins/nikriz.php) + مصادر ثانوية للبُعد الزائد بين الدرجتين 3-4",
-});
-
 // ============ المقامات (Maqamat) ============
 
 export const MAQAM_AJAM = defineMaqam({
@@ -259,22 +241,6 @@ export const MAQAM_NAHAWAND = defineMaqam({
   sayr: null,
 });
 
-/**
- * مقام نكريز — موثّق حرفيًا من maqamworld.com/en/maqam/nikriz.php: "Its
- * scale starts with the root Jins Nikriz on the tonic, followed by Jins
- * Nahawand on the 5th degree."
- */
-export const MAQAM_NIKRIZ = defineMaqam({
-  name: "نكريز",
-  jinsChain: [
-    { jins: JINS_NIKRIZ, startDegree: 1 },
-    { jins: JINS_NAHAWAND, startDegree: 5 },
-  ],
-  qarar: "دو",
-  ghammaz: "صول",
-  sayr: null,
-});
-
 export const ALL_MAQAMAT = Object.freeze([
   MAQAM_AJAM,
   MAQAM_RAST,
@@ -284,7 +250,6 @@ export const ALL_MAQAMAT = Object.freeze([
   MAQAM_SIKAH,
   MAQAM_KURD,
   MAQAM_NAHAWAND,
-  MAQAM_NIKRIZ,
 ]);
 export const ALL_JINS = Object.freeze([
   JINS_AJAM,
@@ -296,5 +261,4 @@ export const ALL_JINS = Object.freeze([
   JINS_SIKAH,
   JINS_KURD,
   JINS_NAHAWAND,
-  JINS_NIKRIZ,
 ]);
