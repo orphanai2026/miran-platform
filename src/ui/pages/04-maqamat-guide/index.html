@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>دليل المقامات — مِران</title>
+  <style>
+    :root { color-scheme: light; }
+    body {
+      font-family: "Cairo", "Tajawal", system-ui, sans-serif;
+      max-width: 720px;
+      margin: 32px auto;
+      padding: 0 16px;
+      line-height: 1.6;
+    }
+    h1 { font-size: 1.3rem; margin-bottom: 4px; }
+    .page-sub { color: #555; margin-top: 0; font-size: 0.9rem; }
+
+    .maqamat-page { display: flex; gap: 24px; margin-top: 20px; flex-wrap: wrap; }
+
+    .maqam-list { display: flex; flex-direction: column; gap: 6px; min-width: 140px; }
+    .maqam-list-btn {
+      padding: 8px 14px; font-size: 1rem; border-radius: 6px; border: 1px solid #ccc;
+      background: #fff; cursor: pointer; text-align: start;
+    }
+    .maqam-list-btn.active { background: #1c1c1a; color: #fff; border-color: #1c1c1a; }
+
+    .maqam-details { flex: 1; min-width: 280px; }
+    .maqam-details h2 { font-size: 1.2rem; margin: 0 0 8px; }
+    .maqam-details h3 { font-size: 1rem; margin: 18px 0 8px; color: #333; }
+    .maqam-basics { display: flex; gap: 16px; color: #444; font-size: 0.95rem; }
+
+    .jins-chain-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+    .jins-segment { border: 1px solid #e5e5e5; border-radius: 8px; padding: 10px 12px; }
+    .jins-segment-head { display: flex; gap: 8px; align-items: baseline; }
+    .jins-name { font-weight: 700; }
+    .jins-start-degree { color: #777; font-size: 0.85rem; }
+    .jins-pattern { margin-top: 4px; font-size: 0.9rem; color: #0f6e56; }
+    .jins-source { margin-top: 4px; font-size: 0.78rem; color: #999; }
+
+    .sayr-status { border: 1px solid #e5e5e5; border-radius: 8px; padding: 10px 12px; }
+    .sayr-badge {
+      display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 0.85rem; font-weight: 600;
+    }
+    .sayr-badge.sayr-unvalidated { background: #fbe8d3; color: #8a5a12; }
+    .sayr-badge.sayr-validated { background: #d9f0e8; color: #0f6e56; }
+    .sayr-detail, .sayr-source { margin-top: 6px; font-size: 0.85rem; color: #666; }
+  </style>
+</head>
+<body>
+  <h1>دليل المقامات</h1>
+  <p class="page-sub">السلم (سلسلة الأجناس) والسِّير اللحني لكل مقام — علامة "؟" تعني سِّيرًا غير مصادَق عليه سمعيًا بعد (القرار 5)</p>
+
+  <div id="app"></div>
+
+  <script type="module">
+    import { mountMaqamatPage } from "./maqamat-page.js";
+    mountMaqamatPage(document.getElementById("app"));
+  </script>
+</body>
+</html>
