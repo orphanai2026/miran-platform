@@ -4,7 +4,7 @@
  */
 import assert from "node:assert/strict";
 import { defineJins, defineMaqam, SayrEntry, validateSayr, VALIDATION_STATUS, INTERVAL_TYPES } from "./maqam-schema.js";
-import { MAQAM_SABA, MAQAM_AJAM, ALL_MAQAMAT, ALL_JINS, JINS_SABA } from "./maqam-data.js";
+import { MAQAM_SABA, MAQAM_AJAM, MAQAM_RAST, ALL_MAQAMAT, ALL_JINS, JINS_SABA, JINS_UPPER_RAST } from "./maqam-data.js";
 
 let passed = 0;
 function test(name, fn) {
@@ -156,6 +156,26 @@ test("جنس عجم: نمط الأبعاد whole-whole-half كما هو موثّ
     INTERVAL_TYPES.WHOLE,
     INTERVAL_TYPES.WHOLE,
     INTERVAL_TYPES.HALF,
+  ]);
+});
+
+// ============ إكمال الفجوة الموثَّقة: جنس راست العلوي في مقام راست ============
+
+test("مقام راست: مكتمل الآن بجنسين لا جنس واحد فقط (الفجوة الموثَّقة سابقًا مُغلَقة)", () => {
+  assert.equal(MAQAM_RAST.jinsChain.length, 2);
+});
+
+test("مقام راست: الجنس الثاني هو راست علوي، يبدأ على الدرجة 5 (غماز جنس راست الأول)", () => {
+  const secondSegment = MAQAM_RAST.jinsChain[1];
+  assert.equal(secondSegment.jins.name, "راست علوي");
+  assert.equal(secondSegment.startDegree, 5);
+});
+
+test("جنس راست علوي: نمط أبعاده أول 3 أبعاد من راست فقط (4 درجات لا 5) كما وثّقته MaqamWorld", () => {
+  assert.deepEqual(JINS_UPPER_RAST.intervalPattern, [
+    INTERVAL_TYPES.WHOLE,
+    INTERVAL_TYPES.THREE_QUARTER,
+    INTERVAL_TYPES.THREE_QUARTER,
   ]);
 });
 

@@ -61,6 +61,19 @@ export const JINS_RAST = defineJins({
   source: SOURCE_MAQAMWORLD,
 });
 
+export const JINS_UPPER_RAST = defineJins({
+  name: "راست علوي",
+  // موثّق من صفحة MaqamWorld المخصَّصة لهذا الجنس تحديدًا (upper_rast.php):
+  // "نسخة من 4 درجات من جنس راست" — أول 3 أبعاد من راست فقط (بلا البُعد
+  // الرابع/الأخير)، بغماز على صول وقرار على دو (نفس درجات راست، مقلوبة
+  // نظريًا فقط). ⚠️ خاصية غير معتادة موثَّقة صراحة من المصدر: "قراره في
+  // الدرجة الأخيرة من السلم لا الأولى" (يشاركها جنس عجم علوي) — هذا لا
+  // يغيّر أبعاد السلم الفعلية عند بناء المقام صعودًا (المُهم لمخططنا هنا)،
+  // لكنه فرق نظري-وظيفي مهم يستحق التوثيق صراحة، لا إخفاءه.
+  intervalPattern: [INTERVAL_TYPES.WHOLE, INTERVAL_TYPES.THREE_QUARTER, INTERVAL_TYPES.THREE_QUARTER],
+  source: SOURCE_MAQAMWORLD + " (صفحة jins/upper_rast.php المخصَّصة) — ⚠️ قراره النظري في الدرجة الأخيرة لا الأولى",
+});
+
 export const JINS_SABA = defineJins({
   name: "صبا",
   // ⚠️ موثّق من MaqamWorld كجنس "بحجم غامض" (ambiguous size) — استثناء عن
@@ -92,11 +105,14 @@ export const MAQAM_AJAM = defineMaqam({
 
 export const MAQAM_RAST = defineMaqam({
   name: "راست",
-  // ⚠️ ناقص عمدًا: موثّق أن مقام راست يمتد عادة بجنس "راست علوي" (Upper Rast)
-  // على الدرجة الخامسة، لكن ما وُثِّق بنية أبعاد ذلك الجنس تحديدًا بعد في
-  // هذه المرحلة — تُركت السلسلة بجنس واحد فقط بدل اختلاق بيانات غير محقّقة.
-  // إكمالها مرحلة لاحقة صريحة.
-  jinsChain: [{ jins: JINS_RAST, startDegree: 1 }],
+  // مكتمل الآن: جنس راست (القرار، درجات 1-5) يتبعه جنس راست علوي (نفس
+  // نمط راست بدرجاته الأربع الأولى فقط، غماز مشترك على الدرجة 5) — موثّق
+  // حرفيًا من صفحة MaqamWorld المخصَّصة لجنس "راست علوي": "الجنس الثاني في
+  // مقام راست". لم يعد ناقصًا عمدًا كما كان في المرحلة السابقة.
+  jinsChain: [
+    { jins: JINS_RAST, startDegree: 1 },
+    { jins: JINS_UPPER_RAST, startDegree: 5 },
+  ],
   qarar: "دو",
   ghammaz: "صول",
   sayr: null,
@@ -146,4 +162,4 @@ export const MAQAM_SABA = defineMaqam({
 });
 
 export const ALL_MAQAMAT = Object.freeze([MAQAM_AJAM, MAQAM_RAST, MAQAM_HIJAZ, MAQAM_BAYATI, MAQAM_SABA]);
-export const ALL_JINS = Object.freeze([JINS_AJAM, JINS_BAYATI, JINS_HIJAZ, JINS_RAST, JINS_SABA]);
+export const ALL_JINS = Object.freeze([JINS_AJAM, JINS_BAYATI, JINS_HIJAZ, JINS_RAST, JINS_UPPER_RAST, JINS_SABA]);
