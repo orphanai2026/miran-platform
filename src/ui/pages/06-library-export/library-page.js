@@ -5,48 +5,15 @@
  * (المعايرة الشخصية) وحالة كل نغمة (تركيبة إصبعة+سجل)، مع زر تصدير JSON
  * (القرار 4: "التصدير: JSON فقط (أرقام قياس، لا صوت)").
  *
- * **لا تكرار للبيانة (القسم 4):** يعيد استخدام `sample-store.js` الموجود
- * فعليًا في `src/ui/pages/02-calibration/` (نفس مفتاح localStorage)، ومحرك
- * `PersonalReferenceStore` من `src/calibration/calibration-engine.js` —
- * لا نسخة ثانية من منطق التخزين أو الحساب هنا.
+ * **لا تكرار للبيانة (القسم 4):** منطق إعادة بناء المخزن وبناء حمولة
+ * التصدير مُستخرَج إلى `export-payload.js` (يشاركه أيضًا صفحة #7 للإرسال
+ * التلقائي — استثناء القرار 4). هذا الملف يستورده بدل تعريفه محليًا.
  *
  * **نطاق مقصود:** عرض ومراجعة محليان + توليد ملف JSON للتنزيل عبر المتصفح.
- * **لا يرسل** أي بيانات فعليًا لأي خادم — نقطة الاستقبال على Cloudflare
- * (استثناء القرار 4) وإعدادات المزامنة موضوعهما صفحة #7، خارج نطاق هذي المرحلة.
+ * الإرسال الشبكي الفعلي لنقطة استقبال Cloudflare (استثناء القرار 4) مبني
+ * الآن في صفحة #7 — انظر `src/ui/pages/07-settings-sync/intake-sync.js`.
  */
-import { CalibrationSample, PersonalReferenceStore } from "../../../calibration/calibration-engine.js";
-import { loadRawState } from "../02-calibration/sample-store.js";
-
-/** يعيد بناء PersonalReferenceStore من الحالة المخزَّنة محليًا (نفس نمط calibration-page.js). */
-function rebuildStore() {
-  const store = new PersonalReferenceStore();
-  const raw = loadRawState();
-  for (const s of raw.samples) {
-    try {
-      store.addSample(new CalibrationSample(s));
-    } catch (e) {
-      // عيّنة تالفة — تُتجاهل بصمت بدل كسر الصفحة (نفس منطق calibration-page.js).
-    }
-  }
-  for (const [key, snapshot] of Object.entries(raw.snapshots)) {
-    const [fingering, register] = key.split("::");
-    store.restoreFrozenSnapshot(fingering, register, snapshot);
-  }
-  for (const [key, name] of Object.entries(raw.taughtNames)) {
-    const [fingering, register] = key.split("::");
-    store.teachPitchName(fingering, register, name);
-  }
-  return { store, raw };
-}
-
-/** كل تركيبات (إصبعة+سجل) الظاهرة في أي من: عينات، لقطات، أسماء مُعلَّمة. */
-function collectAllKeys(raw) {
-  const keys = new Set();
-  for (const s of raw.samples) keys.add(`${s.fingering}::${s.register}`);
-  for (const k of Object.keys(raw.snapshots)) keys.add(k);
-  for (const k of Object.keys(raw.taughtNames)) keys.add(k);
-  return Array.from(keys).sort();
-}
+import { rebuildStore, collectAllKeys, buildExportPayload } from "./export-payload.js";
 
 function renderEntry(store, key) {
   const [fingering, register] = key.split("::");
@@ -72,15 +39,6 @@ function renderEntry(store, key) {
       ${taughtHtml}
     </li>
   `;
-}
-
-function buildExportPayload(store) {
-  return {
-    exportedAtMs: Date.now(),
-    samples: store.exportAllSamples(),
-    frozenSnapshots: store.exportAllFrozenSnapshots(),
-    taughtNames: store.exportAllTaughtNames(),
-  };
 }
 
 function triggerJsonDownload(payload) {

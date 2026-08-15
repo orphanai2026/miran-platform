@@ -10,8 +10,9 @@
 | الملف | الدور |
 |---|---|
 | `index.html` | غلاف HTML بسيط، يحمّل `library-page.js` كوحدة ES. |
-| `library-page.js` | يعيد استخدام `loadRawState` من `src/ui/pages/02-calibration/sample-store.js` (استيراد عبر صفحة، لا تكرار كود) و`PersonalReferenceStore`/`CalibrationSample` من `src/calibration/calibration-engine.js` لإعادة بناء الحالة وحساب أعداد العينات/الأيام/حالة الاعتماد لكل تركيبة. يبني زر تصدير JSON يولّد ملفًا عبر `Blob` + رابط تنزيل مؤقت — **لا إرسال شبكي فعلي** (ذلك موضوع صفحة #7). |
-| `tests/page-smoke.test.mjs` | 4 اختبارات Playwright دخان: حالة فارغة (لا بيانات، زر التصدير معطَّل)، حالة مع بيانات مزروعة في localStorage (3 تركيبات بعدد عينات/حالة اعتماد/اسم مُعلَّم صحيحة)، وتصدير JSON فعلي مع تحقق من محتوى الملف المُنزَّل (`page.waitForEvent("download")` + قراءة الملف والتأكد من العينات/اللقطات/الأسماء). |
+| `export-payload.js` | **جديد (استُخرج من `library-page.js`).** منطق مشترك بين هذي الصفحة وصفحة #7: `rebuildStore` (إعادة بناء `PersonalReferenceStore` من `sample-store.js`)، `collectAllKeys`، و`buildExportPayload`. صفحة #7 تستورده الآن أيضًا للإرسال الشبكي التلقائي (استثناء القرار 4) — مصدر حقيقة واحد لبنية حمولة التصدير، لا تكرار بين تصدير يدوي (هنا) وإرسال تلقائي (هناك). |
+| `library-page.js` | يستورد `rebuildStore`/`collectAllKeys`/`buildExportPayload` من `export-payload.js` بدل تعريفها محليًا. يبني زر تصدير JSON يولّد ملفًا عبر `Blob` + رابط تنزيل مؤقت — **لا إرسال شبكي فعلي هنا** (ذلك موضوع صفحة #7، `intake-sync.js`، مبني الآن فعليًا). |
+| `tests/page-smoke.test.mjs` | 4 اختبارات Playwright دخان: حالة فارغة (لا بيانات، زر التصدير معطَّل)، حالة مع بيانات مزروعة في localStorage (3 تركيبات بعدد عينات/حالة اعتماد/اسم مُعلَّم صحيحة)، وتصدير JSON فعلي مع تحقق من محتوى الملف المُنزَّل (`page.waitForEvent("download")` + قراءة الملف والتأكد من العينات/اللقطات/الأسماء). لم تتغيّر بعد استخراج `export-payload.js` — نفس السلوك تمامًا، 4/4 لا تزال ناجحة. |
 
 ## قرار تقني اتُّخذ في هذي المرحلة
 

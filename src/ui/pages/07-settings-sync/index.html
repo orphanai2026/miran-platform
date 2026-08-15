@@ -35,6 +35,20 @@
     }
     .settings-link:hover { text-decoration: underline; }
 
+    .settings-endpoint-row {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 14px;
+    }
+    .settings-endpoint-row label { flex-basis: 100%; font-size: 0.85rem; color: #444; }
+    .settings-endpoint-row input {
+      flex: 1; min-width: 180px; padding: 8px 10px; font-size: 0.9rem; border: 1px solid #ccc;
+      border-radius: 6px; direction: ltr; text-align: start;
+    }
+    .btn-secondary {
+      padding: 7px 14px; font-size: 0.9rem; border-radius: 6px; border: 1px solid #888;
+      background: #fff; cursor: pointer;
+    }
+    .settings-sync-status { margin-top: 8px; font-size: 0.85rem; color: #666; min-height: 1.3em; }
+
     .site-nav {
       display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 22px; padding-bottom: 14px;
       border-bottom: 1px solid #e5e5e5;

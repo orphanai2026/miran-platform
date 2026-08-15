@@ -1,0 +1,21 @@
+# wrangler.toml — قالب تهيئة، يحتاج تعديل القيم أدناه قبل النشر الفعلي.
+#
+# لا يحتوي هذا الملف بيانات حساب Cloudflare حقيقية — تُملأ يدويًا وقت
+# النشر (انظر README.md لخطوات كاملة). لا سرّ ولا مفتاح API يُخزَّن هنا؛
+# المصادقة تتم عبر `wrangler login` تفاعليًا، لا عبر هذا الملف.
+
+name = "miran-intake-worker"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+# سب دومين المالك على Cloudflare — استبدل بالقيمة الفعلية وقت النشر.
+# القرار 4: "نقطة استقبال بسيطة على سب دومين من دومين المالك على Cloudflare".
+# مثال توضيحي فقط: routes = [{ pattern = "intake.example.com/*", zone_name = "example.com" }]
+# اتركه معلَّقًا (معطَّلًا) حتى تحديد الدومين الفعلي؛ wrangler سيعطي رابط
+# workers.dev افتراضيًا بلا هذا السطر.
+# routes = [{ pattern = "intake.YOUR-DOMAIN.com/*", zone_name = "YOUR-DOMAIN.com" }]
+
+# ربط KV — استبدل id بمعرّف الـ namespace الفعلي بعد إنشائه (خطوة 2 في README).
+kv_namespaces = [
+  { binding = "MIRAN_INTAKE_KV", id = "REPLACE_WITH_ACTUAL_KV_NAMESPACE_ID" }
+]
