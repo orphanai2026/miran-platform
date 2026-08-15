@@ -4,56 +4,96 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>المكتبة والتصدير — مِران</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet" />
   <style>
-    :root { color-scheme: light; }
+    :root {
+      color-scheme: light;
+      --cream: #FAF6EC;
+      --ink: #1C1C1A;
+      --ink-soft: #5F5E5A;
+      --teal: #0F6E56;
+      --teal-deep: #085041;
+      --teal-tint: #E1F0EB;
+      --amber: #BA7517;
+      --amber-tint: #F8ECD8;
+      --hairline: rgba(28, 28, 26, 0.1);
+    }
+    * { box-sizing: border-box; }
     body {
-      font-family: "Cairo", "Tajawal", system-ui, sans-serif;
-      max-width: 560px;
-      margin: 32px auto;
-      padding: 0 16px;
+      font-family: "Tajawal", system-ui, sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      margin: 0;
       line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
     }
-    h1 { font-size: 1.3rem; margin-bottom: 4px; }
-    .page-sub { color: #555; margin-top: 0; font-size: 0.9rem; }
-
-    .library-list { list-style: none; padding: 0; margin: 20px 0; display: flex; flex-direction: column; gap: 10px; }
-    .library-entry { border: 1px solid #e5e5e5; border-radius: 8px; padding: 10px 12px; }
-    .library-entry-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .library-fingering { font-weight: 700; }
-    .library-register { color: #777; font-size: 0.85rem; }
-    .library-badge { margin-inline-start: auto; padding: 3px 10px; border-radius: 999px; font-size: 0.8rem; font-weight: 600; }
-    .library-badge-frozen { background: #d9f0e8; color: #0f6e56; }
-    .library-badge-pending { background: #f0f0f0; color: #777; }
-    .library-counts { margin-top: 6px; font-size: 0.85rem; color: #555; }
-    .library-taught { margin-top: 4px; font-size: 0.85rem; color: #ba7517; }
-
-    .library-empty { color: #777; margin: 24px 0; }
-
-    .btn-primary {
-      padding: 10px 22px; font-size: 1rem; border-radius: 8px; border: none;
-      background: #1c1c1a; color: #fff; cursor: pointer;
-    }
-    .btn-primary:disabled { opacity: 0.5; cursor: default; }
-    .library-export-hint { margin-top: 10px; color: #0f6e56; font-size: 0.9rem; min-height: 1.4em; }
+    .page-shell { max-width: 680px; margin: 0 auto; padding: 28px 20px 64px; }
 
     .site-nav {
-      display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 22px; padding-bottom: 14px;
-      border-bottom: 1px solid #e5e5e5;
+      display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 32px; padding-bottom: 16px;
+      border-bottom: 1px solid var(--hairline);
     }
     .site-nav-link {
-      padding: 6px 12px; border-radius: 999px; font-size: 0.82rem; text-decoration: none;
-      color: #444; background: #f5f5f5;
+      padding: 7px 14px; border-radius: 999px; font-size: 0.82rem; font-weight: 500;
+      text-decoration: none; color: var(--ink-soft); background: transparent;
+      transition: background 0.15s ease, color 0.15s ease;
     }
-    .site-nav-link:hover { background: #ececec; }
-    .site-nav-link.active { background: #1c1c1a; color: #fff; }
+    .site-nav-link:hover { background: var(--teal-tint); color: var(--teal-deep); }
+    .site-nav-link.active { background: var(--ink); color: var(--cream); }
+
+    h1 {
+      font-family: "Cairo", "Tajawal", sans-serif;
+      font-weight: 800; font-size: 1.7rem; margin: 0 0 8px;
+    }
+    .page-sub { color: var(--ink-soft); margin: 0 0 28px; font-size: 0.95rem; max-width: 52ch; }
+
+    .library-list { list-style: none; padding: 0; margin: 0 0 22px; display: flex; flex-direction: column; gap: 10px; }
+    .library-entry {
+      background: #fff; border: 1px solid var(--hairline); border-radius: 14px; padding: 16px 18px;
+    }
+    .library-entry-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .library-fingering { font-family: "Cairo", sans-serif; font-weight: 700; font-size: 1.05rem; }
+    .library-register { color: var(--ink-soft); font-size: 0.85rem; }
+    .library-badge {
+      margin-inline-start: auto; padding: 4px 12px; border-radius: 999px; font-size: 0.78rem; font-weight: 600;
+    }
+    .library-badge-frozen { background: var(--teal-tint); color: var(--teal-deep); }
+    .library-badge-pending { background: #f1efe8; color: var(--ink-soft); }
+    .library-counts {
+      display: inline-block; margin-top: 10px; font-size: 0.8rem; color: var(--ink-soft);
+      background: #f6f3ea; border-radius: 999px; padding: 4px 12px;
+    }
+    .library-taught { margin-top: 8px; font-size: 0.85rem; color: #7a4c0d; }
+
+    .library-empty {
+      color: var(--ink-soft); margin: 0 0 22px; padding: 24px; text-align: center;
+      background: #fff; border: 1px dashed var(--hairline); border-radius: 14px; font-size: 0.9rem;
+    }
+
+    .btn-primary {
+      padding: 12px 28px; font-size: 0.95rem; font-weight: 600; font-family: "Cairo", sans-serif;
+      border-radius: 10px; border: none; background: var(--ink); color: var(--cream); cursor: pointer;
+      transition: opacity 0.15s ease;
+    }
+    .btn-primary:hover:not(:disabled) { opacity: 0.88; }
+    .btn-primary:disabled { opacity: 0.4; cursor: default; }
+    .library-export-hint { margin-top: 12px; color: var(--teal-deep); font-size: 0.85rem; min-height: 1.4em; }
+    .library-export-note {
+      margin: -6px 0 20px; font-size: 0.78rem; color: var(--ink-soft);
+    }
   </style>
 </head>
 <body>
-  <div id="siteNav"></div>
-  <h1>المكتبة والتصدير</h1>
-  <p class="page-sub">مراجعة العينات المسجَّلة من صفحة المعايرة الشخصية، وحالة كل نغمة — مع تصدير JSON (أرقام قياس فقط، لا صوت)</p>
+  <div class="page-shell">
+    <div id="siteNav"></div>
+    <h1>المكتبة والتصدير</h1>
+    <p class="page-sub">مراجعة العينات المسجَّلة من صفحة المعايرة الشخصية، وحالة كل نغمة.</p>
+    <p class="library-export-note">تصدير JSON فقط — أرقام قياس، بلا أي ملف صوتي (القرار 4).</p>
 
-  <div id="app"></div>
+    <div id="app"></div>
+  </div>
 
   <script type="module">
     import { mountNav } from "../../shared/nav.js";

@@ -38,6 +38,19 @@
     }
     .calib-live { font-variant-numeric: tabular-nums; color: #888; }
     .calib-live.ok { color: #0f6e56; font-weight: 600; }
+
+    .calib-quality-meter { margin: 4px 0 16px; max-width: 320px; }
+    .calib-quality-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 4px; }
+    .calib-quality-label { color: #555; }
+    .calib-quality-value { font-variant-numeric: tabular-nums; font-weight: 700; color: #333; }
+    .calib-quality-bar { height: 8px; border-radius: 999px; background: #eee; overflow: hidden; }
+    .calib-quality-bar-fill {
+      height: 100%; width: 0%; background: #c9c9c9; border-radius: 999px;
+      transition: width 0.08s linear, background-color 0.15s ease;
+    }
+    .calib-quality-bar-fill.ok { background: #0f6e56; }
+    .calib-quality-bar-fill.weak { background: #ba7517; }
+    .calib-quality-note { display: block; margin-top: 4px; font-size: 0.78rem; color: #ba7517; min-height: 1.1em; }
     .calib-hint { min-height: 1.4em; color: #444; }
     .calib-status { margin-top: 20px; padding-top: 16px; border-top: 1px solid #e5e5e5; }
     .calib-status > div { margin-bottom: 8px; }

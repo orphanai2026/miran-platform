@@ -92,6 +92,14 @@ export function mountCalibrationPage(root) {
         <button type="button" id="calibRecordBtn" class="btn-primary">سجّل عينة</button>
         <span id="calibLiveReadout" class="calib-live">—</span>
       </div>
+      <div class="calib-quality-meter" id="calibQualityMeter" hidden>
+        <div class="calib-quality-row">
+          <span class="calib-quality-label">جودة الإشارة</span>
+          <span class="calib-quality-value" id="calibQualityValue">—</span>
+        </div>
+        <div class="calib-quality-bar"><div class="calib-quality-bar-fill" id="calibQualityBarFill"></div></div>
+        <span class="calib-quality-note" id="calibQualityNote"></span>
+      </div>
       <p id="calibHint" class="calib-hint"></p>
 
       <div class="calib-status">
@@ -111,6 +119,10 @@ export function mountCalibrationPage(root) {
   const profileSelect = root.querySelector("#calibProfile");
   const recordBtn = root.querySelector("#calibRecordBtn");
   const liveReadout = root.querySelector("#calibLiveReadout");
+  const qualityMeter = root.querySelector("#calibQualityMeter");
+  const qualityValueEl = root.querySelector("#calibQualityValue");
+  const qualityBarFillEl = root.querySelector("#calibQualityBarFill");
+  const qualityNoteEl = root.querySelector("#calibQualityNote");
   const hint = root.querySelector("#calibHint");
   const sampleCountEl = root.querySelector("#calibSampleCount");
   const suggestionEl = root.querySelector("#calibSuggestion");
@@ -206,14 +218,40 @@ export function mountCalibrationPage(root) {
     hint.textContent = "انفخ الآن بثبات…";
     const buf = new Float32Array(analyser.fftSize);
     const readings = [];
+    const clarityReadings = []; // جودة كل قراءة مقبولة — لحساب متوسط جودة العينة (مستوحى من "المعيار اللحظي" في RECORD-N)
     const startTime = performance.now();
+    qualityMeter.hidden = false;
+
+    /**
+     * يعرض جودة الإشارة اللحظية (وضوح الترابط الذاتي 0..1) كنسبة مئوية —
+     * مفهوم مستعار مفاهيميًا من قسم "المعيار اللحظي" في RECORD-N، محسوب هنا
+     * بالكامل من `detectPitch` الموجود أصلًا (clarity/rms)، بلا أي كود منسوخ
+     * وبلا أي صوت مخزَّن (القرار 4 يبقى كما هو — أرقام فقط).
+     */
+    function renderQuality(p) {
+      const pct = Math.round(Math.max(0, Math.min(1, p.clarity)) * 100);
+      qualityValueEl.textContent = `${pct}%`;
+      qualityBarFillEl.style.width = `${pct}%`;
+      if (p.rms < 0.006) {
+        qualityBarFillEl.className = "calib-quality-bar-fill weak";
+        qualityNoteEl.textContent = "لا صوت مسموع — اقترب من الميكروفون";
+      } else if (p.clarity < CLARITY_THRESHOLD) {
+        qualityBarFillEl.className = "calib-quality-bar-fill weak";
+        qualityNoteEl.textContent = "نغمة غير واضحة بما يكفي — ثبّت النفَس";
+      } else {
+        qualityBarFillEl.className = "calib-quality-bar-fill ok";
+        qualityNoteEl.textContent = "";
+      }
+    }
 
     const frameLoop = () => {
       if (!recording) return;
       analyser.getFloatTimeDomainData(buf);
       const p = detectPitch(buf.slice(), audioCtx.sampleRate);
+      renderQuality(p);
       if (p.hz && p.clarity >= CLARITY_THRESHOLD) {
         readings.push(p.hz);
+        clarityReadings.push(p.clarity);
         liveReadout.textContent = `${p.hz.toFixed(1)} هرتز`;
         liveReadout.className = "calib-live ok";
       }
@@ -227,12 +265,16 @@ export function mountCalibrationPage(root) {
     function finishRecording() {
       recording = false;
       recordBtn.disabled = false;
+      qualityMeter.hidden = true;
       if (readings.length < 5) {
         hint.textContent = "لم أسمع نغمة ثابتة كافية — أعد المحاولة، انفخ بثبات أطول قليلًا.";
         liveReadout.textContent = "—";
         liveReadout.className = "calib-live";
         return;
       }
+      const avgClarityPct = Math.round(
+        (clarityReadings.reduce((a, b) => a + b, 0) / clarityReadings.length) * 100
+      );
       readings.sort((a, b) => a - b);
       const median = readings[Math.floor(readings.length / 2)];
       // عرض السماحية الفعلي لهذه العينة تحديدًا (القرار 2): أقصى انحراف عن
@@ -253,7 +295,7 @@ export function mountCalibrationPage(root) {
         });
         store.addSample(sample);
         persist();
-        hint.textContent = `تم تسجيل عينة: ${median.toFixed(2)} هرتز.`;
+        hint.textContent = `تم تسجيل عينة: ${median.toFixed(2)} هرتز — متوسط جودة الإشارة ${avgClarityPct}%.`;
         refreshStatus();
       } catch (e) {
         hint.textContent = `تعذّر حفظ العينة: ${e.message}`;

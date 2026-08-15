@@ -4,72 +4,133 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>دليل المقامات — مِران</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet" />
   <style>
-    :root { color-scheme: light; }
-    body {
-      font-family: "Cairo", "Tajawal", system-ui, sans-serif;
-      max-width: 720px;
-      margin: 32px auto;
-      padding: 0 16px;
-      line-height: 1.6;
+    :root {
+      color-scheme: light;
+      --cream: #FAF6EC;
+      --ink: #1C1C1A;
+      --ink-soft: #5F5E5A;
+      --teal: #0F6E56;
+      --teal-deep: #085041;
+      --teal-tint: #E1F0EB;
+      --amber: #BA7517;
+      --amber-tint: #F8ECD8;
+      --hairline: rgba(28, 28, 26, 0.1);
     }
-    h1 { font-size: 1.3rem; margin-bottom: 4px; }
-    .page-sub { color: #555; margin-top: 0; font-size: 0.9rem; }
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Tajawal", system-ui, sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      margin: 0;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    .page-shell { max-width: 780px; margin: 0 auto; padding: 28px 20px 64px; }
 
-    .maqamat-page { display: flex; gap: 24px; margin-top: 20px; flex-wrap: wrap; }
+    .site-nav {
+      display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 32px; padding-bottom: 16px;
+      border-bottom: 1px solid var(--hairline);
+    }
+    .site-nav-link {
+      padding: 7px 14px; border-radius: 999px; font-size: 0.82rem; font-weight: 500;
+      text-decoration: none; color: var(--ink-soft); background: transparent;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .site-nav-link:hover { background: var(--teal-tint); color: var(--teal-deep); }
+    .site-nav-link.active { background: var(--ink); color: var(--cream); }
+
+    h1 { font-family: "Cairo", "Tajawal", sans-serif; font-weight: 800; font-size: 1.7rem; margin: 0 0 8px; }
+    h2 { font-family: "Cairo", "Tajawal", sans-serif; font-weight: 700; }
+    .page-sub { color: var(--ink-soft); margin: 0 0 28px; font-size: 0.95rem; max-width: 60ch; }
+
+    .maqamat-page { display: flex; gap: 24px; flex-wrap: wrap; }
 
     .maqam-list { display: flex; flex-direction: column; gap: 6px; min-width: 140px; }
     .maqam-list-btn {
-      padding: 8px 14px; font-size: 1rem; border-radius: 6px; border: 1px solid #ccc;
-      background: #fff; cursor: pointer; text-align: start;
+      padding: 9px 16px; font-family: "Cairo", sans-serif; font-weight: 600; font-size: 0.95rem;
+      border-radius: 10px; border: 1px solid var(--hairline); background: #fff; cursor: pointer; text-align: start;
     }
-    .maqam-list-btn.active { background: #1c1c1a; color: #fff; border-color: #1c1c1a; }
+    .maqam-list-btn.active { background: var(--ink); color: var(--cream); border-color: var(--ink); }
 
     .maqam-details { flex: 1; min-width: 280px; }
     .maqam-details h2 { font-size: 1.2rem; margin: 0 0 8px; }
-    .maqam-details h3 { font-size: 1rem; margin: 18px 0 8px; color: #333; }
-    .maqam-basics { display: flex; gap: 16px; color: #444; font-size: 0.95rem; }
+    .maqam-details h3 { font-size: 1rem; margin: 18px 0 8px; color: var(--ink-soft); font-weight: 600; }
+    .maqam-basics { display: flex; gap: 16px; color: var(--ink-soft); font-size: 0.95rem; }
 
     .jins-chain-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
-    .jins-segment { border: 1px solid #e5e5e5; border-radius: 8px; padding: 10px 12px; }
+    .jins-segment { background: #fff; border: 1px solid var(--hairline); border-radius: 12px; padding: 12px 14px; }
     .jins-segment-head { display: flex; gap: 8px; align-items: baseline; }
-    .jins-name { font-weight: 700; }
-    .jins-start-degree { color: #777; font-size: 0.85rem; }
-    .jins-pattern { margin-top: 4px; font-size: 0.9rem; color: #0f6e56; }
-    .jins-source { margin-top: 4px; font-size: 0.78rem; color: #999; }
+    .jins-name { font-family: "Cairo", sans-serif; font-weight: 700; }
+    .jins-start-degree { color: var(--ink-soft); font-size: 0.85rem; }
+    .jins-pattern { margin-top: 4px; font-size: 0.9rem; color: var(--teal-deep); }
+    .jins-source { margin-top: 4px; font-size: 0.78rem; color: var(--ink-soft); opacity: 0.75; }
 
-    .sayr-status { border: 1px solid #e5e5e5; border-radius: 8px; padding: 10px 12px; }
-    .sayr-badge {
-      display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 0.85rem; font-weight: 600;
-    }
-    .sayr-badge.sayr-unvalidated { background: #fbe8d3; color: #8a5a12; }
-    .sayr-badge.sayr-validated { background: #d9f0e8; color: #0f6e56; }
-    .sayr-detail, .sayr-source { margin-top: 6px; font-size: 0.85rem; color: #666; }
+    .sayr-status { background: #fff; border: 1px solid var(--hairline); border-radius: 12px; padding: 12px 14px; }
+    .sayr-badge { display: inline-block; padding: 4px 12px; border-radius: 999px; font-size: 0.82rem; font-weight: 600; }
+    .sayr-badge.sayr-unvalidated { background: var(--amber-tint); color: #7a4c0d; }
+    .sayr-badge.sayr-validated { background: var(--teal-tint); color: var(--teal-deep); }
+    .sayr-detail, .sayr-source { margin-top: 6px; font-size: 0.85rem; color: var(--ink-soft); }
 
-    .site-nav {
-      display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 22px; padding-bottom: 14px;
-      border-bottom: 1px solid #e5e5e5;
+    .glossary-section {
+      margin-top: 48px; padding-top: 32px; border-top: 1px solid var(--hairline);
     }
-    .site-nav-link {
-      padding: 6px 12px; border-radius: 999px; font-size: 0.82rem; text-decoration: none;
-      color: #444; background: #f5f5f5;
+    .glossary-section-head h2 { font-size: 1.2rem; margin: 0 0 6px; }
+    .glossary-section-note { color: var(--ink-soft); font-size: 0.85rem; margin: 0 0 18px; max-width: 60ch; }
+    .glossary-search {
+      width: 100%; padding: 11px 16px; border-radius: 10px; border: 1px solid var(--hairline);
+      font-family: "Tajawal", sans-serif; font-size: 0.92rem; background: #fff; margin-bottom: 12px;
     }
-    .site-nav-link:hover { background: #ececec; }
-    .site-nav-link.active { background: #1c1c1a; color: #fff; }
+    .glossary-search:focus { outline: 2px solid var(--teal); outline-offset: 1px; }
+    .glossary-categories { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+    .glossary-cat-pill {
+      padding: 6px 14px; border-radius: 999px; font-size: 0.8rem; font-weight: 500;
+      border: 1px solid var(--hairline); background: #fff; color: var(--ink-soft); cursor: pointer;
+    }
+    .glossary-cat-pill.active { background: var(--teal); color: #fff; border-color: var(--teal); }
+    .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+    .glossary-card { background: #fff; border: 1px solid var(--hairline); border-radius: 12px; padding: 14px 16px; }
+    .glossary-card-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+    .glossary-ar { font-family: "Cairo", sans-serif; font-weight: 700; font-size: 0.98rem; }
+    .glossary-en { font-size: 0.72rem; color: var(--ink-soft); opacity: 0.7; }
+    .glossary-def { margin: 8px 0 0; font-size: 0.85rem; color: var(--ink-soft); line-height: 1.55; }
+    .glossary-cat {
+      display: inline-block; margin-top: 10px; font-size: 0.72rem; font-weight: 600;
+      color: var(--teal-deep); background: var(--teal-tint); border-radius: 999px; padding: 2px 10px;
+    }
+    .glossary-empty { color: var(--ink-soft); font-size: 0.9rem; padding: 20px 0; }
   </style>
 </head>
 <body>
-  <div id="siteNav"></div>
-  <h1>دليل المقامات</h1>
-  <p class="page-sub">السلم (سلسلة الأجناس) والسِّير اللحني لكل مقام — علامة "؟" تعني سِّيرًا غير مصادَق عليه سمعيًا بعد (القرار 5)</p>
+  <div class="page-shell">
+    <div id="siteNav"></div>
+    <h1>دليل المقامات</h1>
+    <p class="page-sub">السلم (سلسلة الأجناس) والسِّير اللحني لكل مقام — علامة "؟" تعني سِّيرًا غير مصادَق عليه سمعيًا بعد (القرار 5)</p>
 
-  <div id="app"></div>
+    <div id="app"></div>
+
+    <section class="glossary-section">
+      <div class="glossary-section-head">
+        <h2>قاموس المصطلحات</h2>
+        <p class="glossary-section-note">
+          مصطلحات النغم والقياس والتدوين والإيقاع والمقام المستخدمة في هذا الدليل — استفادةً من مكتبة
+          مصطلحات RECORD-N، بصياغة مُعاد كتابتها لمِران.
+        </p>
+      </div>
+      <div id="glossaryApp"></div>
+    </section>
+  </div>
 
   <script type="module">
     import { mountNav } from "../../shared/nav.js";
     import { mountMaqamatPage } from "./maqamat-page.js";
+    import { mountGlossaryPanel } from "./glossary-panel.js";
     mountNav(document.getElementById("siteNav"), "maqamat");
     mountMaqamatPage(document.getElementById("app"));
+    mountGlossaryPanel(document.getElementById("glossaryApp"));
   </script>
 </body>
 </html>
