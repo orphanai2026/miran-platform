@@ -34,9 +34,35 @@
     }
     .teacher-recommendation h2 { font-size: 1.05rem; margin: 0 0 8px; color: #1c1c1a; }
     .teacher-recommendation p { margin: 0; color: #333; font-size: 0.95rem; }
+
+    .site-nav {
+      display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 22px; padding-bottom: 14px;
+      border-bottom: 1px solid #e5e5e5;
+    }
+    .site-nav-link {
+      padding: 6px 12px; border-radius: 999px; font-size: 0.82rem; text-decoration: none;
+      color: #444; background: #f5f5f5;
+    }
+    .site-nav-link:hover { background: #ececec; }
+    .site-nav-link.active { background: #1c1c1a; color: #fff; }
   </style>
 </head>
 <body>
+  <!--
+    شريط التنقّل هنا HTML ثابت يدويًا، لا وحدة nav.js المستوردة في بقية
+    الصفحات — هذي الصفحة الوحيدة بلا JavaScript إطلاقًا بقرار صريح (القرار 6:
+    "نص إرشادي ثابت، لا تفاعلي"). البنية والأصناف مطابقة لبقية الصفحات يدويًا.
+  -->
+  <nav class="site-nav" dir="rtl" aria-label="تنقّل رئيسي">
+    <a class="site-nav-link" href="../01-home/index.html" data-nav-key="home">الرئيسية</a>
+    <a class="site-nav-link" href="../02-calibration/index.html" data-nav-key="calibration">المعايرة</a>
+    <a class="site-nav-link" href="../03-exercises/index.html" data-nav-key="exercises">التمارين</a>
+    <a class="site-nav-link" href="../04-maqamat-guide/index.html" data-nav-key="maqamat">المقامات</a>
+    <a class="site-nav-link" href="../05-metronome/index.html" data-nav-key="metronome">المترونوم</a>
+    <a class="site-nav-link" href="../06-library-export/index.html" data-nav-key="library">المكتبة</a>
+    <a class="site-nav-link" href="../07-settings-sync/index.html" data-nav-key="settings">الإعدادات</a>
+    <a class="site-nav-link active" href="../08-teaching-guide/index.html" data-nav-key="teaching" aria-current="page">الدليل</a>
+  </nav>
   <h1>الدليل التعليمي</h1>
   <p class="page-sub">حدود ما تضمنه هذي المنصة — بوضوح، قبل أن تحتاجه</p>
 

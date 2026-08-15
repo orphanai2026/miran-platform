@@ -44,16 +44,30 @@
       background: #1c1c1a; color: #fff; cursor: pointer;
     }
     .metronome-toggle:active { opacity: 0.85; }
+
+    .site-nav {
+      display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 22px; padding-bottom: 14px;
+      border-bottom: 1px solid #e5e5e5; justify-content: center;
+    }
+    .site-nav-link {
+      padding: 6px 12px; border-radius: 999px; font-size: 0.82rem; text-decoration: none;
+      color: #444; background: #f5f5f5;
+    }
+    .site-nav-link:hover { background: #ececec; }
+    .site-nav-link.active { background: #1c1c1a; color: #fff; }
   </style>
 </head>
 <body>
+  <div id="siteNav"></div>
   <h1>المترونوم</h1>
   <p class="page-sub">مستقل، بجدولة lookahead المحسّنة — نفس محرك صفحة المعايرة، واجهة كاملة</p>
 
   <div id="app"></div>
 
   <script type="module">
+    import { mountNav } from "../../shared/nav.js";
     import { mountFullMetronome } from "../../../metronome/metronome-ui-full.js";
+    mountNav(document.getElementById("siteNav"), "metronome");
     mountFullMetronome(document.getElementById("app"));
   </script>
 </body>
