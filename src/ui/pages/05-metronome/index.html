@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>المترونوم — مِران</title>
+  <style>
+    :root { color-scheme: light; }
+    body {
+      font-family: "Cairo", "Tajawal", system-ui, sans-serif;
+      max-width: 480px;
+      margin: 32px auto;
+      padding: 0 16px;
+      line-height: 1.6;
+      text-align: center;
+    }
+    h1 { font-size: 1.3rem; margin-bottom: 4px; }
+    .page-sub { color: #555; margin-top: 0; font-size: 0.9rem; }
+
+    .metronome-full { display: flex; flex-direction: column; align-items: center; gap: 18px; margin-top: 24px; }
+
+    .metronome-bpm-display { display: flex; align-items: baseline; gap: 8px; }
+    .metronome-bpm-value { font-size: 3rem; font-weight: 700; font-variant-numeric: tabular-nums; color: #1c1c1a; }
+    .metronome-bpm-label { color: #666; font-size: 1rem; }
+
+    .metronome-bpm-slider { width: 100%; max-width: 360px; }
+
+    .metronome-beats-control { display: flex; align-items: center; gap: 10px; font-size: 0.95rem; }
+    .metronome-beats-select {
+      padding: 6px 10px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px;
+    }
+
+    .metronome-beat-indicators { display: flex; gap: 10px; min-height: 24px; }
+    .metronome-beat-dot {
+      width: 18px; height: 18px; border-radius: 50%;
+      background: #e5e5e5; border: 2px solid #ccc;
+      transition: background-color 0.05s linear, border-color 0.05s linear;
+    }
+    .metronome-beat-dot.active { background: #0f6e56; border-color: #0f6e56; }
+    .metronome-beat-dot.active.accent { background: #ba7517; border-color: #ba7517; }
+
+    .metronome-toggle {
+      padding: 12px 32px; font-size: 1.1rem; border-radius: 8px; border: none;
+      background: #1c1c1a; color: #fff; cursor: pointer;
+    }
+    .metronome-toggle:active { opacity: 0.85; }
+  </style>
+</head>
+<body>
+  <h1>المترونوم</h1>
+  <p class="page-sub">مستقل، بجدولة lookahead المحسّنة — نفس محرك صفحة المعايرة، واجهة كاملة</p>
+
+  <div id="app"></div>
+
+  <script type="module">
+    import { mountFullMetronome } from "../../../metronome/metronome-ui-full.js";
+    mountFullMetronome(document.getElementById("app"));
+  </script>
+</body>
+</html>
