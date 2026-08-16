@@ -25,7 +25,7 @@
   --ink: #1C1C1A;
   --ink-soft: #5F5E5A;
   --teal: #0F6E56;
-  --teal-deep: #085041;
+  --teal-deep: #073D34; /* مُحاذى مع مرجع V8 المعتمد (design-reference/v8/home/original.html) — كان #085041 قبل هذي المحاذاة */
   --teal-tint: #E1F0EB;
   --amber: #BA7517;
   --amber-tint: #F8ECD8;
