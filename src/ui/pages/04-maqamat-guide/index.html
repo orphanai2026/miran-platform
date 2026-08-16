@@ -32,7 +32,7 @@
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
     }
-    .page-shell { max-width: 780px; margin: 0 auto; padding: 28px 20px 64px; }
+    .page-shell { max-width: 980px; margin: 0 auto; padding: 28px 20px 64px; }
 
     .site-nav {
       display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 32px; padding-bottom: 16px;
@@ -50,16 +50,24 @@
     h2 { font-family: "Cairo", "Tajawal", sans-serif; font-weight: 700; }
     .page-sub { color: var(--ink-soft); margin: 0 0 28px; font-size: 0.95rem; max-width: 60ch; }
 
-    .maqamat-page { display: flex; gap: 24px; flex-wrap: wrap; }
+    .maqamat-page { display: grid; grid-template-columns: 260px 1fr; gap: 24px; align-items: start; }
+    @media (max-width: 700px) { .maqamat-page { grid-template-columns: 1fr; } }
 
-    .maqam-list { display: flex; flex-direction: column; gap: 6px; min-width: 140px; }
+    /* شبكة بلاطات حقيقية بدل قائمة رأسية مسطّحة — لوحة تصفّح مقامات */
+    .maqam-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; align-content: start; }
+    @media (max-width: 700px) { .maqam-list { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); } }
     .maqam-list-btn {
-      padding: 9px 16px; font-family: "Cairo", sans-serif; font-weight: 600; font-size: 0.95rem;
-      border-radius: 10px; border: 1px solid var(--hairline); background: #fff; cursor: pointer; text-align: start;
+      padding: 14px 12px; font-family: "Cairo", sans-serif; font-weight: 600; font-size: 0.92rem;
+      border-radius: 12px; border: 1px solid var(--hairline); background: #fff; cursor: pointer; text-align: center;
+      transition: border-color 0.15s ease, transform 0.1s ease;
     }
+    .maqam-list-btn:hover { border-color: var(--teal); transform: translateY(-1px); }
     .maqam-list-btn.active { background: var(--ink); color: var(--cream); border-color: var(--ink); }
 
-    .maqam-details { flex: 1; min-width: 280px; }
+    .maqam-details {
+      position: sticky; top: 20px; background: #fff; border: 1px solid var(--hairline);
+      border-radius: 16px; padding: 22px 24px;
+    }
     .maqam-details h2 { font-size: 1.2rem; margin: 0 0 8px; }
     .maqam-details h3 { font-size: 1rem; margin: 18px 0 8px; color: var(--ink-soft); font-weight: 600; }
     .maqam-basics { display: flex; gap: 16px; color: var(--ink-soft); font-size: 0.95rem; }

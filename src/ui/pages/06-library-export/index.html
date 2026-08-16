@@ -32,7 +32,7 @@
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
     }
-    .page-shell { max-width: 680px; margin: 0 auto; padding: 28px 20px 64px; }
+    .page-shell { max-width: 920px; margin: 0 auto; padding: 28px 20px 64px; }
 
     .site-nav {
       display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 32px; padding-bottom: 16px;
@@ -52,10 +52,15 @@
     }
     .page-sub { color: var(--ink-soft); margin: 0 0 28px; font-size: 0.95rem; max-width: 52ch; }
 
-    .library-list { list-style: none; padding: 0; margin: 0 0 22px; display: flex; flex-direction: column; gap: 10px; }
+    .library-list {
+      list-style: none; padding: 0; margin: 0 0 22px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px;
+    }
     .library-entry {
       background: #fff; border: 1px solid var(--hairline); border-radius: 14px; padding: 16px 18px;
+      transition: border-color 0.15s ease;
     }
+    .library-entry:hover { border-color: var(--teal); }
     .library-entry-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .library-fingering { font-family: "Cairo", sans-serif; font-weight: 700; font-size: 1.05rem; }
     .library-register { color: var(--ink-soft); font-size: 0.85rem; }
