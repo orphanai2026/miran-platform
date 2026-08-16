@@ -43,6 +43,25 @@ const IMPORT_LINE_RE = /^\s*import\s*\{([^}]+)\}\s*from\s*["']([^"']+)["'];\s*$/
 const EXPORT_PREFIX_RE = /^(export\s+)(const|let|var|function\s*\*?|async\s+function|class)\b/;
 const TOP_LEVEL_DECL_RE = /^(?:export\s+)?(?:async\s+)?(?:const|let|var|function\s*\*?|class)\s+([A-Za-z_$][A-Za-z0-9_$]*)/;
 
+const DESIGN_TOKENS_LINK_RE = /\s*<link rel="stylesheet" href="\.\.\/\.\.\/shared\/design-tokens\.css" \/>\n/;
+
+/**
+ * يستبدل وسم <link> الذي يشير لـ design-tokens.css بمحتواه الفعلي داخل
+ * <style> — نفس روح دمج وحدات JS تمامًا، مطبَّقة على CSS. المخرج النهائي
+ * يبقى ملفًا واحدًا بلا أي طلب شبكي لهذا الملف. يُستدعى بعد كل من
+ * buildModulePage و buildStaticPage، على مخرجاتها في dist/ مباشرة.
+ *
+ * **لا يفترض وجود الوسم بكل صفحة مبنية** — صفحة الخبير الإدارية
+ * (src/ui/admin/expert-intake/) خارج نطاق التوحيد عمدًا (لوحتها الخاصة،
+ * ليست من الصفحات الثماني)، فتُترَك بلا تغيير إن لم يوجد الوسم.
+ */
+function inlineDesignTokens(html) {
+  if (!DESIGN_TOKENS_LINK_RE.test(html)) return html;
+  const tokensCss = readFileSync(path.join(REPO_ROOT, "src", "ui", "shared", "design-tokens.css"), "utf-8");
+  const inlineBlock = `  <style>\n${tokensCss.trim()}\n  </style>\n`;
+  return html.replace(DESIGN_TOKENS_LINK_RE, inlineBlock);
+}
+
 /**
  * يحلّل ملف JS ويُرجع: أسطر الاستيراد (اسم -> مسار)، ومحتوى الملف بعد
  * إزالة أسطر الاستيراد وبادئة `export`.
@@ -143,7 +162,7 @@ function resolveDependencyOrder(entryContent, entryDir) {
 }
 
 /** يبني ملف HTML واحد نهائي مستقل لصفحة تحتوي `<script type="module">`. */
-function buildModulePage(pageDir, pageName) {
+function buildModulePage(pageDir, pageName, requireTokens = true) {
   const indexPath = path.join(pageDir, "index.html");
   const html = readFileSync(indexPath, "utf-8");
 
@@ -162,7 +181,13 @@ function buildModulePage(pageDir, pageName) {
 
   const bundledScript = `<script>\n(function () {\n"use strict";\n${bundledParts.join("\n\n")}\n})();\n</script>`;
 
-  const finalHtml = html.replace(/<script type="module">[\s\S]*?<\/script>/, bundledScript);
+  const withBundledScript = html.replace(/<script type="module">[\s\S]*?<\/script>/, bundledScript);
+  if (requireTokens && !DESIGN_TOKENS_LINK_RE.test(withBundledScript)) {
+    throw new Error(
+      `${indexPath}: وسم design-tokens.css المتوقَّع غير موجود. لو هذي الصفحة خارج نطاق التوحيد عمدًا (مثل صفحة الخبير الإدارية)، مرّر requireTokens=false صراحة عند الاستدعاء.`
+    );
+  }
+  const finalHtml = inlineDesignTokens(withBundledScript);
 
   const outDir = path.join(DIST_DIR, pageName);
   mkdirSync(outDir, { recursive: true });
@@ -173,7 +198,8 @@ function buildModulePage(pageDir, pageName) {
 
 /** ينسخ صفحة ثابتة بلا JS كما هي (صفحة #8) — لا شيء للدمج. */
 function buildStaticPage(pageDir, pageName) {
-  const html = readFileSync(path.join(pageDir, "index.html"), "utf-8");
+  const rawHtml = readFileSync(path.join(pageDir, "index.html"), "utf-8");
+  const html = inlineDesignTokens(rawHtml);
   const outDir = path.join(DIST_DIR, pageName);
   mkdirSync(outDir, { recursive: true });
   writeFileSync(path.join(outDir, "index.html"), html, "utf-8");
@@ -245,7 +271,7 @@ function main() {
   const adminRoot = path.join(REPO_ROOT, "src", "ui", "admin");
   results.push({
     pageName: "admin/expert-intake",
-    ...buildModulePage(path.join(adminRoot, "expert-intake"), "admin/expert-intake"),
+    ...buildModulePage(path.join(adminRoot, "expert-intake"), "admin/expert-intake", false),
   });
 
   // نسخ منهج مِران الأصلي كاملًا كما هو — لا تعديل بنيوي (ملف محمي، القسم 4).

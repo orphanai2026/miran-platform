@@ -7,26 +7,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../shared/design-tokens.css" />
   <style>
     :root {
-      color-scheme: light;
-      --cream: #FAF6EC;
-      --ink: #1C1C1A;
-      --ink-soft: #5F5E5A;
-      --teal: #0F6E56;
-      --teal-deep: #085041;
-      --teal-tint: #E1F0EB;
-      --amber: #BA7517;
-      --amber-tint: #F8ECD8;
-      --chip: #F1EADA;
-      --amber-ink: #7a4c0d;
       /* لمسة وردية إضافية خارج اللوحة الأساسية الأربعة — مخصَّصة حصرًا لتمييز
          "الطبقة 3" (القرار 6: خارج ضمان الأتمتة، يُوصى بمعلم بشري). لا تُستخدم
-         بأي مكان آخر في المنصة؛ وُثِّقت رسميًا بمراجعة اتساق الواجهات. */
+         بأي مكان آخر في المنصة؛ وُثِّقت رسميًا بمراجعة اتساق الواجهات. باقي
+         الرموز (اللوحة الأساسية) تأتي من design-tokens.css المشترك. */
       --rose-tint: #F3DEDE;
       --rose-ink: #7a2a2a;
       --rose-ink-soft: #5c3d0a;
-      --hairline: rgba(28, 28, 26, 0.1);
     }
     * { box-sizing: border-box; }
     body {
