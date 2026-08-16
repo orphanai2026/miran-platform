@@ -1,141 +1,32 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>المعايرة الشخصية — مِران</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../../shared/design-tokens.css" />
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      font-family: "Tajawal", system-ui, sans-serif;
-      background: var(--cream);
-      color: var(--ink);
-      margin: 0;
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-    }
-    .page-shell { max-width: 1040px; margin: 0 auto; padding: 28px 20px 64px; }
-
-    /* تخطيط استوديو تسجيل: أدوات التسجيل يسارًا (أعرض)، النغمات
-       المرجعية الـ25 يمينًا كلوحة ثابتة قابلة للتمرير المستقل. */
-    .calib-layout { display: grid; grid-template-columns: 1.5fr 1fr; gap: 28px; align-items: start; }
-    @media (max-width: 860px) { .calib-layout { grid-template-columns: 1fr; } }
-
-    .site-nav {
-      display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 32px; padding-bottom: 16px;
-      border-bottom: 1px solid var(--hairline);
-    }
-    .site-nav-link {
-      padding: 7px 14px; border-radius: 999px; font-size: 0.82rem; font-weight: 500;
-      text-decoration: none; color: var(--ink-soft); background: transparent;
-      transition: background 0.15s ease, color 0.15s ease;
-    }
-    .site-nav-link:hover { background: var(--teal-tint); color: var(--teal-deep); }
-    .site-nav-link.active { background: var(--ink); color: var(--cream); }
-
-    h1 { font-family: "Cairo", "Tajawal", sans-serif; font-weight: 800; font-size: 1.7rem; margin: 0 0 8px; }
-    .calib-sub { color: var(--ink-soft); margin: 0 0 24px; font-size: 0.92rem; max-width: 58ch; }
-
-    .calib-fields {
-      display: flex; flex-direction: column; gap: 14px; margin: 0 0 24px;
-      background: #fff; border: 1px solid var(--hairline); border-radius: 14px; padding: 18px 20px;
-    }
-    .calib-fields label { display: flex; flex-direction: column; gap: 6px; font-size: 0.88rem; color: var(--ink-soft); font-weight: 500; }
-    .calib-fields input, .calib-fields select {
-      padding: 9px 12px; font-size: 0.95rem; font-family: "Tajawal", sans-serif;
-      border: 1px solid var(--hairline); border-radius: 8px; background: var(--cream); color: var(--ink);
-    }
-    .calib-fields input:focus, .calib-fields select:focus { outline: 2px solid var(--teal); outline-offset: 1px; }
-
-    .calib-metronome-mount { margin: 0 0 20px; }
-    .metronome-mini { display: flex; align-items: center; gap: 10px; }
-    .metronome-mini-toggle {
-      padding: 8px 18px; font-size: 1rem; font-family: "Cairo", sans-serif; font-weight: 600;
-      border-radius: 999px; border: 1px solid var(--hairline); background: #fff; cursor: pointer;
-    }
-
-    .calib-record-area { display: flex; align-items: center; gap: 14px; margin: 0 0 12px; }
-    .btn-primary {
-      padding: 12px 26px; font-size: 0.95rem; font-weight: 600; font-family: "Cairo", sans-serif;
-      border-radius: 10px; border: none; background: var(--ink); color: var(--cream); cursor: pointer;
-      transition: opacity 0.15s ease;
-    }
-    .btn-primary:hover:not(:disabled) { opacity: 0.88; }
-    .btn-primary:disabled { opacity: 0.4; cursor: default; }
-    .btn-secondary {
-      padding: 9px 18px; font-size: 0.88rem; font-family: "Cairo", sans-serif; font-weight: 600;
-      border-radius: 999px; border: 1px solid var(--teal); color: var(--teal-deep);
-      background: var(--teal-tint); cursor: pointer; margin-inline-end: 8px;
-    }
-    .calib-live { font-variant-numeric: tabular-nums; color: var(--ink-soft); }
-    .calib-live.ok { color: var(--teal-deep); font-weight: 700; }
-
-    .calib-quality-meter { margin: 4px 0 20px; max-width: 340px; }
-    .calib-quality-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 4px; }
-    .calib-quality-label { color: var(--ink-soft); }
-    .calib-quality-value { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--ink); }
-    .calib-quality-bar { height: 8px; border-radius: 999px; background: var(--chip); overflow: hidden; }
-    .calib-quality-bar-fill {
-      height: 100%; width: 0%; background: var(--track-bg); border-radius: 999px;
-      transition: width 0.08s linear, background-color 0.15s ease;
-    }
-    .calib-quality-bar-fill.ok { background: var(--teal); }
-    .calib-quality-bar-fill.weak { background: var(--amber); }
-    .calib-quality-note { display: block; margin-top: 4px; font-size: 0.78rem; color: var(--amber-ink); min-height: 1.1em; }
-
-    .calib-hint { min-height: 1.4em; color: var(--ink-soft); font-size: 0.9rem; }
-    .calib-status {
-      margin-top: 24px; padding: 16px 20px; border-radius: 14px;
-      background: #fff; border: 1px solid var(--hairline);
-    }
-    .calib-status > div { margin-bottom: 8px; font-size: 0.9rem; }
-
-    .reference-section {
-      background: #fff; border: 1px solid var(--hairline); border-radius: 16px; padding: 20px;
-    }
-    @media (min-width: 861px) {
-      .reference-section { position: sticky; top: 20px; max-height: calc(100vh - 40px); overflow-y: auto; }
-    }
-    .reference-section h2 { font-family: "Cairo", sans-serif; font-weight: 700; font-size: 1rem; margin: 0 0 6px; }
-    .reference-section-note { color: var(--ink-soft); font-size: 0.85rem; margin: 0 0 16px; }
-    .reference-audio-empty {
-      color: var(--ink-soft); font-size: 0.88rem; padding: 16px; text-align: center;
-      background: var(--cream); border: 1px dashed var(--hairline); border-radius: 12px;
-    }
-    .reference-audio-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
-    .reference-audio-item {
-      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-      background: var(--cream); border: 1px solid var(--hairline); border-radius: 10px; padding: 10px 12px;
-    }
-    .reference-audio-label { font-family: "Cairo", sans-serif; font-weight: 600; font-size: 0.9rem; min-width: 3em; }
-    .reference-audio-item audio { flex: 1; min-width: 140px; width: 100%; height: 32px; }
-    .reference-audio-hz { font-size: 0.78rem; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>المعايرة الشخصية — مِران</title>
+<link rel="stylesheet" href="../../shared/design-tokens.css" />
+<link rel="stylesheet" href="../../shared/digital-ney-shell.css" />
+<style>
+.calib-layout{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(280px,.8fr);gap:26px;align-items:start;max-width:1180px}.calib-page h1,.calib-sub{display:none}.calib-fields{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:18px;margin:0 0 18px;background:rgba(255,255,255,.52);border:1px solid var(--hairline);border-radius:20px}.calib-fields label{display:flex;flex-direction:column;gap:6px;color:var(--ink-soft);font-size:12px;font-weight:700}.calib-fields input,.calib-fields select{padding:10px 12px}.calib-metronome-mount{margin:0 0 16px;padding:14px 18px;border-radius:17px;background:rgba(255,255,255,.45);border:1px solid var(--hairline)}.metronome-mini{display:flex;align-items:center;gap:12px}.metronome-mini-toggle{padding:8px 17px;border-radius:999px;border:1px solid rgba(15,110,86,.22);background:var(--teal-tint);color:var(--teal-deep);font-weight:700;cursor:pointer}.calib-record-area{display:flex;align-items:center;gap:16px;margin:0 0 12px}.calib-live{font-variant-numeric:tabular-nums;color:var(--ink-soft);font-size:18px}.calib-live.ok{color:var(--teal-deep);font-weight:800}.calib-quality-meter{margin:5px 0 18px;max-width:390px}.calib-quality-row{display:flex;justify-content:space-between;font-size:12px}.calib-quality-bar{height:8px;margin-top:5px;border-radius:999px;background:var(--chip);overflow:hidden}.calib-quality-bar-fill{height:100%;width:0;background:var(--track-bg);border-radius:999px}.calib-quality-bar-fill.ok{background:var(--teal)}.calib-quality-bar-fill.weak{background:var(--amber)}.calib-quality-note,.calib-hint{font-size:12px;color:var(--amber-ink)}.calib-status{margin-top:18px;padding:18px;border-radius:20px;background:rgba(255,255,255,.48);border:1px solid var(--hairline)}.calib-status>div{margin-bottom:8px;font-size:13px}.reference-section{padding:22px;background:rgba(255,255,255,.55);border:1px solid var(--hairline);border-radius:24px;box-shadow:0 18px 44px rgba(71,50,24,.05)}.reference-section h2{margin:0 0 5px;font-size:17px}.reference-section-note{margin:0 0 16px;color:var(--ink-soft);font-size:12px}.reference-audio-empty{padding:18px;text-align:center;color:var(--ink-soft);font-size:12px;border:1px dashed var(--hairline);border-radius:14px;background:rgba(250,246,236,.7)}.reference-audio-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}.reference-audio-item{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 12px;background:rgba(250,246,236,.72);border:1px solid var(--hairline);border-radius:12px}.reference-audio-item audio{width:100%;height:32px}.reference-audio-label{font-weight:800}.reference-audio-hz{font-size:11px;color:var(--ink-soft)}
+@media(max-width:900px){.calib-layout{grid-template-columns:1fr}.calib-fields{grid-template-columns:1fr}.reference-section{margin-bottom:12px}}
+</style>
 </head>
 <body>
-  <div class="page-shell">
-    <div id="siteNav"></div>
-    <div class="calib-layout">
-      <div id="app"></div>
-
-      <section class="reference-section">
-        <h2>استماع مرجعي — النغمات الـ25</h2>
-        <p class="reference-section-note">تسجيلات ناي حقيقية من الخبراء لكل نغمة (القرار 9.2) — مرجع استماع، لا جزء من الاختبار.</p>
-        <div id="calibReferenceNotes"></div>
-      </section>
-    </div>
-  </div>
-  <script type="module">
-    import { mountNav } from "../../shared/nav.js";
-    import { mountCalibrationPage } from "./calibration-page.js";
-    import { mountReferenceNotesPanel } from "./reference-notes-panel.js";
-    mountNav(document.getElementById("siteNav"), "calibration");
-    mountCalibrationPage(document.getElementById("app"));
-    mountReferenceNotesPanel(document.getElementById("calibReferenceNotes"));
-  </script>
-</body>
-</html>
+<div class="page-stage">
+  <header class="brand-row"><div class="brand-seal"><i></i><i></i><i></i><i></i></div><div class="brand-copy"><strong>مِران</strong><span>منصة تعليم الناي الشرقي</span></div></header>
+  <section class="page-hero"><div class="page-kicker">ضبط الأذن والآلة</div><h1>المعايرة الشخصية</h1><p>ابنِ مرجعك الشخصي من عزفك الحقيقي؛ 15 محاولة على 3 أيام للمبتدئ، أو جلسة واحدة أدق للمحترف.</p><div class="breath-rule"></div></section>
+  <section class="page-content calib-layout">
+    <div id="app"></div>
+    <section class="reference-section"><div class="eyebrow">REFERENCE • مرجع سمعي</div><h2>استماع مرجعي — النغمات الـ25</h2><p class="reference-section-note">تسجيلات ناي حقيقية من الخبراء لكل نغمة — مرجع استماع، لا جزء من الاختبار.</p><div id="calibReferenceNotes"></div></section>
+  </section>
+  <div id="siteNav"></div>
+</div>
+<script type="module">
+import { mountNav } from "../../shared/nav.js";
+import { mountCalibrationPage } from "./calibration-page.js";
+import { mountReferenceNotesPanel } from "./reference-notes-panel.js";
+mountNav(document.getElementById("siteNav"),"calibration");
+mountCalibrationPage(document.getElementById("app"));
+mountReferenceNotesPanel(document.getElementById("calibReferenceNotes"));
+</script>
+</body></html>
