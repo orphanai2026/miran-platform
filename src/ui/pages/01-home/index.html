@@ -11,7 +11,6 @@
     :root {
       color-scheme: light;
       --cream: #FAF6EC;
-      --cream-deep: #F1EADA;
       --ink: #1C1C1A;
       --ink-soft: #5F5E5A;
       --teal: #0F6E56;
@@ -19,6 +18,9 @@
       --teal-tint: #E1F0EB;
       --amber: #BA7517;
       --amber-tint: #F8ECD8;
+      --chip: #F1EADA;
+      --amber-ink: #7a4c0d;
+      --track-bg: #c9c9c9;
       --hairline: rgba(28, 28, 26, 0.1);
     }
     * { box-sizing: border-box; }
@@ -33,7 +35,7 @@
     .page-shell { max-width: 720px; margin: 0 auto; padding: 28px 20px 64px; }
 
     .site-nav {
-      display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 36px; padding-bottom: 16px;
+      display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 32px; padding-bottom: 16px;
       border-bottom: 1px solid var(--hairline);
     }
     .site-nav-link {
@@ -95,7 +97,7 @@
       padding-top: 20px; border-top: 1px solid var(--hairline);
     }
     .home-user-id-note code {
-      direction: ltr; display: inline-block; background: var(--amber-tint); color: #633806;
+      direction: ltr; display: inline-block; background: var(--amber-tint); color: var(--amber-ink);
       padding: 2px 8px; border-radius: 6px; font-size: 0.76rem;
     }
 
@@ -121,7 +123,7 @@
     .staged-verify-status { min-height: 1.3em; font-size: 0.85rem; color: var(--ink-soft); margin: 0 0 14px; }
     .staged-verify-progress { display: flex; gap: 8px; justify-content: center; margin-bottom: 16px; }
     .staged-verify-dot {
-      width: 14px; height: 14px; border-radius: 50%; background: #ece7d8; border: 2px solid var(--hairline);
+      width: 14px; height: 14px; border-radius: 50%; background: var(--chip); border: 2px solid var(--hairline);
     }
     .staged-verify-dot.filled { background: var(--teal); border-color: var(--teal); }
   </style>

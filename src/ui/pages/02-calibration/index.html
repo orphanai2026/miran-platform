@@ -18,6 +18,9 @@
       --teal-tint: #E1F0EB;
       --amber: #BA7517;
       --amber-tint: #F8ECD8;
+      --chip: #F1EADA;
+      --amber-ink: #7a4c0d;
+      --track-bg: #c9c9c9;
       --hairline: rgba(28, 28, 26, 0.1);
     }
     * { box-sizing: border-box; }
@@ -84,14 +87,14 @@
     .calib-quality-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 4px; }
     .calib-quality-label { color: var(--ink-soft); }
     .calib-quality-value { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--ink); }
-    .calib-quality-bar { height: 8px; border-radius: 999px; background: #ece7d8; overflow: hidden; }
+    .calib-quality-bar { height: 8px; border-radius: 999px; background: var(--chip); overflow: hidden; }
     .calib-quality-bar-fill {
-      height: 100%; width: 0%; background: #c9c9c9; border-radius: 999px;
+      height: 100%; width: 0%; background: var(--track-bg); border-radius: 999px;
       transition: width 0.08s linear, background-color 0.15s ease;
     }
     .calib-quality-bar-fill.ok { background: var(--teal); }
     .calib-quality-bar-fill.weak { background: var(--amber); }
-    .calib-quality-note { display: block; margin-top: 4px; font-size: 0.78rem; color: #7a4c0d; min-height: 1.1em; }
+    .calib-quality-note { display: block; margin-top: 4px; font-size: 0.78rem; color: var(--amber-ink); min-height: 1.1em; }
 
     .calib-hint { min-height: 1.4em; color: var(--ink-soft); font-size: 0.9rem; }
     .calib-status {

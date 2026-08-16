@@ -18,6 +18,9 @@
       --teal-tint: #E1F0EB;
       --amber: #BA7517;
       --amber-tint: #F8ECD8;
+      --chip: #F1EADA;
+      --amber-ink: #7a4c0d;
+      --track-bg: #c9c9c9;
       --hairline: rgba(28, 28, 26, 0.1);
     }
     * { box-sizing: border-box; }
@@ -60,12 +63,12 @@
       margin-inline-start: auto; padding: 4px 12px; border-radius: 999px; font-size: 0.78rem; font-weight: 600;
     }
     .library-badge-frozen { background: var(--teal-tint); color: var(--teal-deep); }
-    .library-badge-pending { background: #f1efe8; color: var(--ink-soft); }
+    .library-badge-pending { background: var(--chip); color: var(--ink-soft); }
     .library-counts {
       display: inline-block; margin-top: 10px; font-size: 0.8rem; color: var(--ink-soft);
-      background: #f6f3ea; border-radius: 999px; padding: 4px 12px;
+      background: var(--chip); border-radius: 999px; padding: 4px 12px;
     }
-    .library-taught { margin-top: 8px; font-size: 0.85rem; color: #7a4c0d; }
+    .library-taught { margin-top: 8px; font-size: 0.85rem; color: var(--amber-ink); }
 
     .library-empty {
       color: var(--ink-soft); margin: 0 0 22px; padding: 24px; text-align: center;

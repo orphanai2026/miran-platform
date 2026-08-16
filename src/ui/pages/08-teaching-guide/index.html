@@ -18,7 +18,14 @@
       --teal-tint: #E1F0EB;
       --amber: #BA7517;
       --amber-tint: #F8ECD8;
+      --chip: #F1EADA;
+      --amber-ink: #7a4c0d;
+      /* لمسة وردية إضافية خارج اللوحة الأساسية الأربعة — مخصَّصة حصرًا لتمييز
+         "الطبقة 3" (القرار 6: خارج ضمان الأتمتة، يُوصى بمعلم بشري). لا تُستخدم
+         بأي مكان آخر في المنصة؛ وُثِّقت رسميًا بمراجعة اتساق الواجهات. */
       --rose-tint: #F3DEDE;
+      --rose-ink: #7a2a2a;
+      --rose-ink-soft: #5c3d0a;
       --hairline: rgba(28, 28, 26, 0.1);
     }
     * { box-sizing: border-box; }
@@ -54,8 +61,8 @@
       display: inline-block; padding: 3px 12px; border-radius: 999px; font-size: 0.75rem; font-weight: 700;
     }
     .layer-1 .layer-badge { background: var(--teal-tint); color: var(--teal-deep); }
-    .layer-2 .layer-badge { background: var(--amber-tint); color: #7a4c0d; }
-    .layer-3 .layer-badge { background: var(--rose-tint); color: #7a2a2a; }
+    .layer-2 .layer-badge { background: var(--amber-tint); color: var(--amber-ink); }
+    .layer-3 .layer-badge { background: var(--rose-tint); color: var(--rose-ink); }
     .layer-card p { margin: 6px 0 0; color: var(--ink-soft); font-size: 0.92rem; }
     .layer-card ul { margin: 8px 0 0; padding-inline-start: 20px; color: var(--ink-soft); font-size: 0.92rem; }
     .layer-card li { margin-bottom: 4px; }
@@ -65,7 +72,7 @@
       background: var(--amber-tint);
     }
     .teacher-recommendation h2 { font-family: "Cairo", sans-serif; font-size: 1.02rem; margin: 0 0 8px; color: var(--ink); }
-    .teacher-recommendation p { margin: 0; color: #5c3d0a; font-size: 0.92rem; }
+    .teacher-recommendation p { margin: 0; color: var(--rose-ink-soft); font-size: 0.92rem; }
   </style>
 </head>
 <body>

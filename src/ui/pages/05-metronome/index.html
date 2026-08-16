@@ -18,6 +18,9 @@
       --teal-tint: #E1F0EB;
       --amber: #BA7517;
       --amber-tint: #F8ECD8;
+      --chip: #F1EADA;
+      --amber-ink: #7a4c0d;
+      --track-bg: #c9c9c9;
       --hairline: rgba(28, 28, 26, 0.1);
     }
     * { box-sizing: border-box; }
@@ -70,7 +73,7 @@
     .metronome-beat-indicators { display: flex; gap: 10px; min-height: 24px; }
     .metronome-beat-dot {
       width: 18px; height: 18px; border-radius: 50%;
-      background: #ece7d8; border: 2px solid var(--hairline);
+      background: var(--chip); border: 2px solid var(--hairline);
       transition: background-color 0.05s linear, border-color 0.05s linear;
     }
     .metronome-beat-dot.active { background: var(--teal); border-color: var(--teal); }
