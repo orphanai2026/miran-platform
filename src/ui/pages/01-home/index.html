@@ -24,14 +24,14 @@
   --hair:rgba(57,42,21,.14);
 }
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;background:#e8ddc9;color:var(--ink);overflow:hidden}
+html,body{margin:0;min-height:100%;max-width:100%;background:#e8ddc9;color:var(--ink);overflow-x:hidden;overflow-x:clip;overflow-y:auto}
 body{
   font-family:"Segoe UI",Tahoma,Arial,sans-serif;
   -webkit-font-smoothing:antialiased;
 }
 #viewport{
-  width:100vw;height:100vh;display:flex;align-items:flex-start;justify-content:center;
-  overflow:hidden;background:#e8ddc9;
+  width:100%;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;
+  overflow:visible;background:#e8ddc9;
 }
 #stage{
   width:1536px;height:1024px;position:relative;transform-origin:top center;flex:none;
@@ -525,26 +525,26 @@ body.web-fonts .display{font-family:"Aref Ruqaa","Traditional Arabic","Arabic Ty
 
 /* BOTTOM NAV */
 .bottom-nav{
-  position:absolute;left:108px;right:108px;bottom:10px;height:116px;z-index:12;
+  position:fixed;inset-inline:clamp(8px,5.4vw,105px);bottom:max(8px,env(safe-area-inset-bottom));height:96px;z-index:60;
   border:1px solid rgba(214,166,84,.68);border-radius:64px 64px 28px 28px/45px 45px 26px 26px;
   background:linear-gradient(#0A443A,#052E29);box-shadow:0 16px 35px rgba(5,42,36,.17);
-  display:grid;grid-template-columns:repeat(8,1fr);align-items:center;padding:0 28px
+  display:grid;grid-template-columns:repeat(8,minmax(0,1fr));align-items:center;padding:0 clamp(12px,1.8vw,28px)
 }
 .bottom-nav::before,.bottom-nav::after{content:"";position:absolute;top:50%;width:30px;height:30px;border:1px solid rgba(214,166,84,.55);transform:translateY(-50%) rotate(45deg)}
 .bottom-nav::before{right:-15px}.bottom-nav::after{left:-15px}
 .nav-item{
-  color:#F0D59F;text-decoration:none;height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;position:relative;font-size:12px
+  min-width:0;color:#F0D59F;text-decoration:none;height:68px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;position:relative;font-size:clamp(8.5px,.8vw,11px)
 }
 .nav-item:not(:last-child)::after{content:"";position:absolute;left:0;top:15px;height:48px;width:1px;background:rgba(248,236,216,.11)}
 .nav-item svg{width:27px;height:27px;stroke:#E2B66D;fill:none;stroke-width:1.5}
-.nav-item.active{transform:translateY(-25px)}
+.nav-item.active{transform:translateY(-18px)}
 .nav-item.active::before{
-  content:"";position:absolute;width:98px;height:98px;border-radius:50%;z-index:-1;
+  content:"";position:absolute;width:78px;height:78px;border-radius:50%;z-index:-1;
   background:radial-gradient(circle,#0D5A4D,#052E29 68%);border:1px solid rgba(226,182,109,.78);
   box-shadow:0 0 0 7px rgba(226,182,109,.06),0 12px 28px rgba(0,0,0,.17)
 }
-.nav-item.active svg{width:33px;height:33px}
-.nav-item.active span{transform:translateY(30px);font-size:13px}
+.nav-item.active svg{width:28px;height:28px}
+.nav-item.active span{transform:translateY(23px);font-size:11.5px}
 
 /* note rail / manuscript hints */
 .note-rail{position:absolute;left:563px;top:142px;z-index:2;display:flex;flex-direction:column;gap:88px;color:var(--teal);font-size:12px;opacity:.7}
@@ -560,8 +560,24 @@ body.web-fonts .display{font-family:"Aref Ruqaa","Traditional Arabic","Arabic Ty
 .local-id code{direction:ltr;background:rgba(248,236,216,.62);padding:2px 6px;border-radius:5px;color:#7a4c0d}
 
 @media(max-width:700px){
-  html,body{overflow:auto}
-  #viewport{overflow:auto;align-items:flex-start}
+  #viewport{align-items:flex-start}
+}
+
+@media(max-width:900px){
+  .bottom-nav{inset-inline:auto;left:max(8px,env(safe-area-inset-left));right:max(8px,env(safe-area-inset-right));bottom:max(7px,env(safe-area-inset-bottom));height:86px;padding:0 4px;border-radius:32px}
+  .bottom-nav::before,.bottom-nav::after{display:none}
+  .nav-item{height:62px;gap:5px;font-size:clamp(7px,1.35vw,9.5px)}
+  .nav-item:not(:last-child)::after{height:36px;top:13px}
+  .nav-item svg{width:clamp(18px,2.7vw,21px);height:clamp(18px,2.7vw,21px)}
+  .nav-item.active{transform:none}.nav-item.active::before{width:clamp(48px,7vw,57px);height:clamp(48px,7vw,57px)}
+  .nav-item.active svg{width:clamp(21px,3vw,24px);height:clamp(21px,3vw,24px)}
+  .nav-item.active span{transform:translateY(18px);font-size:clamp(7.5px,1.45vw,10px)}
+}
+
+@media(max-width:560px){
+  .bottom-nav{left:max(5px,env(safe-area-inset-left));right:max(5px,env(safe-area-inset-right));height:78px;padding:0 2px;border-radius:27px}
+  .nav-item{height:56px;gap:3px;font-size:clamp(6.5px,2vw,8px)}.nav-item:not(:last-child)::after{height:30px}
+  .nav-item svg{width:18px;height:18px}.nav-item.active::before{width:46px;height:46px}.nav-item.active svg{width:20px;height:20px}.nav-item.active span{transform:translateY(14px);font-size:clamp(7px,2.15vw,8.5px)}
 }
 
 @media(min-width:701px){
@@ -720,6 +736,7 @@ body.web-fonts .display{font-family:"Aref Ruqaa","Traditional Arabic","Arabic Ty
 
 
 
+</main>
 <nav class="bottom-nav" aria-label="تنقل رئيسي">
 <a class="nav-item active" href="../01-home/index.html" aria-current="page"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7"/><path d="M6 10v10h12V10"/><path d="M10 20v-6h4v6"/></svg><span>الرئيسية</span></a>
 <a class="nav-item" href="../02-calibration/index.html"><svg viewBox="0 0 24 24"><path d="M8 4v9a4 4 0 0 0 8 0V4M8 8h8M12 17v3"/></svg><span>المعايرة</span></a>
@@ -730,7 +747,6 @@ body.web-fonts .display{font-family:"Aref Ruqaa","Traditional Arabic","Arabic Ty
 <a class="nav-item" href="../08-teaching-guide/index.html"><svg viewBox="0 0 24 24"><path d="M4 5c3-1 5 0 8 2v12c-3-2-5-3-8-2zM20 5c-3-1-5 0-8 2v12c3-2 5-3 8-2z"/></svg><span>الدليل</span></a>
 <a class="nav-item" href="../09-about/index.html"><svg viewBox="0 0 24 24"><circle cx="8" cy="9" r="2.4"/><circle cx="16" cy="9" r="2.4"/><path d="M3 19c.5-3 2.2-4.5 5-4.5S12.5 16 13 19M11 19c.5-3 2.2-4.5 5-4.5s4.5 1.5 5 4.5"/></svg><span>من نحن</span></a>
 </nav>
-</main>
 </div>
 
 <script type="module">
@@ -747,10 +763,13 @@ import { mountStagedVerificationPanel } from "./staged-verification-panel.js";
   document.getElementById("homeUserId").textContent=summary.localUserId;
 mountStagedVerificationPanel(document.getElementById("stagedVerifyApp"));
 
+  const viewport=document.getElementById("viewport");
   const stage=document.getElementById("stage");
   function fit(){
-    const s=Math.min(window.innerWidth/1536,window.innerHeight/1024);
+    const availableWidth=document.documentElement.clientWidth || window.innerWidth;
+    const s=availableWidth/1536;
     stage.style.transform=`scale(${s})`;
+    viewport.style.height=`${Math.max(window.innerHeight,1024*s)}px`;
   }
   fit(); addEventListener("resize",fit);
 
