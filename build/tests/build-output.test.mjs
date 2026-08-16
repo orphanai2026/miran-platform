@@ -73,7 +73,7 @@ await test("01-home عبر file:// بلا خادم: تُحمَّل بلا أخط
   assert.equal(realErrors(errs).length, 0, `أخطاء: ${realErrors(errs).join(" | ")}`);
   assert.equal((await page.locator("h1").textContent()).trim(), "مِران");
   assert.equal((await page.locator("#homeCurriculumDone").textContent()).trim(), "0");
-  assert.equal(await page.locator(".home-quick-link").count(), 7);
+  assert.equal(await page.locator(".dest").count(), 7);
   assert.equal(await page.locator(".nav-item").count(), 8);
 });
 
