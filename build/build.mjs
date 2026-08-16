@@ -255,7 +255,7 @@ function main() {
   const homeOutPath = path.join(DIST_DIR, "01-home", "index.html");
   let homeHtml = readFileSync(homeOutPath, "utf-8");
   homeHtml = homeHtml.replaceAll(
-    "../../../design-reference/v8/home/assets/ney-reference.png",
+    "../../../../design-reference/v8/home/assets/ney-reference.png",
     "../assets/ney-reference.png",
   );
   writeFileSync(homeOutPath, homeHtml, "utf-8");
