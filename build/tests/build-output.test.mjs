@@ -74,7 +74,7 @@ await test("01-home عبر file:// بلا خادم: تُحمَّل بلا أخط
   assert.equal((await page.locator("h1").textContent()).trim(), "مِران");
   assert.equal((await page.locator("#homeCurriculumDone").textContent()).trim(), "0");
   assert.equal(await page.locator(".home-quick-link").count(), 7);
-  assert.equal(await page.locator(".site-nav-link").count(), 8);
+  assert.equal(await page.locator(".nav-item").count(), 8);
 });
 
 await test("02-calibration عبر file://: تُحمَّل بلا أخطاء، المترونوم المصغّر يعمل", async (page, errs) => {
@@ -163,7 +163,7 @@ await test("08-teaching-guide عبر file://: تُحمَّل بلا أخطاء،
   await page.waitForTimeout(300);
   assert.equal(realErrors(errs).length, 0, `أخطاء: ${realErrors(errs).join(" | ")}`);
   assert.equal(await page.locator(".layer-card").count(), 3);
-  assert.equal(await page.locator(".site-nav-link").count(), 8);
+  assert.equal(await page.locator(".nav-item").count(), 8);
 });
 
 // ==================== تنقّل فعلي بين صفحتين، بلا خادم بالكامل ====================
@@ -172,7 +172,7 @@ await test(
   "تنقّل فعلي عبر file://: الضغط على رابط 'من نحن' من صفحة الرئيسية المدموجة يصل لصفحة #9 المدموجة، بلا خادم إطلاقًا",
   async (page, errs) => {
     await page.goto(fileUrl("01-home/index.html"), { waitUntil: "load" });
-    await page.locator('.site-nav-link[data-nav-key="about"]').click();
+    await page.locator('.nav-item[data-nav-key="about"]').click();
     await page.waitForURL(/09-about\/index\.html/, { timeout: 5000 });
     await page.waitForLoadState("load");
     await page.waitForTimeout(300);
@@ -184,7 +184,7 @@ await test(
 
 await test("القرار 9.6 في مخرجات الدمج: لا رابط settings إطلاقًا في شريط التنقّل", async (page) => {
   await page.goto(fileUrl("01-home/index.html"), { waitUntil: "load" });
-  assert.equal(await page.locator('.site-nav-link[data-nav-key="settings"]').count(), 0);
+  assert.equal(await page.locator('.nav-item[data-nav-key="settings"]').count(), 0);
 });
 
 // ==================== مكتبة الاستماع المرجعية (القرار 9.2) — مسار الصوت المُعاد كتابته ====================

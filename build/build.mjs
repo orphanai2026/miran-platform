@@ -287,6 +287,12 @@ function main() {
     copyDirRecursive(refAudioSrc, refAudioDest);
   }
 
+  // أصل الناي المعتمد في V8: يستخدم كعلامة مائية في الصفحات الداخلية.
+  const neyReferenceSrc = path.join(REPO_ROOT, "design-reference", "v8", "home", "assets", "ney-reference.png");
+  const neyReferenceDest = path.join(DIST_DIR, "assets", "ney-reference.png");
+  mkdirSync(path.dirname(neyReferenceDest), { recursive: true });
+  copyFileSync(neyReferenceSrc, neyReferenceDest);
+
   console.log("=== نتيجة الدمج ===\n");
   for (const r of results.sort((a, b) => a.pageName.localeCompare(b.pageName))) {
     console.log(`${r.pageName}: ${r.outPath.replace(REPO_ROOT + path.sep, "")} — ${r.sizeBytes} بايت (${r.fileCount} ملف مصدر مدموج)`);

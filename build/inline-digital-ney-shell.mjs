@@ -7,7 +7,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, "..");
 const DIST_DIR = path.join(__dirname, "dist");
 const SHELL_PATH = path.join(REPO_ROOT, "src", "ui", "shared", "digital-ney-shell.css");
-const shellCss = readFileSync(SHELL_PATH, "utf-8").trim();
+const shellCss = readFileSync(SHELL_PATH, "utf-8")
+  .replaceAll('../../../design-reference/v8/home/assets/ney-reference.png', '../assets/ney-reference.png')
+  .trim();
 const shellHref = "../../shared/digital-ney-shell.css";
 const linkRe = /\s*<link\s+rel=["']stylesheet["']\s+href=["']\.\.\/\.\.\/shared\/digital-ney-shell\.css["']\s*\/?>(?:\r?\n)?/g;
 
