@@ -1,7 +1,17 @@
 <!doctype html>
 <html lang="ar" dir="rtl"><head>
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>دليل المقامات — مِران</title>
-<link rel="stylesheet" href="../../shared/design-tokens.css"/><link rel="stylesheet" href="../../shared/digital-ney-shell.css"/>
+<link rel="stylesheet" href="../../shared/design-tokens.css" />
+
+
+
+
+<link rel="stylesheet" href="../../shared/digital-ney-shell.css" />
+
+
+
+
+
 <style>
 .maqam-wrap{max-width:1180px}.maqamat-page{display:grid;grid-template-columns:290px minmax(0,1fr);gap:22px;align-items:start}.maqam-list{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.maqam-list-btn{padding:14px 10px;border:1px solid var(--hairline);border-radius:14px;background:rgba(255,255,255,.52);color:var(--ink);font-weight:800;cursor:pointer;transition:.15s}.maqam-list-btn:hover{border-color:var(--teal);transform:translateY(-1px)}.maqam-list-btn.active{background:var(--teal);color:#fff;border-color:var(--teal)}.maqam-details{min-height:310px;padding:24px;background:rgba(255,255,255,.56);border:1px solid var(--hairline);border-radius:24px;box-shadow:0 18px 44px rgba(71,50,24,.05)}.maqam-details h2{margin:0 0 7px;font-size:25px}.maqam-details h3{margin:20px 0 8px;font-size:14px;color:var(--ink-soft)}.maqam-basics{display:flex;gap:18px;color:var(--ink-soft);font-size:13px}.jins-chain-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px}.jins-segment{padding:13px 14px;border-radius:14px;background:rgba(250,246,236,.72);border:1px solid var(--hairline)}.jins-segment-head{display:flex;gap:8px;align-items:baseline}.jins-name{font-weight:800}.jins-start-degree,.jins-source{font-size:11px;color:var(--ink-soft)}.jins-pattern{margin-top:4px;font-size:12px;color:var(--teal-deep)}.sayr-status{padding:13px 14px;border-radius:14px;background:rgba(250,246,236,.72);border:1px solid var(--hairline)}.sayr-badge{display:inline-block;padding:5px 11px;border-radius:999px;font-size:11px;font-weight:800}.sayr-unvalidated{background:var(--amber-tint);color:var(--amber-ink)}.sayr-validated{background:var(--teal-tint);color:var(--teal-deep)}.sayr-detail,.sayr-source{margin-top:5px;font-size:11px;color:var(--ink-soft)}
 .reference-section,.theory-section{margin-top:25px;padding:22px;background:rgba(255,255,255,.46);border:1px solid var(--hairline);border-radius:22px}.reference-section h2,.theory-section h2{margin:0 0 5px;font-size:18px}.reference-section-note,.theory-section-note{margin:0 0 15px;color:var(--ink-soft);font-size:12px}.reference-audio-empty{padding:16px;text-align:center;border:1px dashed var(--hairline);border-radius:13px;color:var(--ink-soft);font-size:12px}.reference-audio-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}.reference-audio-item{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px;border:1px solid var(--hairline);border-radius:12px;background:rgba(250,246,236,.74)}.reference-audio-item audio{flex:1;min-width:180px;height:32px}.reference-audio-label{font-weight:800}.reference-audio-hz{font-size:11px;color:var(--ink-soft)}
@@ -12,6 +22,12 @@
 <section class="page-hero"><div class="page-kicker">خريطة النغم الشرقي</div><h1>دليل المقامات</h1><p>استكشف السلم وسلسلة الأجناس لكل مقام. علامة «؟» تعني أن السِّير اللحني لم يُصادَق عليه سمعيًا بعد.</p><div class="breath-rule"></div></section>
 <main class="page-content maqam-wrap"><div id="app"></div><section class="reference-section"><div class="eyebrow">REFERENCE • استماع</div><h2>استماع مرجعي — المقام المحدَّد</h2><p class="reference-section-note">تسجيل ناي حقيقي للسلّم كاملًا صعودًا وهبوطًا؛ يتغيّر تلقائيًا مع اختيار المقام.</p><div id="maqamReferenceAudio"></div></section><section class="theory-section"><h2>مرجع نظري سريع</h2><p class="theory-section-note">ثمانية أقسام موسيقية مرجعية، مع القاموس والبحث دون تكرار بيانات المقامات.</p><div id="theoryApp"></div></section></main><div id="siteNav"></div></div>
 <script type="module">
-import { mountNav } from "../../shared/nav.js";import { mountMaqamatPage } from "./maqamat-page.js";import { mountTheoryReferencePanel } from "./theory-reference-panel.js";import { mountMaqamReferenceAudio } from "./maqam-reference-audio.js";
-mountNav(document.getElementById("siteNav"),"maqamat");mountMaqamatPage(document.getElementById("app"));mountTheoryReferencePanel(document.getElementById("theoryApp"));mountMaqamReferenceAudio(document.getElementById("maqamReferenceAudio"),document.getElementById("app"));
+import { mountNav } from "../../shared/nav.js";
+import { mountMaqamatPage } from "./maqamat-page.js";
+import { mountTheoryReferencePanel } from "./theory-reference-panel.js";
+import { mountMaqamReferenceAudio } from "./maqam-reference-audio.js";
+mountNav(document.getElementById("siteNav"),"maqamat");
+mountMaqamatPage(document.getElementById("app"));
+mountTheoryReferencePanel(document.getElementById("theoryApp"));
+mountMaqamReferenceAudio(document.getElementById("maqamReferenceAudio"),document.getElementById("app"));
 </script></body></html>
