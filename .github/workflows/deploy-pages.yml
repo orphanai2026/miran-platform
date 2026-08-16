@@ -29,6 +29,9 @@ jobs:
         with:
           node-version: "20"
 
+      - name: Normalize visual HTML for legacy bundler
+        run: node build/normalize-visual-source.mjs
+
       - name: Run build (merge step — no external deps, node fs/path only)
         run: node build/build.mjs
 
