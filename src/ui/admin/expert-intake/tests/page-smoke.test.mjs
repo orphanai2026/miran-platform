@@ -7,8 +7,9 @@
  *
  * **نطاق مقصود:** تدفّق الجلسة الكامل (تسجيل → إيقاف → معاينة → قبول/
  * إعادة/تخطّ → انتقال تلقائي → نهاية الجلسة → تنزيل الكل)، بلا تسجيل كل
- * الـ33 عنصرًا فعليًا (بطيء وغير ضروري) — يقبل عنصرين، يتخطّى الباقي، ثم
- * يتحقق من شاشة النهاية وأحداث التنزيل.
+ * الـ108 عنصرًا فعليًا (بطيء وغير ضروري؛ 100 نغمة = 25 × 4 قيم إيقاعية،
+ * القرار 13.1 — + 8 مقامات) — يقبل عنصرين، يتخطّى الباقي، ثم يتحقق من
+ * شاشة النهاية وأحداث التنزيل.
  *
  * يُشغَّل بـ: node src/ui/admin/expert-intake/tests/page-smoke.test.mjs
  * يتطلب خادمًا محليًا يخدم جذر المستودع:
@@ -51,17 +52,19 @@ async function test(name, fn) {
   }
 }
 
-await test("العنصر الأول يظهر صحيحًا: التقدّم 1/33، تسمية النغمة الأولى مطابقة لـNOTES_24TET", async (page) => {
+await test("العنصر الأول يظهر صحيحًا: التقدّم 1/108، تسمية أول نغمة (روند) مطابقة لـNOTES_24TET", async (page) => {
   const progress = await page.locator("#intakeProgress").textContent();
-  assert.match(progress, /^1 \/ 33/);
+  assert.match(progress, /^1 \/ 108/);
   const label = await page.locator("#intakeItemLabel").textContent();
-  assert.equal(label.trim(), "دو");
+  assert.equal(label.trim(), "دو — روند (كامل)");
 });
 
 await test("زر 'تخطّ' يتقدّم للعنصر التالي بلا أي تسجيل", async (page) => {
   await page.locator("#intakeControls button", { hasText: "تخطّ" }).click();
   const progress = await page.locator("#intakeProgress").textContent();
-  assert.match(progress, /^2 \/ 33/);
+  assert.match(progress, /^2 \/ 108/);
+  const label = await page.locator("#intakeItemLabel").textContent();
+  assert.equal(label.trim(), "دو — بلانش (نصف)");
 });
 
 await test("تسجيل → إيقاف يعرض لوحة معاينة (صوت + تردد مقاس)", async (page) => {
@@ -93,9 +96,9 @@ await test("'قبول والمتابعة' يحفظ العنصر في الملخ�
   await page.locator("#intakeControls button", { hasText: "إيقاف وحفظ المحاولة" }).click();
   await page.locator("#intakeReview button", { hasText: "قبول والمتابعة" }).click();
   const progress = await page.locator("#intakeProgress").textContent();
-  assert.match(progress, /^2 \/ 33/);
+  assert.match(progress, /^2 \/ 108/);
   const summary = await page.locator("#intakeSummary").textContent();
-  assert.match(summary, /مقبول حتى الآن: 1 \/ 33/);
+  assert.match(summary, /مقبول حتى الآن: 1 \/ 108/);
 });
 
 await test("إنهاء الجلسة كاملة (قبول عنصرين، تخطّي الباقي) يعرض شاشة النهاية بالعدد الصحيح", async (page) => {
@@ -106,14 +109,14 @@ await test("إنهاء الجلسة كاملة (قبول عنصرين، تخطّ
     await page.locator("#intakeControls button", { hasText: "إيقاف وحفظ المحاولة" }).click();
     await page.locator("#intakeReview button", { hasText: "قبول والمتابعة" }).click();
   }
-  // نتخطّى باقي الـ31 عنصرًا
-  for (let i = 0; i < 31; i++) {
+  // نتخطّى باقي الـ106 عنصرًا
+  for (let i = 0; i < 106; i++) {
     await page.locator("#intakeControls button", { hasText: "تخطّ" }).click();
   }
   const progress = await page.locator("#intakeProgress").textContent();
   assert.equal(progress, "اكتملت الجلسة");
   const summaryText = await page.locator("#intakeSummary").textContent();
-  assert.match(summaryText, /تم قبول 2 من أصل 33/);
+  assert.match(summaryText, /تم قبول 2 من أصل 108/);
 });
 
 await test("زر 'تنزيل الكل' يُطلق تنزيل ملفي WAV + بيان JSON واحد (3 أحداث تنزيل لعنصرين مقبولين)", async (page) => {
@@ -123,7 +126,7 @@ await test("زر 'تنزيل الكل' يُطلق تنزيل ملفي WAV + بي
     await page.locator("#intakeControls button", { hasText: "إيقاف وحفظ المحاولة" }).click();
     await page.locator("#intakeReview button", { hasText: "قبول والمتابعة" }).click();
   }
-  for (let i = 0; i < 31; i++) {
+  for (let i = 0; i < 106; i++) {
     await page.locator("#intakeControls button", { hasText: "تخطّ" }).click();
   }
   const downloads = [];

@@ -1,8 +1,9 @@
 /**
  * expert-intake-page.js
  * ============================================================
- * منطق صفحة الخبير — جلسة تسجيل واحدة متصلة، عنصر واحد بالمرة (25 نغمة +
- * 8 مقامات)، تغذية راجعة حيّة، تسجيل بضغطة واحدة، معاينة/قبول/إعادة، ثم
+ * منطق صفحة الخبير — جلسة تسجيل واحدة متصلة، عنصر واحد بالمرة (100 نغمة —
+ * 25 نغمة × 4 قيم إيقاعية، القرار 13.1 — + 8 مقامات)، تغذية راجعة حيّة،
+ * تسجيل بضغطة واحدة، معاينة/قبول/إعادة، ثم
  * تنزيل تلقائي لكل الملفات + بيان JSON مرافق عند نهاية الجلسة (القرار 9.4).
  *
  * **نطاق مقصود:** أداة إدارية للمالك/الخبراء فقط — غير مُدرَجة بـ nav.js،
@@ -213,6 +214,7 @@ export function mountExpertIntakePage(container) {
         label: entry.item.label,
         filename,
         measuredHz: entry.measuredHz,
+        ...(entry.item.rhythmicValueId ? { rhythmicValueId: entry.item.rhythmicValueId } : {}),
       });
     }
     const manifestBlob = new Blob([JSON.stringify(manifest, null, 2)], { type: "application/json" });

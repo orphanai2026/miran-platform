@@ -221,8 +221,8 @@ await test(
     await page.goto(fileUrl("admin/expert-intake/index.html"), { waitUntil: "load" });
     await page.waitForTimeout(300);
     assert.equal(realErrors(errs).length, 0, `أخطاء: ${realErrors(errs).join(" | ")}`);
-    assert.match(await page.locator("#intakeProgress").textContent(), /^1 \/ 33/);
-    assert.equal((await page.locator("#intakeItemLabel").textContent()).trim(), "دو");
+    assert.match(await page.locator("#intakeProgress").textContent(), /^1 \/ 108/);
+    assert.equal((await page.locator("#intakeItemLabel").textContent()).trim(), "دو — روند (كامل)");
   }
 );
 
