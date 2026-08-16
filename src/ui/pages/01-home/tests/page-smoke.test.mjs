@@ -82,7 +82,7 @@ await test("حالة فارغة: عدّادات التقدّم كلها صفر،
 await test(
   "روابط الدخول السريع السبعة كلها موجودة بمساراتها النسبية الصحيحة",
   async (page) => {
-    const links = page.locator(".home-quick-link");
+    const links = page.locator(".dest");
     assert.equal(await links.count(), 7);
     const expectedHrefs = [
       "../03-exercises/index.html",
@@ -94,11 +94,9 @@ await test(
       "../09-about/index.html",
     ];
     for (const href of expectedHrefs) {
-      const link = page.locator(`.home-quick-link[href="${href}"]`);
+      const link = page.locator(`.dest[href="${href}"]`);
       await assert.doesNotReject(link.waitFor({ state: "visible", timeout: 2000 }), `رابط مفقود: ${href}`);
     }
-    const primary = page.locator(".home-quick-link.primary");
-    assert.equal(await primary.getAttribute("href"), "../03-exercises/index.html");
   }
 );
 

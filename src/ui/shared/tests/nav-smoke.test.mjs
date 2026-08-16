@@ -6,6 +6,11 @@
  * (صفحة #8 وحدها بلا JS، لها نسخة HTML ثابتة يدويًا من نفس البنية —
  * مُختبرة بشكل منفصل هنا أيضًا).
  *
+ * **تحديث (هجرة V8، القسم 12 بسجل القرارات):** التنقّل صار شريطًا سفليًا
+ * (`bottom-nav`)، وكلاس كل رابط تغيّر من `.site-nav-link` القديم إلى
+ * `.nav-item` — الاختبار حُدِّث ليطابق البنية الجديدة (لا تغيير بالمنطق
+ * أو عدد الروابط، تحديث أسماء الكلاسات فقط).
+ *
  * **تحديث (القرار 9.6):** صفحة #7 (الإعدادات) أُزيلت من التنقّل الحي —
  * الرابط الثامن الآن "من نحن" (`09-about/`، القرار 9.5) بدلها. العدد
  * الإجمالي يبقى 8 روابط.
@@ -57,22 +62,22 @@ const EXPECTED_KEYS = [
 
 await test("صفحة #1 (الرئيسية): كل روابط التنقّل الثمانية موجودة، والحالية (home) مُبرَزة", async (page) => {
   await page.goto(`${PAGES_ROOT}/01-home/index.html`, { waitUntil: "load" });
-  const links = page.locator(".site-nav-link");
+  const links = page.locator(".nav-item");
   assert.equal(await links.count(), 8);
   for (const key of EXPECTED_KEYS) {
     await assert.doesNotReject(
-      page.locator(`.site-nav-link[data-nav-key="${key}"]`).waitFor({ state: "visible", timeout: 2000 }),
+      page.locator(`.nav-item[data-nav-key="${key}"]`).waitFor({ state: "visible", timeout: 2000 }),
       `رابط مفقود: ${key}`
     );
   }
-  const active = page.locator(".site-nav-link.active");
+  const active = page.locator(".nav-item.active");
   assert.equal(await active.count(), 1);
   assert.equal(await active.getAttribute("data-nav-key"), "home");
 });
 
 await test("صفحة #4 (المقامات): الرابط الحالي المُبرَز هو maqamat لا home", async (page) => {
   await page.goto(`${PAGES_ROOT}/04-maqamat-guide/index.html`, { waitUntil: "load" });
-  const active = page.locator(".site-nav-link.active");
+  const active = page.locator(".nav-item.active");
   assert.equal(await active.count(), 1);
   assert.equal(await active.getAttribute("data-nav-key"), "maqamat");
 });
@@ -81,11 +86,11 @@ await test(
   "تنقّل فعلي: الضغط على رابط 'من نحن' من صفحة الرئيسية يصل فعليًا لصفحة #9 العاملة",
   async (page) => {
     await page.goto(`${PAGES_ROOT}/01-home/index.html`, { waitUntil: "load" });
-    await page.locator('.site-nav-link[data-nav-key="about"]').click();
+    await page.locator('.nav-item[data-nav-key="about"]').click();
     await page.waitForURL(/09-about\/index\.html/, { timeout: 5000 });
     await page.waitForLoadState("load");
     await assert.doesNotReject(page.locator(".about-repo-link").waitFor({ state: "visible", timeout: 3000 }));
-    const active = page.locator(".site-nav-link.active");
+    const active = page.locator(".nav-item.active");
     assert.equal(await active.getAttribute("data-nav-key"), "about");
   }
 );
@@ -94,7 +99,7 @@ await test(
   "القرار 9.6: صفحة #7 (الإعدادات) لم تعد في شريط التنقّل — لا رابط settings إطلاقًا",
   async (page) => {
     await page.goto(`${PAGES_ROOT}/01-home/index.html`, { waitUntil: "load" });
-    assert.equal(await page.locator('.site-nav-link[data-nav-key="settings"]').count(), 0);
+    assert.equal(await page.locator('.nav-item[data-nav-key="settings"]').count(), 0);
   }
 );
 
@@ -102,9 +107,9 @@ await test(
   "صفحة #8 (الدليل التعليمي): نسخة التنقّل الثابتة يدويًا موجودة بنفس الروابط الثمانية، والحالية (teaching) مُبرَزة، وبلا سكربتات",
   async (page) => {
     await page.goto(`${PAGES_ROOT}/08-teaching-guide/index.html`, { waitUntil: "load" });
-    const links = page.locator(".site-nav-link");
+    const links = page.locator(".nav-item");
     assert.equal(await links.count(), 8);
-    const active = page.locator(".site-nav-link.active");
+    const active = page.locator(".nav-item.active");
     assert.equal(await active.count(), 1);
     assert.equal(await active.getAttribute("data-nav-key"), "teaching");
     const scriptTags = await page.locator("script").count();

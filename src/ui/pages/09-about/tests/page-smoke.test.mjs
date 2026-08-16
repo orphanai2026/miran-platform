@@ -53,7 +53,7 @@ await test("قائمة المساهمين تعرض عنصرًا واحدًا ع�
 });
 
 await test("رابط التنقّل الحالي (about) مُبرَز بشكل صحيح", async (page) => {
-  const active = page.locator(".site-nav-link.active");
+  const active = page.locator(".nav-item.active");
   assert.equal(await active.getAttribute("data-nav-key"), "about");
 });
 
