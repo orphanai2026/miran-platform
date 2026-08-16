@@ -250,6 +250,16 @@ function main() {
     results.push({ pageName, ...r });
   }
 
+  // الصفحة الرئيسية تستخدم أصل الناي نفسه بدل تضمين نسخة Base64 ضخمة.
+  // عند النشر يصبح الأصل في build/dist/assets/ بجانب بقية مخرجات Pages.
+  const homeOutPath = path.join(DIST_DIR, "01-home", "index.html");
+  let homeHtml = readFileSync(homeOutPath, "utf-8");
+  homeHtml = homeHtml.replaceAll(
+    "../../../design-reference/v8/home/assets/ney-reference.png",
+    "../assets/ney-reference.png",
+  );
+  writeFileSync(homeOutPath, homeHtml, "utf-8");
+
   // إعادة كتابة مسار الصوت المرجعي (القرار 9.2) في الصفحات التي تستهلكه —
   // نفس أسلوب buildRedirectPage تمامًا (استبدال نصي حرفي بعد الدمج، لا حل
   // جديد). REFERENCE_AUDIO_BASE ثابتة المصدر في src/ui/shared/reference-audio-path.js.
