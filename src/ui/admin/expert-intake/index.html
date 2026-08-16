@@ -6,7 +6,7 @@
   <title>صفحة الخبير (إدارية) — مِران</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
       color-scheme: light;
@@ -14,65 +14,73 @@
       --ink: #1C1C1A;
       --ink-soft: #5F5E5A;
       --teal: #0F6E56;
-      --teal-deep: #085041;
+      --teal-deep: #073D34;
       --teal-tint: #E1F0EB;
       --amber: #BA7517;
       --amber-tint: #F8ECD8;
+      --amber-ink: #7a4c0d;
       --hairline: rgba(28, 28, 26, 0.1);
     }
     * { box-sizing: border-box; }
     body {
-      font-family: "Tajawal", system-ui, sans-serif;
-      background: var(--cream);
+      font-family: "IBM Plex Sans Arabic", "Segoe UI", Tahoma, Arial, sans-serif;
+      background:
+        radial-gradient(circle at 19% 8%, rgba(255,255,255,.9) 0 12%, transparent 31%),
+        radial-gradient(circle at 79% 15%, rgba(255,250,237,.8), transparent 30%),
+        linear-gradient(110deg, #fbf6eb 0%, #f7edd9 48%, #efe0c5 100%);
+      background-attachment: fixed;
       color: var(--ink);
       margin: 0;
+      min-height: 100vh;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
     }
     .page-shell { max-width: 560px; margin: 0 auto; padding: 28px 20px 64px; text-align: center; }
 
     .admin-banner {
-      background: var(--amber-tint); color: #7a4c0d; font-size: 0.8rem; font-weight: 600;
+      background: var(--amber-tint); color: var(--amber-ink); font-size: 0.8rem; font-weight: 600;
       padding: 8px 14px; border-radius: 999px; display: inline-block; margin-bottom: 20px;
     }
-    h1 { font-family: "Cairo", "Tajawal", sans-serif; font-weight: 800; font-size: 1.5rem; margin: 0 0 6px; }
+    h1 { font-family: "IBM Plex Sans Arabic", sans-serif; font-weight: 700; font-size: 1.5rem; margin: 0 0 6px; color: var(--teal-deep); }
     .page-sub { color: var(--ink-soft); margin: 0 0 28px; font-size: 0.88rem; }
 
     .intake-progress { color: var(--ink-soft); font-size: 0.85rem; margin-bottom: 6px; }
-    .intake-item-label { font-family: "Cairo", sans-serif; font-weight: 800; font-size: 2rem; margin: 0 0 6px; }
+    .intake-item-label { font-family: "IBM Plex Sans Arabic", sans-serif; font-weight: 700; font-size: 2rem; margin: 0 0 6px; color: var(--teal-deep); }
     .intake-item-hint { color: var(--ink-soft); font-size: 0.9rem; margin: 0 0 24px; }
 
     .intake-live {
-      font-family: "Cairo", sans-serif; font-size: 2.6rem; font-weight: 800;
+      font-family: "IBM Plex Sans Arabic", sans-serif; font-size: 2.6rem; font-weight: 700;
       font-variant-numeric: tabular-nums; color: var(--ink-soft); margin-bottom: 4px;
     }
     .intake-live.ok { color: var(--teal-deep); }
-    .intake-quality-note { min-height: 1.3em; font-size: 0.82rem; color: #7a4c0d; margin: 0 0 20px; }
+    .intake-quality-note { min-height: 1.3em; font-size: 0.82rem; color: var(--amber-ink); margin: 0 0 20px; }
 
     .intake-controls { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 20px; }
     .btn-primary {
-      padding: 12px 26px; font-size: 0.95rem; font-weight: 600; font-family: "Cairo", sans-serif;
-      border-radius: 10px; border: none; background: var(--ink); color: var(--cream); cursor: pointer;
+      padding: 11px 22px; font-size: 0.95rem; font-weight: 700; font-family: "IBM Plex Sans Arabic", sans-serif;
+      border-radius: 999px; border: 1px solid rgba(186,117,23,.48); background: var(--teal-deep); color: var(--cream); cursor: pointer;
+      box-shadow: 0 8px 18px rgba(15,110,86,.13);
     }
-    .btn-primary:disabled { opacity: 0.4; cursor: default; }
+    .btn-primary:disabled { opacity: 0.4; cursor: default; box-shadow: none; }
     .btn-secondary {
-      padding: 11px 22px; font-size: 0.9rem; font-family: "Cairo", sans-serif; font-weight: 600;
-      border-radius: 10px; border: 1px solid var(--teal); color: var(--teal-deep);
+      padding: 10px 20px; font-size: 0.9rem; font-family: "IBM Plex Sans Arabic", sans-serif; font-weight: 700;
+      border-radius: 999px; border: 1px solid rgba(15,110,86,.35); color: var(--teal-deep);
       background: var(--teal-tint); cursor: pointer;
     }
     .btn-skip {
-      padding: 11px 18px; font-size: 0.85rem; font-family: "Tajawal", sans-serif;
-      border-radius: 10px; border: 1px solid var(--hairline); color: var(--ink-soft);
+      padding: 10px 18px; font-size: 0.85rem; font-family: "IBM Plex Sans Arabic", sans-serif;
+      border-radius: 999px; border: 1px solid var(--hairline); color: var(--ink-soft);
       background: transparent; cursor: pointer;
     }
 
     .intake-review {
-      background: #fff; border: 1px solid var(--hairline); border-radius: 14px; padding: 18px 20px; margin-bottom: 20px;
+      background: rgba(255,255,255,.55); border: 1px solid var(--hairline); border-radius: 22px 9px 22px 9px; padding: 18px 20px; margin-bottom: 20px;
+      box-shadow: 0 18px 44px rgba(71,50,24,.05);
     }
     .intake-audio-preview { width: 100%; margin-bottom: 10px; }
     .intake-measured { font-size: 0.88rem; margin: 0 0 14px; }
     .intake-measured strong { color: var(--teal-deep); }
-    .intake-measured-none { color: #7a2a2a; }
+    .intake-measured-none { color: var(--ink); font-weight: 700; }
     .intake-review-actions { display: flex; gap: 10px; justify-content: center; }
 
     .intake-summary { color: var(--ink-soft); font-size: 0.85rem; }
