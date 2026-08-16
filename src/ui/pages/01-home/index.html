@@ -1,170 +1,67 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>مِران</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../../shared/design-tokens.css" />
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      font-family: "Tajawal", system-ui, sans-serif;
-      background: var(--cream);
-      color: var(--ink);
-      margin: 0;
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-    }
-    .page-shell { max-width: 980px; margin: 0 auto; padding: 28px 20px 64px; }
-
-    .site-nav {
-      display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 32px; padding-bottom: 16px;
-      border-bottom: 1px solid var(--hairline);
-    }
-    .site-nav-link {
-      padding: 7px 14px; border-radius: 999px; font-size: 0.82rem; font-weight: 500;
-      text-decoration: none; color: var(--ink-soft); background: transparent;
-      border: 1px solid transparent; transition: background 0.15s ease, color 0.15s ease;
-    }
-    .site-nav-link:hover { background: var(--teal-tint); color: var(--teal-deep); }
-    .site-nav-link.active { background: var(--ink); color: var(--cream); }
-
-    .home-hero { margin-bottom: 8px; }
-    .home-eyebrow {
-      display: block; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.04em;
-      color: var(--teal); margin-bottom: 10px;
-    }
-    h1 {
-      font-family: "Cairo", "Tajawal", sans-serif;
-      font-weight: 800; font-size: 2.6rem; line-height: 1.15; margin: 0 0 10px;
-    }
-    .page-sub { color: var(--ink-soft); margin: 0; font-size: 1rem; max-width: 46ch; }
-
-    .breath-line { display: block; width: 100%; height: 28px; margin: 30px 0 38px; }
-    .breath-line path { fill: none; stroke: var(--teal); stroke-width: 1.6; stroke-linecap: round; opacity: 0.55; }
-    .breath-line circle { fill: var(--amber); opacity: 0.85; }
-
-    /* شبكة بينتو: بطاقة التقدّم أعرض يسارًا، الدخول السريع أضيق يمينًا،
-       شريط المعرّف المحلي يمتد بعرض الشبكة كاملة أسفلهما. */
-    .home-page {
-      display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 20px; align-items: start;
-    }
-    .home-section { margin: 0; }
-    .home-section h2 {
-      font-family: "Cairo", "Tajawal", sans-serif;
-      font-weight: 600; font-size: 1rem; margin: 0 0 16px; color: var(--ink);
-    }
-
-    .home-progress-grid {
-      display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
-    }
-    .home-progress-item {
-      position: relative; background: #fff; border: 1px solid var(--hairline); border-radius: 16px;
-      padding: 20px 16px 18px; text-align: center; overflow: hidden;
-    }
-    .home-progress-item::before {
-      content: ""; position: absolute; inset: 0 0 auto 0; height: 3px; background: var(--teal);
-      opacity: 0.7;
-    }
-    .home-progress-value {
-      display: block; font-family: "Cairo", sans-serif; font-size: 2.1rem; font-weight: 800;
-      color: var(--teal-deep); font-variant-numeric: tabular-nums;
-    }
-    .home-progress-label { display: block; margin-top: 6px; font-size: 0.8rem; color: var(--ink-soft); }
-
-    .home-quick-links { display: flex; flex-direction: column; gap: 10px; }
-    .home-quick-link {
-      display: flex; justify-content: space-between; align-items: center; gap: 10px;
-      background: #fff; border: 1px solid var(--hairline); border-radius: 12px; padding: 16px 18px;
-      text-decoration: none; color: var(--ink); transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
-    }
-    .home-quick-link:hover { border-color: var(--teal); transform: translateX(-3px); box-shadow: 0 6px 18px rgba(15, 110, 86, 0.1); }
-    .home-quick-link.primary { background: var(--ink); color: var(--cream); border-color: var(--ink); }
-    .home-quick-link.primary .home-quick-link-note { color: rgba(250, 246, 236, 0.65); }
-    .home-quick-link-label { font-family: "Cairo", sans-serif; font-weight: 600; font-size: 0.98rem; }
-    .home-quick-link-note { font-size: 0.82rem; color: var(--ink-soft); }
-
-    .home-user-id-note {
-      grid-column: 1 / -1; margin-top: 4px; font-size: 0.78rem; color: var(--ink-soft);
-      padding-top: 20px; border-top: 1px solid var(--hairline);
-    }
-    .home-user-id-note code {
-      direction: ltr; display: inline-block; background: var(--amber-tint); color: var(--amber-ink);
-      padding: 2px 8px; border-radius: 6px; font-size: 0.76rem;
-    }
-
-    /* بطاقة ثانوية هادئة — لا تنافس بطاقتَي البينتو بصريًا */
-    .staged-verify-section {
-      margin-top: 28px; padding: 22px 24px; background: #fff;
-      border: 1px solid var(--hairline); border-radius: 16px;
-    }
-    .staged-verify-section h2 { font-family: "Cairo", sans-serif; font-weight: 700; font-size: 0.92rem; margin: 0 0 6px; }
-    .staged-verify-section-note { color: var(--ink-soft); font-size: 0.82rem; margin: 0 0 14px; }
-    .staged-verify-idle {
-      color: var(--ink-soft); font-size: 0.88rem; padding: 16px; text-align: center;
-      background: var(--cream); border: 1px dashed var(--hairline); border-radius: 12px; margin: 0;
-    }
-    .staged-verify-prompt {
-      background: var(--cream); border: 1px solid var(--hairline); border-radius: 14px; padding: 18px; text-align: center;
-    }
-    .staged-verify-note { margin: 0 0 14px; font-size: 0.95rem; }
-    .staged-verify-note strong { color: var(--teal-deep); font-family: "Cairo", sans-serif; }
-    .staged-verify-live {
-      font-family: "Cairo", sans-serif; font-size: 2rem; font-weight: 800;
-      font-variant-numeric: tabular-nums; color: var(--ink-soft); margin-bottom: 4px;
-    }
-    .staged-verify-live.ok { color: var(--teal-deep); }
-    .staged-verify-status { min-height: 1.3em; font-size: 0.85rem; color: var(--ink-soft); margin: 0 0 14px; }
-    .staged-verify-progress { display: flex; gap: 8px; justify-content: center; margin-bottom: 16px; }
-    .staged-verify-dot {
-      width: 14px; height: 14px; border-radius: 50%; background: var(--chip); border: 2px solid var(--hairline);
-    }
-    .staged-verify-dot.filled { background: var(--teal); border-color: var(--teal); }
-
-    @media (max-width: 760px) {
-      .home-page { grid-template-columns: 1fr; }
-      .home-progress-grid { grid-template-columns: repeat(2, 1fr); }
-      h1 { font-size: 2.1rem; }
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>مِران</title>
+<link rel="stylesheet" href="../../shared/design-tokens.css" />
+<style>
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;overflow:hidden;background:#e8ddc9;color:var(--ink)}body{font-family:"Tajawal","Segoe UI",Tahoma,Arial,sans-serif;-webkit-font-smoothing:antialiased}a{color:inherit}
+#viewport{width:100vw;height:100vh;display:flex;align-items:flex-start;justify-content:center;overflow:hidden}
+#stage{width:1536px;height:1024px;position:relative;flex:none;transform-origin:top center;overflow:hidden;background:radial-gradient(circle at 19% 9%,rgba(255,255,255,.92),transparent 31%),linear-gradient(180deg,#fbf6eb 0%,#f7efdf 74%,#efe3cf 100%)}
+#stage:after{content:"";position:absolute;left:-3%;right:-3%;bottom:88px;height:190px;z-index:1;opacity:.24;background:radial-gradient(ellipse at 5% 100%,#c7a369 0 34%,transparent 35%),radial-gradient(ellipse at 27% 100%,#d1b47c 0 28%,transparent 29%),radial-gradient(ellipse at 54% 100%,#c5a26d 0 34%,transparent 35%),radial-gradient(ellipse at 80% 100%,#d4b984 0 30%,transparent 31%)}
+.brand{position:absolute;left:92px;top:60px;z-index:8;text-align:right}.brand h1{margin:0;font-family:"Cairo","Tajawal",sans-serif;font-size:58px;line-height:1;font-weight:800}.brand p{margin:9px 0 0;color:var(--ink-soft);font-size:14px;letter-spacing:.03em}
+.seal{position:absolute;left:24px;top:23px;z-index:8;width:66px;height:66px;border:2px solid var(--teal);border-radius:50%;opacity:.86}.seal:before{content:"";position:absolute;left:29px;top:8px;width:7px;height:48px;border-radius:4px;background:linear-gradient(#c59a5d,#9d7747);transform:rotate(-14deg)}.seal i{position:absolute;left:29px;width:7px;height:7px;border-radius:50%;background:#1c1c1a;z-index:2}.seal i:nth-child(1){top:17px}.seal i:nth-child(2){top:29px}.seal i:nth-child(3){top:41px}
+.hero{position:absolute;left:115px;top:213px;width:520px;z-index:7;text-align:right}.ghost{position:absolute;left:-58px;top:-90px;font-family:"Cairo",sans-serif;font-size:138px;font-weight:800;color:rgba(28,28,26,.035);pointer-events:none}.hero h2{margin:0;font-family:"Cairo","Tajawal",sans-serif;font-size:62px;line-height:1.14;font-weight:800}.hero h2 span{display:block;color:var(--teal);font-size:52px}.hero p{margin:18px 0 0;width:390px;color:var(--ink-soft);font-size:15px;line-height:1.9}.hero-rule{width:230px;height:18px;margin-top:26px;border-top:1px solid rgba(15,110,86,.42);position:relative}.hero-rule:after{content:"";position:absolute;right:42px;top:-4px;width:8px;height:8px;background:var(--amber);border-radius:50%}
+.breath{position:absolute;left:560px;top:110px;width:250px;height:710px;z-index:2;opacity:.36}.breath path{fill:none;stroke:var(--teal);stroke-width:1.4;stroke-linecap:round}
+.ney{position:absolute;left:492px;top:0;width:440px;height:936px;object-fit:contain;z-index:5;pointer-events:none}
+.journey{position:absolute;left:789px;top:79px;width:290px;z-index:7;display:grid;gap:76px;transform:rotate(0deg)}.journey a{display:grid;grid-template-columns:32px 32px auto;align-items:center;gap:4px;text-decoration:none;color:var(--ink);font-size:14px;font-weight:700;white-space:nowrap}.journey a:before{content:"";width:30px;border-top:1px solid rgba(28,28,26,.3)}.journey .ico{width:29px;height:29px;display:grid;place-items:center;color:var(--teal);font-size:17px}.journey a:hover{color:var(--teal)}
+.verify{position:absolute;right:85px;top:173px;width:382px;z-index:7;background:rgba(250,246,236,.78);border:1px solid rgba(28,28,26,.12);border-radius:26px;padding:30px 28px 26px;box-shadow:0 18px 45px rgba(74,54,25,.06);backdrop-filter:blur(4px)}.verify .eyebrow{color:var(--amber);font-size:12px;font-weight:800;letter-spacing:.08em}.verify h3{margin:5px 0 8px;font-family:"Cairo",sans-serif;font-size:24px}.verify>p{margin:0 0 18px;color:var(--ink-soft);font-size:12.5px;line-height:1.75}.staged-verify-idle,.staged-verify-prompt{background:rgba(255,255,255,.48);border:1px solid rgba(28,28,26,.1);border-radius:18px;padding:18px;text-align:center;color:var(--ink-soft);font-size:13px}.staged-verify-note{margin:0 0 12px}.staged-verify-note strong{color:var(--teal-deep)}.staged-verify-live{font-family:"Cairo",sans-serif;font-weight:800;font-size:34px;color:var(--ink-soft)}.staged-verify-live.ok{color:var(--teal)}.staged-verify-status{min-height:20px;margin:3px 0 12px;font-size:12px}.staged-verify-progress{display:flex;justify-content:center;gap:8px;margin-bottom:15px}.staged-verify-dot{width:13px;height:13px;border-radius:50%;background:var(--chip);border:2px solid rgba(28,28,26,.14)}.staged-verify-dot.filled{background:var(--teal);border-color:var(--teal)}.btn-primary{border:0;border-radius:999px;padding:10px 19px;background:var(--teal);color:white;font-family:inherit;font-weight:700;cursor:pointer}
+.progress{position:absolute;left:88px;bottom:150px;width:460px;z-index:7}.progress h3{margin:0 0 14px;font-family:"Cairo",sans-serif;font-size:15px}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.metric{min-height:88px;padding:14px 11px;border-top:2px solid rgba(15,110,86,.55);background:rgba(255,255,255,.46);border-radius:0 0 12px 12px;text-align:center}.metric b{display:block;color:var(--teal-deep);font:800 24px/1.2 "Cairo",sans-serif}.metric span{display:block;margin-top:5px;color:var(--ink-soft);font-size:10.5px;line-height:1.35}.user-id{margin-top:10px;color:var(--ink-soft);font-size:10.5px}.user-id code{direction:ltr;display:inline-block;background:var(--amber-tint);color:var(--amber-ink);padding:2px 7px;border-radius:5px}
+.bottom-nav{position:absolute;left:68px;right:68px;bottom:12px;height:103px;z-index:20;display:flex;direction:rtl;align-items:center;justify-content:space-around;padding:0 36px;background:linear-gradient(180deg,#0b5043,#06382f);border-radius:48% 48% 24px 24px/42% 42% 24px 24px;box-shadow:0 15px 35px rgba(5,50,42,.18)}.nav-item{width:120px;height:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;text-decoration:none;color:rgba(250,246,236,.75);font-size:11px;position:relative}.nav-item .nav-ico{font-size:22px;line-height:1}.nav-item.active{color:#fff;transform:translateY(-20px)}.nav-item.active:before{content:"";position:absolute;width:78px;height:78px;border-radius:50%;background:#0e6452;border:5px solid #f3e6cc;box-shadow:0 8px 18px rgba(0,0,0,.18);z-index:-1}.nav-item.active span:last-child{transform:translateY(24px);color:#f7eddc;font-weight:700}
+@media(max-width:800px){#viewport{overflow:auto;align-items:flex-start}}
+</style>
 </head>
 <body>
-  <div class="page-shell">
-    <div id="siteNav"></div>
-
-    <div class="home-hero">
-      <span class="home-eyebrow">منصة تعليم الناي الشرقي</span>
-      <h1>مِران</h1>
-      <p class="page-sub">نظرة عامة على تقدّمك، ودخول سريع لكل مرحلة من رحلة إتقان الآلة.</p>
-    </div>
-
-    <svg class="breath-line" viewBox="0 0 680 28" preserveAspectRatio="none" aria-hidden="true">
-      <path d="M0 14 L110 14 L140 4 L170 24 L200 14 L680 14" />
-      <circle cx="140" cy="4" r="3" />
-      <circle cx="170" cy="24" r="3" />
-    </svg>
-
-    <div id="app"></div>
-
-    <section class="staged-verify-section">
-      <h2>الاختبار المرحلي</h2>
-      <p class="staged-verify-section-note">
-        بعد إتقان نغمة في التمارين، أعد عزفها هنا للتأكيد — تسجيل تلقائي واحد يُعتمَد بعد قراءات متتالية متفقة (القرار 9.3).
-      </p>
-      <div id="stagedVerifyApp"></div>
-    </section>
-  </div>
-
-  <script type="module">
-    import { mountNav } from "../../shared/nav.js";
-    import { mountHomePage } from "./home-page.js";
-    import { mountStagedVerificationPanel } from "./staged-verification-panel.js";
-    mountNav(document.getElementById("siteNav"), "home");
-    mountHomePage(document.getElementById("app"));
-    mountStagedVerificationPanel(document.getElementById("stagedVerifyApp"));
-  </script>
-  </body>
-</html>
+<div id="viewport"><main id="stage" aria-label="مِران — الصفحة الرئيسية">
+<div class="seal" aria-hidden="true"><i></i><i></i><i></i></div>
+<header class="brand"><h1>مِران</h1><p>منصة تعليم الناي الشرقي</p></header>
+<section class="hero"><div class="ghost">نَفَس</div><h2>النَفَس<span>يَصيرُ موسيقى</span></h2><p>نظرة عامة على تقدّمك، ودخول سريع لكل مرحلة من رحلة إتقان الآلة.</p><div class="hero-rule"></div></section>
+<svg class="breath" viewBox="0 0 250 710" aria-hidden="true"><path d="M20 10 C150 90 20 155 150 215 C270 270 110 340 230 405 C300 450 155 535 240 680"/><path d="M31 25 C166 92 42 160 168 224 C278 280 127 347 240 417 C302 462 178 545 244 667" opacity=".55"/></svg>
+<svg class="ney" viewBox="0 0 440 936" aria-hidden="true"><defs><linearGradient id="cane" x1="0" x2="1"><stop offset="0" stop-color="#7d542e"/><stop offset=".16" stop-color="#c79455"/><stop offset=".48" stop-color="#e1bd79"/><stop offset=".72" stop-color="#b77d42"/><stop offset="1" stop-color="#6f482a"/></linearGradient><linearGradient id="shine" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff" stop-opacity=".42"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#4d2c18" stop-opacity=".18"/></linearGradient><filter id="soft"><feDropShadow dx="3" dy="8" stdDeviation="7" flood-opacity=".18"/></filter></defs><g transform="translate(110,-25) rotate(-13 110 470)" filter="url(#soft)"><rect x="70" y="5" width="96" height="930" rx="42" fill="url(#cane)"/><rect x="81" y="14" width="35" height="910" rx="20" fill="url(#shine)" opacity=".7"/><g stroke="#6c4428" stroke-width="7" opacity=".65"><path d="M72 105h92"/><path d="M72 214h92"/><path d="M72 326h92"/><path d="M72 438h92"/><path d="M72 551h92"/><path d="M72 664h92"/><path d="M72 777h92"/><path d="M72 887h92"/></g><g fill="#24170f" stroke="#d7a868" stroke-width="4"><ellipse cx="117" cy="180" rx="14" ry="18"/><ellipse cx="117" cy="289" rx="14" ry="18"/><ellipse cx="117" cy="399" rx="14" ry="18"/><ellipse cx="117" cy="510" rx="14" ry="18"/><ellipse cx="117" cy="621" rx="14" ry="18"/><ellipse cx="117" cy="732" rx="14" ry="18"/><ellipse cx="117" cy="841" rx="14" ry="18"/></g><ellipse cx="117" cy="20" rx="41" ry="14" fill="#3c2517"/><ellipse cx="117" cy="20" rx="29" ry="8" fill="#140d09"/></g></svg>
+<nav class="journey" aria-label="رحلة التعلم عبر الناي">
+<a href="../08-teaching-guide/index.html"><span></span><span class="ico">▤</span><span>الدليل</span></a>
+<a href="../06-library-export/index.html"><span></span><span class="ico">▥</span><span>المكتبة</span></a>
+<a href="../05-metronome/index.html"><span></span><span class="ico">◇</span><span>المترونوم</span></a>
+<a href="../04-maqamat-guide/index.html"><span></span><span class="ico">≋</span><span>المقامات</span></a>
+<a href="../03-exercises/index.html"><span></span><span class="ico">◉</span><span>التمارين</span></a>
+<a href="../02-calibration/index.html"><span></span><span class="ico">⌁</span><span>المعايرة</span></a>
+<a href="../01-home/index.html"><span></span><span class="ico">⌂</span><span>الرئيسية</span></a>
+</nav>
+<section class="verify"><div class="eyebrow">LIVE • اختبار صوتي</div><h3>الاختبار المرحلي</h3><p>بعد إتقان نغمة في التمارين، أعد عزفها هنا للتأكيد. تبقى آلية التحقق والتسجيل التلقائي الأصلية كما هي.</p><div id="stagedVerifyApp"></div></section>
+<section class="progress"><h3>تقدّمك</h3><div class="metrics"><div class="metric"><b id="homeCurriculumDone">0</b><span>يومًا مُتقنًا من المنهج</span></div><div class="metric"><b id="homeFoundationStatus">—</b><span>مرحلة النفَس</span></div><div class="metric"><b id="homeCalibrationNotes">0</b><span>نغمة مُسجَّلة للمعايرة</span></div><div class="metric"><b id="homeCalibrationFrozen">0</b><span>مرجع معتمَد</span></div></div><div class="user-id">المعرّف المحلي: <code id="homeUserId">—</code></div></section>
+<nav class="bottom-nav" aria-label="تنقل رئيسي">
+<a class="nav-item active" href="../01-home/index.html" aria-current="page"><span class="nav-ico">⌂</span><span>الرئيسية</span></a>
+<a class="nav-item" href="../02-calibration/index.html"><span class="nav-ico">⌁</span><span>المعايرة</span></a>
+<a class="nav-item" href="../03-exercises/index.html"><span class="nav-ico">◉</span><span>التمارين</span></a>
+<a class="nav-item" href="../04-maqamat-guide/index.html"><span class="nav-ico">≋</span><span>المقامات</span></a>
+<a class="nav-item" href="../05-metronome/index.html"><span class="nav-ico">◇</span><span>المترونوم</span></a>
+<a class="nav-item" href="../06-library-export/index.html"><span class="nav-ico">▥</span><span>المكتبة</span></a>
+<a class="nav-item" href="../08-teaching-guide/index.html"><span class="nav-ico">▤</span><span>الدليل</span></a>
+<a class="nav-item" href="../09-about/index.html"><span class="nav-ico">◎</span><span>من نحن</span></a>
+</nav>
+</main></div>
+<script type="module">
+import { mountHomePage } from "./home-page.js";
+import { mountStagedVerificationPanel } from "./staged-verification-panel.js";
+const scratch=document.createElement("div");
+const summary=mountHomePage(scratch);
+document.getElementById("homeCurriculumDone").textContent=summary.doneCount;
+document.getElementById("homeFoundationStatus").textContent=summary.foundationStarted?"بدأت":"لم تبدأ";
+document.getElementById("homeCalibrationNotes").textContent=summary.totalNotes;
+document.getElementById("homeCalibrationFrozen").textContent=summary.frozenCount;
+document.getElementById("homeUserId").textContent=summary.localUserId;
+mountStagedVerificationPanel(document.getElementById("stagedVerifyApp"));
+const stage=document.getElementById("stage");function fit(){const s=Math.min(innerWidth/1536,innerHeight/1024);stage.style.transform=`scale(${s})`}fit();addEventListener("resize",fit);
+</script>
+</body></html>
