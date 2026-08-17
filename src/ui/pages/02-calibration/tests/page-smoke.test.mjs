@@ -57,8 +57,10 @@ await test("الصفحة تُحمَّل بلا أخطاء JS حقيقية", asyn
   assert.equal(realErrors(consoleErrors).length, 0, `أخطاء كونسول: ${realErrors(consoleErrors).join(" | ")}`);
 });
 
-await test("عناصر الصفحة الأساسية موجودة: حقل الإصبعة، السجل، الملف الشخصي، زر التسجيل", async (page) => {
-  await assert.doesNotReject(page.locator("#calibFingering").waitFor({ state: "visible", timeout: 3000 }));
+await test("عناصر الصفحة الأساسية موجودة: نغمة ثابتة (دو)، السجل، الملف الشخصي، زر التسجيل", async (page) => {
+  await assert.doesNotReject(page.locator(".calib-fixed-note").waitFor({ state: "visible", timeout: 3000 }));
+  const fixedText = await page.locator(".calib-fixed-note").textContent();
+  assert.match(fixedText, /دو/, "النغمة الثابتة يجب أن تعرض 'دو'");
   await assert.doesNotReject(page.locator("#calibRegister").waitFor({ state: "visible", timeout: 3000 }));
   await assert.doesNotReject(page.locator("#calibProfile").waitFor({ state: "visible", timeout: 3000 }));
   await assert.doesNotReject(page.locator("#calibRecordBtn").waitFor({ state: "visible", timeout: 3000 }));
@@ -86,22 +88,20 @@ await test("لا يوجد استثناء غير مُعالَج عند الضغط
 await test(
   "استثناء القرار 1: 'اعتماد الاسم فقط' يعمل بلا ميكروفون، ويبقى محفوظًا محليًا بعد إعادة تحميل الصفحة",
   async (page) => {
-    await page.locator("#calibFingering").fill("ري");
     await page.locator("#calibRegister").selectOption("قرار");
     await page.locator("#calibTeachNameBtn").click();
     await page.waitForTimeout(100);
     const hintText = await page.locator("#calibHint").textContent();
-    assert.match(hintText, /ري/, "النص الإرشادي يجب أن يؤكد اعتماد الاسم المكتوب");
+    assert.match(hintText, /دو/, "النص الإرشادي يجب أن يؤكد اعتماد الاسم الثابت (دو)");
 
     // نفس المتصفح/السياق (نفس localStorage) — إعادة تحميل حقيقية للتحقق من التخزين المحلي.
     await page.reload({ waitUntil: "load" });
-    await page.locator("#calibFingering").fill("ري");
     await page.locator("#calibRegister").selectOption("قرار");
     await page.waitForTimeout(100);
     const hintAfterReload = await page.locator("#calibHint").textContent();
     assert.match(
       hintAfterReload,
-      /ري/,
+      /دو/,
       "يجب أن يظهر الاسم المُعتمَد سابقًا بعد إعادة التحميل (استُرجع من localStorage)"
     );
   }

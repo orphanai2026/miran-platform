@@ -21,9 +21,10 @@ const REGISTER_OPTIONS = [
   { value: "جواب الجواب", label: "جواب الجواب" },
 ];
 
-// اقتراحات أسماء شائعة لحقل الإصبعة (datalist) — مجرد اقتراحات نصية عامة،
-// وليست جدول إصبعات/ترددات فعلي (ذاك الجدول محمي داخل src/exercises/legacy-miran/).
-const FINGERING_SUGGESTIONS = ["دو", "ري", "مي نصف بيمول", "فا", "صول", "لا", "سي نصف بيمول", "سي"];
+// النغمة الوحيدة المستخدَمة فعليًا بجلسات المعايرة حاليًا — دوكاه ناي
+// التجربة التأسيسي (القرار 3)، فلا داعي لحقل/قائمة قابلة للتعديل هنا؛
+// تُعرَض ثابتة بدل إدخال حر (طلب تبسيط صريح من المالك).
+const FIXED_FINGERING = "دو";
 
 const RECORD_WINDOW_MS = 2500; // مدة التقاط العيّنة الواحدة
 const CLARITY_THRESHOLD = 0.86;
@@ -66,13 +67,9 @@ export function mountCalibrationPage(root) {
       <h1>المعايرة الشخصية</h1>
       <p class="calib-sub">سجّل نغمتك عدة مرات لبناء مرجعك الشخصي (القرار 1: 15 محاولة على 3 أيام مختلفة للمبتدئ، أو جلسة واحدة أدق للمحترف).</p>
 
+      <div class="calib-fixed-note">النغمة: <strong>${FIXED_FINGERING}</strong> <span class="calib-fixed-note-hint">(دوكاه ناي التجربة التأسيسي)</span></div>
+
       <div class="calib-fields">
-        <label>الإصبعة (اسم النغمة)
-          <input type="text" id="calibFingering" list="fingeringSuggestions" placeholder="مثال: دو" value="دو" />
-          <datalist id="fingeringSuggestions">
-            ${FINGERING_SUGGESTIONS.map((n) => `<option value="${n}"></option>`).join("")}
-          </datalist>
-        </label>
         <label>السجل
           <select id="calibRegister">
             ${REGISTER_OPTIONS.map((r) => `<option value="${r.value}">${r.label}</option>`).join("")}
@@ -114,7 +111,6 @@ export function mountCalibrationPage(root) {
 
   mountMiniMetronome(root.querySelector(".calib-metronome-mount"), { bpm: 70 });
 
-  const fingeringInput = root.querySelector("#calibFingering");
   const registerSelect = root.querySelector("#calibRegister");
   const profileSelect = root.querySelector("#calibProfile");
   const recordBtn = root.querySelector("#calibRecordBtn");
@@ -137,7 +133,7 @@ export function mountCalibrationPage(root) {
 
   function currentSelection() {
     return {
-      fingering: fingeringInput.value.trim(),
+      fingering: FIXED_FINGERING,
       register: registerSelect.value,
       profile: profileSelect.value,
     };
@@ -178,7 +174,6 @@ export function mountCalibrationPage(root) {
     }
   }
 
-  fingeringInput.addEventListener("input", refreshStatus);
   registerSelect.addEventListener("change", refreshStatus);
   profileSelect.addEventListener("change", refreshStatus);
 
