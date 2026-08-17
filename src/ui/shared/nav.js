@@ -27,4 +27,36 @@ export function mountNav(container, currentKey) {
       `).join("")}
     </nav>
   `;
+
+  applyDynamicBottomClearance(container);
+}
+
+/**
+ * القرار 15 (تحديث ثالث) — قياس فعلي وقت التشغيل بدل تخمين نقاط استجابة
+ * CSS ثابتة (محاولتان سابقتان اعتمدتا حسابات لم تُطابق الجهاز الحقيقي —
+ * ارتفاع الشاشة الفعلي وارتفاع الخط الفعلي كلاهما غير معروفين مسبقًا،
+ * فأي تخمين معرَّض للخطأ). يقيس هنا **الموضع الفعلي للشريط بالمتصفح
+ * الحقيقي نفسه** (`getBoundingClientRect`)، ويضبط متغيّر CSS
+ * `--dynamic-bottom-clearance` على `.page-stage` ليستهلكه عبر
+ * `max(140px, var(--dynamic-bottom-clearance, 140px))` — يضمن مساحة
+ * تمرير كافية دائمًا مهما كان حجم الشاشة أو الخط الفعلي، بلا أي تخمين.
+ * القيمة ١٤٠px الثابتة تبقى شبكة أمان لو تعطّل JS أو قبل أول قياس.
+ */
+function applyDynamicBottomClearance(container) {
+  function measureAndApply() {
+    const nav = container.querySelector(".bottom-nav");
+    if (!nav) return;
+    const navRect = nav.getBoundingClientRect();
+    // المسافة من أعلى الشريط لأسفل نافذة العرض + هامش أمان إضافي (٤٠px).
+    const clearance = Math.max(0, window.innerHeight - navRect.top) + 40;
+    document.documentElement.style.setProperty("--dynamic-bottom-clearance", `${clearance}px`);
+  }
+  measureAndApply();
+  window.addEventListener("resize", measureAndApply);
+  window.addEventListener("orientationchange", measureAndApply);
+  if (document.fonts && document.fonts.ready) {
+    // الخطوط الحقيقية (IBM Plex Sans Arabic/Aref Ruqaa) قد تُحمَّل بعد
+    // القياس الأول وتغيّر ارتفاع المحتوى — نعيد القياس بعد اكتمال تحميلها.
+    document.fonts.ready.then(measureAndApply).catch(() => {});
+  }
 }
