@@ -2,15 +2,17 @@
  * expert-intake-page.js
  * ============================================================
  * منطق صفحة الخبير — جلسة تسجيل واحدة متصلة، عنصر واحد بالمرة (100 نغمة —
- * 25 نغمة × 4 قيم إيقاعية، القرار 13.1 — + 8 مقامات)، تغذية راجعة حيّة،
- * تسجيل بضغطة واحدة، معاينة/قبول/إعادة، ثم
+ * 25 نغمة × 4 قيم إيقاعية، القرار 13.1 — + 16 تسجيل مقام إلزامي — صعود +
+ * هبوط شائع لكل مقام، القرار 13.2 — + هبوطات بديلة اختيارية يقرّرها
+ * الخبير حيًّا أثناء الجلسة عبر زر "أضف هبوطًا بديلًا؟")، تغذية راجعة
+ * حيّة، تسجيل بضغطة واحدة، معاينة/قبول/إعادة، ثم
  * تنزيل تلقائي لكل الملفات + بيان JSON مرافق عند نهاية الجلسة (القرار 9.4).
  *
  * **نطاق مقصود:** أداة إدارية للمالك/الخبراء فقط — غير مُدرَجة بـ nav.js،
  * لا جزء من رحلة المتدرب. لا إرسال شبكي؛ التسليم يدوي (تنزيل محلي، ثم
  * إرسال الملفات للمالك خارج الموقع).
  */
-import { INTAKE_SESSION_ITEMS } from "./expert-intake-data.js";
+import { INTAKE_SESSION_ITEMS, createAlternateDescentItem } from "./expert-intake-data.js";
 import { createExpertRecorder } from "./expert-recorder.js";
 import { getOrCreateExpertId } from "./expert-id.js";
 
@@ -18,6 +20,15 @@ const CLARITY_THRESHOLD = 0.6;
 
 function itemProgressLabel(index, total) {
   return `${index + 1} / ${total}`;
+}
+
+/** تسمية نوع العنصر المعروضة بشريط التقدّم (القرار 13.2 لحالات المقام). */
+function itemKindLabel(item) {
+  if (item.kind === "note") return "نغمة مفردة";
+  if (item.maqamPart === "ascend") return "مقام — صعود";
+  if (item.maqamPart === "descend-common") return "مقام — هبوط شائع";
+  if (item.maqamPart === "descend-alternate") return "مقام — هبوط بديل";
+  return "تسجيل مقام";
 }
 
 /**
@@ -28,9 +39,15 @@ export function mountExpertIntakePage(container) {
   const expertId = getOrCreateExpertId();
   const recorder = createExpertRecorder();
 
+  /** @type {object[]} نسخة قابلة للتعديل من قائمة الجلسة الثابتة — الهبوط
+   * البديل (القرار 13.2) يُدرَج ديناميكيًا هنا فقط، لا داخل القائمة
+   * الثابتة `INTAKE_SESSION_ITEMS` نفسها. */
+  let sessionItems = [...INTAKE_SESSION_ITEMS];
   let currentIndex = 0;
   /** @type {Map<string, {wavBlob: Blob, measuredHz: number|null, item: object}>} */
   const accepted = new Map();
+  /** أسماء المقامات التي أُضيف لها هبوط بديل فعليًا خلال هذي الجلسة (القرار 13.2) — تمنع الإضافة المكرَّرة. */
+  const alternateAddedFor = new Set();
   let pendingCapture = null; // {wavBlob, measuredHz} — بانتظار قبول/إعادة
   let recording = false;
   let previewUrl = null;
@@ -62,7 +79,18 @@ export function mountExpertIntakePage(container) {
   const summaryEl = container.querySelector("#intakeSummary");
 
   function currentItem() {
-    return INTAKE_SESSION_ITEMS[currentIndex];
+    return sessionItems[currentIndex];
+  }
+
+  /** هل العنصر الحالي مقام بحالة "هبوط شائع" لم يُضَف له هبوط بديل بعد؟ (القرار 13.2) */
+  function canOfferAlternateDescent() {
+    const item = currentItem();
+    return (
+      !!item &&
+      item.kind === "maqam" &&
+      item.maqamPart === "descend-common" &&
+      !alternateAddedFor.has(item.maqamName)
+    );
   }
 
   function renderControls() {
@@ -76,10 +104,18 @@ export function mountExpertIntakePage(container) {
       </button>
       ${recording ? `<button type="button" id="intakeStopBtn" class="btn-secondary">إيقاف وحفظ المحاولة</button>` : ""}
       <button type="button" id="intakeSkipBtn" class="btn-skip" ${recording ? "disabled" : ""}>تخطّ هذا العنصر</button>
+      ${
+        canOfferAlternateDescent()
+          ? `<button type="button" id="intakeAddAlternateBtn" class="btn-secondary" ${
+              recording ? "disabled" : ""
+            }>أضف هبوطًا بديلًا لهذا المقام؟</button>`
+          : ""
+      }
     `;
     controlsEl.querySelector("#intakeRecordBtn")?.addEventListener("click", onRecordClick);
     controlsEl.querySelector("#intakeStopBtn")?.addEventListener("click", onStopClick);
     controlsEl.querySelector("#intakeSkipBtn")?.addEventListener("click", advanceToNext);
+    controlsEl.querySelector("#intakeAddAlternateBtn")?.addEventListener("click", onAddAlternateDescent);
   }
 
   function renderReview() {
@@ -115,9 +151,7 @@ export function mountExpertIntakePage(container) {
       renderSessionEnd();
       return;
     }
-    progressEl.textContent = `${itemProgressLabel(currentIndex, INTAKE_SESSION_ITEMS.length)} — ${
-      item.kind === "note" ? "نغمة مفردة" : "تسجيل مقام"
-    }`;
+    progressEl.textContent = `${itemProgressLabel(currentIndex, sessionItems.length)} — ${itemKindLabel(item)}`;
     labelEl.textContent = item.label;
     hintEl.textContent = item.hint;
     liveEl.textContent = "—";
@@ -129,7 +163,7 @@ export function mountExpertIntakePage(container) {
   }
 
   function renderSummary() {
-    summaryEl.textContent = `معرّف الخبير: ${expertId} — مقبول حتى الآن: ${accepted.size} / ${INTAKE_SESSION_ITEMS.length}`;
+    summaryEl.textContent = `معرّف الخبير: ${expertId} — مقبول حتى الآن: ${accepted.size} / ${sessionItems.length}`;
   }
 
   function onLiveReading(reading) {
@@ -182,6 +216,21 @@ export function mountExpertIntakePage(container) {
     renderReview();
   }
 
+  /**
+   * زر "أضف هبوطًا بديلًا؟" (القرار 13.2) — الخبير نفسه يقرّر وقت
+   * التسجيل، لا افتراض مسبق. يُدرِج عنصر هبوط بديل مباشرة بعد العنصر
+   * الحالي في قائمة الجلسة الحيّة، ويُحدِّث العرض فورًا (العدد الإجمالي
+   * يكبر ديناميكيًا). لا يُسمح بإضافة أكثر من هبوط بديل واحد لنفس المقام.
+   */
+  function onAddAlternateDescent() {
+    if (!canOfferAlternateDescent()) return;
+    const item = currentItem();
+    alternateAddedFor.add(item.maqamName);
+    const altItem = createAlternateDescentItem(item.maqamName);
+    sessionItems.splice(currentIndex + 1, 0, altItem);
+    renderItem();
+  }
+
   function advanceToNext() {
     pendingCapture = null;
     currentIndex++;
@@ -215,6 +264,7 @@ export function mountExpertIntakePage(container) {
         filename,
         measuredHz: entry.measuredHz,
         ...(entry.item.rhythmicValueId ? { rhythmicValueId: entry.item.rhythmicValueId } : {}),
+        ...(entry.item.maqamName ? { maqamName: entry.item.maqamName, maqamPart: entry.item.maqamPart } : {}),
       });
     }
     const manifestBlob = new Blob([JSON.stringify(manifest, null, 2)], { type: "application/json" });
@@ -231,7 +281,7 @@ export function mountExpertIntakePage(container) {
     reviewEl.hidden = true;
     reviewEl.innerHTML = "";
     summaryEl.innerHTML = `
-      <p>تم قبول ${accepted.size} من أصل ${INTAKE_SESSION_ITEMS.length} عنصرًا.</p>
+      <p>تم قبول ${accepted.size} من أصل ${sessionItems.length} عنصرًا.</p>
       <button type="button" id="intakeDownloadAllBtn" class="btn-primary" ${accepted.size === 0 ? "disabled" : ""}>
         تنزيل كل الملفات + بيان JSON
       </button>
