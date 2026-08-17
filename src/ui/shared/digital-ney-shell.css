@@ -100,3 +100,15 @@ input:focus,select:focus,.glossary-search:focus{outline:2px solid rgba(15,110,86
   .bottom-nav{left:max(5px,env(safe-area-inset-left));right:max(5px,env(safe-area-inset-right));height:78px;padding:0 2px;border-radius:27px}
   .nav-item{height:56px;gap:3px;font-size:clamp(6.5px,2vw,8px)}.nav-item:not(:last-child)::after{height:30px}.nav-item svg{width:18px;height:18px}.nav-item.active::before{width:46px;height:46px}.nav-item.active svg{width:20px;height:20px}.nav-item.active .nav-label{transform:translateY(14px);font-size:clamp(7px,2.15vw,8.5px)}
 }
+/* شاشات قصيرة الارتفاع (لابتوب/تابلت أفقي) — الهامش السفلي وحده لا يكفي هنا:
+   الصفحة كاملة قد تساوي ارتفاع الشاشة نفسها فتكون بلا تمرير إطلاقًا وقت
+   التحميل، فيبقى المحتوى الأخير محجوبًا خلف الشريط الثابت دائمًا مهما زاد
+   الهامش (الهامش يفيد فقط بعد تمرير فعلي). القرار 15 — نضمن هامشًا سفليًا
+   كبيرًا يفرض إمكانية تمرير حقيقية، بغض النظر عن ارتفاع الخط الفعلي
+   (لا نعتمد على قياسات محلية بخط بديل — انظر تنبيه الأمانة بالسجل). */
+@media(max-height:700px){
+  .page-stage{padding-bottom:260px}
+}
+@media(max-height:520px){
+  .page-stage{padding-bottom:300px}
+}
