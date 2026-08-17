@@ -44,7 +44,58 @@
     h1 { font-family: "IBM Plex Sans Arabic", sans-serif; font-weight: 700; font-size: 1.5rem; margin: 0 0 6px; color: var(--teal-deep); }
     .page-sub { color: var(--ink-soft); margin: 0 0 28px; font-size: 0.88rem; }
 
-    .intake-progress { color: var(--ink-soft); font-size: 0.85rem; margin-bottom: 6px; }
+    .intake-form-card, .intake-table-card {
+      text-align: right; margin-bottom: 18px; border: 1px solid var(--hairline); border-radius: 18px;
+      padding: 18px; background: linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,.3));
+      box-shadow: 0 10px 26px rgba(71,50,24,.05);
+    }
+
+    .intake-type-toggle { display: flex; gap: 8px; margin-bottom: 16px; }
+    .intake-type-btn {
+      flex: 1; padding: 10px; border-radius: 999px; border: 1px solid var(--hairline);
+      background: rgba(255,255,255,.5); color: var(--ink-soft); font-weight: 700; font-size: 0.9rem;
+      cursor: pointer; font-family: "IBM Plex Sans Arabic", sans-serif;
+    }
+    .intake-type-btn.note.active { background: var(--teal-deep); color: var(--cream); border-color: var(--teal-deep); }
+    .intake-type-btn.maqam.active { background: var(--amber); color: var(--cream); border-color: var(--amber); }
+
+    .intake-field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+    .intake-field-grid[hidden] { display: none; }
+    .intake-field label { display: block; font-size: 0.76rem; color: var(--ink-soft); margin-bottom: 4px; font-weight: 600; }
+    .intake-field select {
+      width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--hairline);
+      background: rgba(255,255,255,.7); color: var(--ink); font-family: "IBM Plex Sans Arabic", sans-serif; font-size: 0.88rem;
+    }
+    .intake-field select option:disabled { color: var(--ink-soft); opacity: .55; }
+
+    .btn-ghost-link {
+      display: inline-block; background: none; border: none; color: var(--teal); font-weight: 700;
+      font-size: 0.82rem; font-family: "IBM Plex Sans Arabic", sans-serif; cursor: pointer; padding: 4px 0 14px;
+      text-decoration: underline; text-underline-offset: 3px;
+    }
+    .btn-ghost-link[hidden] { display: none; }
+
+    .intake-table-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .intake-table-header h2 { font-size: 1rem; color: var(--teal-deep); margin: 0; font-family: "IBM Plex Sans Arabic", sans-serif; }
+    .intake-table-count { font-size: 0.8rem; color: var(--ink-soft); }
+    .intake-table-rows { display: flex; flex-direction: column; gap: 8px; }
+    .intake-table-row {
+      display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px;
+      background: rgba(255,255,255,.6); border: 1px solid var(--hairline);
+    }
+    .intake-table-badge { flex: none; font-size: 0.7rem; font-weight: 700; padding: 4px 10px; border-radius: 999px; }
+    .intake-table-badge.note { background: var(--teal-tint); color: var(--teal-deep); }
+    .intake-table-badge.maqam { background: var(--amber-tint); color: var(--amber-ink); }
+    .intake-table-detail { flex: 1; font-size: 0.86rem; font-weight: 600; }
+    .intake-table-actions { flex: none; display: flex; gap: 6px; }
+    .icon-btn {
+      width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--hairline);
+      background: rgba(255,255,255,.7); cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; color: var(--teal-deep);
+    }
+    .icon-btn.danger { color: #7a2a2a; }
+    .intake-table-empty { text-align: center; color: var(--ink-soft); font-size: 0.85rem; padding: 14px 0; }
+    .intake-table-footer { display: flex; justify-content: center; margin-top: 14px; }
 
     .intake-checklist {
       text-align: right; margin-bottom: 18px; border: 1px solid var(--hairline); border-radius: 16px;
@@ -71,7 +122,8 @@
     }
 
     .intake-checklist-list {
-      max-height: 280px; overflow-y: auto; margin-top: 10px; font-size: 0.8rem;
+      max-height: 320px; overflow-y: auto; margin-top: 10px; font-size: 0.8rem;
+      display: flex; flex-direction: column; gap: 6px; padding: 2px 2px 8px;
       -webkit-mask-image: linear-gradient(to top, transparent 0, #000 22px);
       mask-image: linear-gradient(to top, transparent 0, #000 22px);
     }
@@ -81,20 +133,21 @@
 
     .intake-checklist-divider {
       font-size: 0.72rem; font-weight: 700; color: var(--amber-ink); text-transform: none;
-      padding: 10px 8px 6px; margin-top: 4px; border-top: 1px solid var(--hairline);
+      padding: 10px 6px 2px; margin-top: 6px;
     }
-    .intake-checklist-divider:first-child { border-top: none; margin-top: 0; padding-top: 2px; }
+    .intake-checklist-divider:first-child { margin-top: 0; padding-top: 2px; }
 
     .intake-checklist-item {
-      display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 8px;
-      color: var(--ink-soft);
+      display: flex; align-items: center; gap: 9px; padding: 8px 12px; border-radius: 10px;
+      color: var(--ink-soft); background: rgba(255,255,255,.5); border: 1px solid var(--hairline);
+      cursor: pointer; transition: background .15s ease;
     }
-    .intake-checklist-item.pending:nth-child(even) { background: rgba(28,28,26,.02); }
+    .intake-checklist-item:hover:not(.done) { background: rgba(15,110,86,.06); }
     .intake-checklist-item.current {
       color: var(--amber-ink); font-weight: 700; background: var(--amber-tint);
-      border-radius: 999px; padding: 6px 12px;
+      border-color: rgba(186,117,23,.4);
     }
-    .intake-checklist-item.done { color: var(--teal-deep); }
+    .intake-checklist-item.done { color: var(--teal-deep); background: var(--teal-tint); border-color: rgba(15,110,86,.2); cursor: default; }
     .intake-checklist-item.done .intake-checklist-text { text-decoration: line-through; text-decoration-color: rgba(7,61,52,.35); }
 
     .intake-checklist-dot {
@@ -182,7 +235,7 @@
   <div class="page-shell">
     <span class="admin-banner">صفحة إدارية — غير مُدرَجة بالتنقّل العام</span>
     <h1>جلسة تسجيل خبير</h1>
-    <p class="page-sub">100 نغمة (25 × 4 قيم إيقاعية) + 16 تسجيل مقام إلزامي (صعود+هبوط شائع) + هبوطات بديلة اختيارية — تسجيل ناي حقيقي لمكتبة الاستماع المرجعية (القرارات 9.2/9.4/13.1–13.7)</p>
+    <p class="page-sub">اختر نغمة (اسم + زمن) أو مقامًا (اسم + نوع)، سجّل، ويُضاف السطر تلقائيًا لجدول الجلسة — 100 نغمة (25 × 4 قيم إيقاعية) + 16 تسجيل مقام إلزامي + هبوطات بديلة اختيارية (القرارات 9.2/9.4/13.1–13.7/14)</p>
 
     <div id="app"></div>
   </div>

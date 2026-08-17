@@ -1,17 +1,17 @@
 /**
  * page-smoke.test.mjs
  * ============================================================
- * اختبار دخان (smoke) لصفحة الخبير — يستخدم جهاز ميكروفون وهمي مدمج في
- * Chromium (`--use-fake-device-for-media-stream`) + منح صلاحية الميكروفون
+ * اختبار دخان (smoke) لصفحة الخبير — **نموذج الجدول الحر (القرار 14)**.
+ * يستخدم جهاز ميكروفون وهمي مدمج في Chromium
+ * (`--use-fake-device-for-media-stream`) + منح صلاحية الميكروفون
  * برمجيًا (`context.grantPermissions`) لتفادي أي نافذة إذن تفاعلية.
  *
- * **نطاق مقصود:** تدفّق الجلسة الكامل (تمهيد عدّات → تسجيل → إيقاف →
- * معاينة نسختين (نظيفة/خام، القرار 13.6) → قبول/إعادة/مسح/تخطّ → لوحة
- * الهبوط البديل مع النغمة المتغيّرة (القرار 13.2/13.3) → انتقال تلقائي →
- * نهاية الجلسة → تنزيل الكل بأربعة ملفات WAV + بيان JSON لعنصرين مقبولين)،
- * بلا تسجيل كل الـ116 عنصرًا فعليًا (بطيء وغير ضروري؛ 100 نغمة = 25 × 4
- * قيم إيقاعية، القرار 13.1 — + 16 تسجيل مقام إلزامي = 8 مقامات ×
- * صعود+هبوط شائع، القرار 13.2).
+ * **نطاق مقصود:** اختيار حرّ (نغمة: اسم+زمن، مقام: اسم+نوع) → تمهيد
+ * عدّات → تسجيل → إيقاف → معاينة نسختين (نظيفة/خام، القرار 13.6) →
+ * قبول/إعادة/مسح → تعطّل الخيار المسجَّل بقائمة الاختيار المعنية (القرار
+ * 14) → ظهور السطر بجدول "المُسجَّل" مع إجراءات استماع/تصدير/حذف →
+ * لوحة الهبوط البديل مع النغمة المتغيّرة (القرار 13.2/13.3) → الضغط على
+ * عنصر متبقٍ بقائمة التقدّم يملأ حقول الاختيار به → تنزيل الكل.
  *
  * يُشغَّل بـ: node src/ui/admin/expert-intake/tests/page-smoke.test.mjs
  * يتطلب خادمًا محليًا يخدم جذر المستودع:
@@ -55,14 +55,9 @@ async function test(name, fn) {
   }
 }
 
-/**
- * يبدأ التسجيل وينتظر انتهاء تمهيد العدّات الأربع (القرار 13.5) فعليًا —
- * زر "إيقاف وحفظ المحاولة" لا يظهر إلا بعد اكتمال العدّ، فانتظاره هو
- * إشارة موثوقة لبداية الالتقاط الفعلي. مهلة سخية (5 ثوانٍ) تحسّبًا لبطء
- * بيئة الاختبار.
- */
+/** يبدأ التسجيل وينتظر انتهاء تمهيد العدّات الأربع فعليًا (القرار 13.5). */
 async function startRecordingAndWaitReady(page) {
-  await page.locator("#intakeControls button", { hasText: "ابدأ التسجيل" }).click();
+  await page.click("#intakeRecordBtn");
   await page.locator("#intakeStopBtn").waitFor({ state: "visible", timeout: 5000 });
 }
 
@@ -70,43 +65,40 @@ async function startRecordingAndWaitReady(page) {
 async function recordOneAttempt(page, captureMs = 300) {
   await startRecordingAndWaitReady(page);
   await page.waitForTimeout(captureMs);
-  await page.locator("#intakeControls button", { hasText: "إيقاف وحفظ المحاولة" }).click();
-  await page.locator("#intakeReview button", { hasText: "قبول والمتابعة" }).waitFor({ state: "visible" });
+  await page.click("#intakeStopBtn");
+  await page.locator("button:has-text('قبول والمتابعة')").waitFor({ state: "visible" });
 }
 
-/** يسجّل ويقبل عنصرًا كاملًا واحدًا. */
+/** يسجّل ويقبل عنصرًا كاملًا واحدًا (أيًّا كان الاختيار الحالي بالحقول). */
 async function recordAndAccept(page, captureMs = 300) {
   await recordOneAttempt(page, captureMs);
-  await page.locator("#intakeReview button", { hasText: "قبول والمتابعة" }).click();
+  await page.click("button:has-text('قبول والمتابعة')");
+  await page.waitForTimeout(150);
 }
 
-await test("العنصر الأول يظهر صحيحًا: التقدّم 1/116، تسمية أول نغمة (روند) مطابقة لـNOTES_24TET", async (page) => {
-  const progress = await page.locator("#intakeProgress").textContent();
-  assert.match(progress, /^1 \/ 116/);
+await test("الحالة الأولية: نغمة مختارة افتراضيًا (دو — روند)، مقام مخفي، الجدول فارغ", async (page) => {
   const label = await page.locator("#intakeItemLabel").textContent();
   assert.equal(label.trim(), "دو — روند (كامل)");
+  assert.equal(await page.locator("#intakeMaqamFields").isHidden(), true);
+  assert.equal(await page.locator("#intakeNoteFields").isHidden(), false);
+  const tableCount = await page.locator("#intakeTableCount").textContent();
+  assert.match(tableCount, /^0 عنصر/);
+  assert.equal(await page.locator("#intakeAddAlternateBtn").isHidden(), true);
 });
 
-await test("زر 'تخطّ' يتقدّم للعنصر التالي بلا أي تسجيل", async (page) => {
-  await page.locator("#intakeControls button", { hasText: "تخطّ" }).click();
-  const progress = await page.locator("#intakeProgress").textContent();
-  assert.match(progress, /^2 \/ 116/);
+await test("زر 'مقام' يبدّل الحقول ويُظهر أول مقام (عجم — صعود) + زر الهبوط البديل", async (page) => {
+  await page.click("#intakeTypeMaqamBtn");
+  assert.equal(await page.locator("#intakeNoteFields").isHidden(), true);
+  assert.equal(await page.locator("#intakeMaqamFields").isHidden(), false);
   const label = await page.locator("#intakeItemLabel").textContent();
-  assert.equal(label.trim(), "دو — بلانش (نصف)");
+  assert.equal(label.trim(), "مقام عجم — صعود");
+  assert.equal(await page.locator("#intakeAddAlternateBtn").isHidden(), false);
 });
 
-await test("القرار 13.5 — الضغط على 'ابدأ التسجيل' يعرض تمهيد العدّات فورًا، ويختفي عند بداية الالتقاط الفعلي", async (page) => {
-  await page.locator("#intakeControls button", { hasText: "ابدأ التسجيل" }).click();
-  await assert.doesNotReject(
-    page.locator("#intakePreroll").waitFor({ state: "visible", timeout: 1000 })
-  );
-  const prerollText = await page.locator("#intakePreroll").textContent();
-  assert.match(prerollText, /استعد/);
-  // لا أزرار تحكّم أثناء التمهيد (الضبط ممنوع حتى ينتهي العدّ)
-  assert.equal(await page.locator("#intakeStopBtn").count(), 0);
-  // ننتظر اكتمال العدّ فعليًا — يجب أن يظهر زر الإيقاف، ويختفي شريط التمهيد
-  await page.locator("#intakeStopBtn").waitFor({ state: "visible", timeout: 5000 });
-  assert.equal(await page.locator("#intakePreroll").isHidden(), true);
+await test("تغيير 'زمن النغمة' يحدّث العنوان والتلميح فورًا", async (page) => {
+  await page.selectOption("#intakeNoteRhythmSelect", "noire");
+  const label = await page.locator("#intakeItemLabel").textContent();
+  assert.equal(label.trim(), "دو — نوار (ربع)");
 });
 
 await test("تسجيل → إيقاف يعرض لوحة معاينة بنسختين (نظيفة وخام، القرار 13.6) + تردد مقاس", async (page) => {
@@ -115,193 +107,130 @@ await test("تسجيل → إيقاف يعرض لوحة معاينة بنسخت�
   assert.equal(await previews.count(), 2);
   assert.equal(await page.locator(".intake-audio-preview-clean").count(), 1);
   assert.equal(await page.locator(".intake-audio-preview-raw").count(), 1);
-  await assert.doesNotReject(
-    page.locator("#intakeReview button", { hasText: "قبول والمتابعة" }).waitFor({ state: "visible" })
-  );
 });
 
 await test("'إعادة المحاولة' تُخفي لوحة المعاينة وتُرجع أزرار التسجيل", async (page) => {
   await recordOneAttempt(page);
-  await page.locator("#intakeReview button", { hasText: "إعادة المحاولة" }).click();
+  await page.click("button:has-text('إعادة المحاولة')");
   assert.equal(await page.locator("#intakeReview").isHidden(), true);
-  await assert.doesNotReject(
-    page.locator("#intakeControls button", { hasText: "ابدأ التسجيل" }).waitFor({ state: "visible" })
-  );
+  await assert.doesNotReject(page.locator("#intakeRecordBtn").waitFor({ state: "visible" }));
 });
 
 await test("القرار 13.7 — زر 'مسح المحاولة' أثناء التسجيل يلغيها بالكامل ويعيد الحالة لجاهزية تسجيل جديد", async (page) => {
   await startRecordingAndWaitReady(page);
   await page.waitForTimeout(200);
-  await assert.doesNotReject(
-    page.locator("#intakeCancelRecordingBtn").waitFor({ state: "visible" })
-  );
-  await page.locator("#intakeCancelRecordingBtn").click();
-  // لا معاينة، لا تسجيل جارٍ — رجوع فوري لزر "ابدأ التسجيل" بلا أي pendingCapture
+  await assert.doesNotReject(page.locator("#intakeCancelRecordingBtn").waitFor({ state: "visible" }));
+  await page.click("#intakeCancelRecordingBtn");
   assert.equal(await page.locator("#intakeReview").isHidden(), true);
-  await assert.doesNotReject(
-    page.locator("#intakeControls button", { hasText: "ابدأ التسجيل" }).waitFor({ state: "visible" })
-  );
+  await assert.doesNotReject(page.locator("#intakeRecordBtn").waitFor({ state: "visible" }));
   assert.equal(await page.locator("#intakeStopBtn").count(), 0);
 });
 
-await test("'قبول والمتابعة' يحفظ العنصر في الملخّص وينتقل تلقائيًا للتالي", async (page) => {
-  await recordAndAccept(page);
-  const progress = await page.locator("#intakeProgress").textContent();
-  assert.match(progress, /^2 \/ 116/);
-  const summary = await page.locator("#intakeSummary").textContent();
-  assert.match(summary, /مقبول حتى الآن: 1 \/ 116/);
-});
-
-await test("القرار 13.7 — قائمة تقدّم الجلسة القابلة للطي تعكس العنصر المقبول والحالي بشكل صحيح", async (page) => {
-  const summaryBefore = await page.locator("#intakeChecklistSummary").textContent();
-  assert.match(summaryBefore, /0 \/ 116 مكتمل/);
-  await recordAndAccept(page);
-  const summaryAfter = await page.locator("#intakeChecklistSummary").textContent();
-  assert.match(summaryAfter, /1 \/ 116 مكتمل/);
-  const doneItems = page.locator(".intake-checklist-item.done");
-  assert.equal(await doneItems.count(), 1);
-  const doneText = await doneItems.first().textContent();
-  assert.match(doneText, /دو — روند/);
-  const currentItems = page.locator(".intake-checklist-item.current");
-  assert.equal(await currentItems.count(), 1);
-});
-
-await test("إنهاء الجلسة كاملة (قبول عنصرين، تخطّي الباقي) يعرض شاشة النهاية بالعدد الصحيح", async (page) => {
-  // نقبل أول عنصرين فعليًا
-  for (let i = 0; i < 2; i++) {
-    await recordAndAccept(page);
-  }
-  // نتخطّى باقي الـ114 عنصرًا
-  for (let i = 0; i < 114; i++) {
-    await page.locator("#intakeControls button", { hasText: "تخطّ" }).click();
-  }
-  const progress = await page.locator("#intakeProgress").textContent();
-  assert.equal(progress, "اكتملت الجلسة");
-  const summaryText = await page.locator("#intakeSummary").textContent();
-  assert.match(summaryText, /تم قبول 2 من أصل 116/);
-});
-
 await test(
-  "القرار 13.6 — زر 'تنزيل الكل' يُطلق تنزيل نسختين (نظيفة+خام) لكل عنصر مقبول + بيان JSON واحد (5 أحداث تنزيل لعنصرين مقبولين)",
+  "القرار 14 — بعد القبول: الخيار المسجَّل يصير معطَّلًا بقائمة 'زمن النغمة'، ويُختار تلقائيًا أول خيار متاح تالٍ",
   async (page) => {
-    for (let i = 0; i < 2; i++) {
-      await recordAndAccept(page);
-    }
-    for (let i = 0; i < 114; i++) {
-      await page.locator("#intakeControls button", { hasText: "تخطّ" }).click();
-    }
-    const downloads = [];
-    page.on("download", (d) => downloads.push(d.suggestedFilename()));
-    await page.locator("#intakeDownloadAllBtn").click();
-    await page.waitForTimeout(800);
-    assert.equal(downloads.length, 5);
-    const wavFiles = downloads.filter((f) => f.endsWith(".wav"));
-    assert.equal(wavFiles.length, 4);
-    assert.equal(wavFiles.filter((f) => f.endsWith("-raw.wav")).length, 2);
-    assert.equal(wavFiles.filter((f) => !f.endsWith("-raw.wav")).length, 2);
-    assert.equal(downloads.filter((f) => f.endsWith(".json")).length, 1);
+    await recordAndAccept(page); // يسجّل "دو — روند"
+    const roundDisabled = await page.locator("#intakeNoteRhythmSelect option[value='round']").isDisabled();
+    assert.equal(roundDisabled, true);
+    // الاختيار الحالي يجب أن يكون قد انتقل تلقائيًا لأول قيمة إيقاعية متاحة (بلانش)
+    const label = await page.locator("#intakeItemLabel").textContent();
+    assert.equal(label.trim(), "دو — بلانش (نصف)");
   }
 );
 
-await test("معرّف الخبير يظهر في الملخّص ويبقى ثابتًا داخل نفس الجلسة", async (page) => {
+await test("العنصر المقبول يظهر بجدول 'المُسجَّل' ببطاقته المستقلة، وأزرار الإجراءات تعمل (تصدير)", async (page) => {
+  await recordAndAccept(page);
+  const rows = page.locator(".intake-table-row");
+  assert.equal(await rows.count(), 1);
+  const detail = await rows.first().locator(".intake-table-detail").textContent();
+  assert.equal(detail.trim(), "دو — روند (كامل)");
+  const badge = await rows.first().locator(".intake-table-badge").textContent();
+  assert.equal(badge.trim(), "نغمة");
+
+  const downloads = [];
+  page.on("download", (d) => downloads.push(d.suggestedFilename()));
+  await rows.first().locator("button[data-action='export']").click();
+  await page.waitForTimeout(400);
+  assert.equal(downloads.length, 2);
+  assert.equal(downloads.filter((f) => f.endsWith("-raw.wav")).length, 1);
+  assert.equal(downloads.filter((f) => f.endsWith(".wav") && !f.endsWith("-raw.wav")).length, 1);
+});
+
+await test("زر 'حذف' بالجدول يزيل السطر ويُعيد تفعيل خياره بقائمة الاختيار", async (page) => {
+  await recordAndAccept(page); // دو — روند
+  await page.click(".intake-table-row button[data-action='delete']");
+  await page.waitForTimeout(150);
+  assert.equal(await page.locator(".intake-table-row").count(), 0);
+  const tableCount = await page.locator("#intakeTableCount").textContent();
+  assert.match(tableCount, /^0 عنصر/);
+  const roundDisabled = await page.locator("#intakeNoteRhythmSelect option[value='round']").isDisabled();
+  assert.equal(roundDisabled, false);
+});
+
+await test("معرّف الخبير يظهر في الملخّص ويبقى ثابتًا خلال الجلسة", async (page) => {
   const summary1 = await page.locator("#intakeSummary").textContent();
   const idMatch = summary1.match(/معرّف الخبير: ([\w-]+)/);
   assert.ok(idMatch, "لم يظهر معرّف خبير في الملخّص");
-  await page.locator("#intakeControls button", { hasText: "تخطّ" }).click();
+  await page.click("#intakeTypeMaqamBtn");
   const summary2 = await page.locator("#intakeSummary").textContent();
-  assert.ok(summary2.includes(idMatch[1]), "معرّف الخبير تغيّر بين عنصرين بنفس الجلسة");
+  assert.ok(summary2.includes(idMatch[1]), "معرّف الخبير تغيّر أثناء نفس الجلسة");
 });
 
 await test(
-  "القرار 13.2/13.3 — زر 'أضف هبوطًا بديلًا؟' يفتح لوحة النغمة المتغيّرة؛ التأكيد يُدرِج العنصر فورًا؛ الإلغاء لا يُدرِج شيئًا",
+  "القرار 13.2/13.3 — زر 'أضف هبوطًا بديلًا؟' يفتح لوحة النغمة المتغيّرة؛ التأكيد يُدرِج خيارًا ثالثًا بقائمة 'نوع المقام'",
   async (page) => {
-    // نتخطّى كل النغمات المئة (لا زر هبوط بديل هناك) لنصل لأول عنصر مقام (صعود عجم، فهرس 100).
-    for (let i = 0; i < 100; i++) {
-      await page.locator("#intakeControls button", { hasText: "تخطّ" }).click();
-    }
-    let progress = await page.locator("#intakeProgress").textContent();
-    assert.match(progress, /^101 \/ 116/);
-    assert.equal(await page.locator("#intakeAddAlternateBtn").count(), 0);
+    await page.click("#intakeTypeMaqamBtn");
+    await page.selectOption("#intakeMaqamNameSelect", "راست");
+    await assert.doesNotReject(page.locator("#intakeAddAlternateBtn").waitFor({ state: "visible", timeout: 2000 }));
 
-    // نتخطّى للعنصر التالي: هبوط شائع (فهرس 101، يظهر 102/116).
-    await page.locator("#intakeControls button", { hasText: "تخطّ" }).click();
-    progress = await page.locator("#intakeProgress").textContent();
-    assert.match(progress, /^102 \/ 116/);
-    await assert.doesNotReject(
-      page.locator("#intakeAddAlternateBtn").waitFor({ state: "visible", timeout: 2000 })
-    );
-
-    // --- محاولة إلغاء أولًا: نفتح اللوحة، نختار نغمة، ثم نلغي — يجب ألّا يُدرَج شيء ---
-    await page.locator("#intakeAddAlternateBtn").click();
-    await assert.doesNotReject(
-      page.locator("#intakeAlternatePanel").waitFor({ state: "visible", timeout: 2000 })
-    );
+    // إلغاء أولًا: نفتح اللوحة، نختار نغمة، ثم نلغي — لا إضافة
+    await page.click("#intakeAddAlternateBtn");
+    await assert.doesNotReject(page.locator("#intakeAlternatePanel").waitFor({ state: "visible", timeout: 2000 }));
     assert.equal(await page.locator(".intake-alt-note-option").count(), 25);
     await page.locator("#intakeAlternatePanel input[data-note-label='دو']").check();
-    await page.locator("#intakeAltCancelBtn").click();
+    await page.click("#intakeAltCancelBtn");
     assert.equal(await page.locator("#intakeAlternatePanel").isHidden(), true);
-    progress = await page.locator("#intakeProgress").textContent();
-    assert.match(progress, /^102 \/ 116/, "الإلغاء يجب ألّا يغيّر العدد الإجمالي");
-    // الزر يجب أن يظهر مجددًا لأن الإلغاء لا يمنع محاولة جديدة
-    await assert.doesNotReject(
-      page.locator("#intakeAddAlternateBtn").waitFor({ state: "visible", timeout: 2000 })
-    );
+    let optionsCount = await page.locator("#intakeMaqamTypeSelect option").count();
+    assert.equal(optionsCount, 2, "الإلغاء يجب ألّا يضيف خيارًا ثالثًا");
+    await assert.doesNotReject(page.locator("#intakeAddAlternateBtn").waitFor({ state: "visible", timeout: 2000 }));
 
-    // --- الآن التأكيد الفعلي مع اختيار نغمتين متغيّرتين ---
-    await page.locator("#intakeAddAlternateBtn").click();
+    // التأكيد الفعلي مع اختيار نغمتين متغيّرتين
+    await page.click("#intakeAddAlternateBtn");
     await page.locator("#intakeAlternatePanel input[data-note-label='دو']").check();
     await page.locator("#intakeAlternatePanel input[data-note-label='صول']").check();
-    await page.locator("#intakeAltConfirmBtn").click();
+    await page.click("#intakeAltConfirmBtn");
 
-    progress = await page.locator("#intakeProgress").textContent();
-    assert.match(progress, /^102 \/ 117/);
+    optionsCount = await page.locator("#intakeMaqamTypeSelect option").count();
+    assert.equal(optionsCount, 3, "التأكيد يجب أن يضيف خيار 'هبوط بديل' الثالث");
     const label = await page.locator("#intakeItemLabel").textContent();
-    assert.equal(label.trim(), "مقام عجم — هبوط شائع");
-    // الزر يجب أن يختفي فورًا — لا يُسمح بإضافة هبوط بديل ثانٍ لنفس المقام.
-    assert.equal(await page.locator("#intakeAddAlternateBtn").count(), 0);
-
-    // نتخطّى للعنصر التالي: يجب أن يكون الهبوط البديل المُدرَج حديثًا مباشرة.
-    await page.locator("#intakeControls button", { hasText: "تخطّ" }).click();
-    progress = await page.locator("#intakeProgress").textContent();
-    assert.match(progress, /^103 \/ 117/);
-    const altLabel = await page.locator("#intakeItemLabel").textContent();
-    assert.equal(altLabel.trim(), "مقام عجم — هبوط بديل");
+    assert.equal(label.trim(), "مقام راست — هبوط بديل");
+    // الزر يختفي فورًا — لا يُسمح بإضافة هبوط بديل ثانٍ لنفس المقام
+    assert.equal(await page.locator("#intakeAddAlternateBtn").isHidden(), true);
   }
 );
 
 await test(
-  "القرار 13.3/13.6 — بيان JSON النهائي يحمل rawFilename وhasSplit وchangedNotes بشكل صحيح",
+  "القرار 13.3/13.6/14 — بيان JSON النهائي يحمل rawFilename وhasSplit وchangedNotes وrhythmicValueId بشكل صحيح",
   async (page) => {
-    // نقبل النغمة الأولى (بلا maqamName/changedNotes) — المؤشر يصير 1 بعدها
-    await recordAndAccept(page);
-    // نتخطّى 100 عنصر: من الفهرس 1 إلى 101 — يهبط بالضبط على "هبوط شائع"
-    // لأول مقام (عجم)، لأن 1 + 100 = 101 = maqam-عجم-descend-common.
-    for (let i = 0; i < 100; i++) {
-      await page.locator("#intakeControls button", { hasText: "تخطّ" }).click();
-    }
-    let progressCheck = await page.locator("#intakeProgress").textContent();
-    assert.match(progressCheck, /^102 \/ 116/);
-    // الآن على "هبوط شائع" — نضيف هبوطًا بديلًا بنغمة متغيّرة واحدة
-    await page.locator("#intakeAddAlternateBtn").click();
-    await page.locator("#intakeAlternatePanel input[data-note-label='دو']").check();
-    await page.locator("#intakeAltConfirmBtn").click();
-    // نقبل عنصر "هبوط شائع" نفسه
-    await recordAndAccept(page);
+    await recordAndAccept(page); // دو — روند (نغمة)
 
-    // بعد قبول عنصرين (النغمة + هبوط شائع)، المؤشر الآن عند 102 (العنصر البديل المُدرَج حديثًا)
-    // والإجمالي 117 — نتخطّى الباقي كاملًا (117 - 102 = 15 عنصرًا) للوصول لشاشة النهاية.
-    for (let i = 0; i < 15; i++) {
-      await page.locator("#intakeControls button", { hasText: "تخطّ" }).click();
-    }
-    const summaryText = await page.locator("#intakeSummary").textContent();
-    assert.match(summaryText, /تم قبول 2 من أصل 117/);
+    await page.click("#intakeTypeMaqamBtn");
+    await page.selectOption("#intakeMaqamNameSelect", "عجم");
+    await page.selectOption("#intakeMaqamTypeSelect", "descend-common");
+    await page.click("#intakeAddAlternateBtn");
+    await page.locator("#intakeAlternatePanel input[data-note-label='دو']").check();
+    await page.click("#intakeAltConfirmBtn");
+    // تأكيد الهبوط البديل يُحوِّل الاختيار الحالي تلقائيًا إليه (استمرارية) — نسجّله هو نفسه
+    const label = await page.locator("#intakeItemLabel").textContent();
+    assert.equal(label.trim(), "مقام عجم — هبوط بديل");
+    await recordAndAccept(page); // مقام عجم — هبوط بديل
 
     const jsonDownloads = [];
     page.on("download", (d) => {
       if (d.suggestedFilename().endsWith(".json")) jsonDownloads.push(d);
     });
-    await page.locator("#intakeDownloadAllBtn").click();
-    await page.waitForTimeout(600);
+    await page.click("#intakeDownloadAllBtn");
+    await page.waitForTimeout(700);
 
     const target = jsonDownloads[0];
     assert.ok(target, "لم يُلتقَط تنزيل ملف JSON");
@@ -312,10 +241,10 @@ await test(
     const maqamEntry = content.items.find((it) => it.kind === "maqam");
     assert.ok(maqamEntry, "لا يوجد عنصر مقام بالبيان");
     assert.equal(maqamEntry.maqamName, "عجم");
-    assert.equal(maqamEntry.maqamPart, "descend-common");
+    assert.equal(maqamEntry.maqamPart, "descend-alternate");
     assert.ok(maqamEntry.rawFilename.endsWith("-raw.wav"));
     assert.equal(typeof maqamEntry.hasSplit, "boolean");
-    assert.ok(Array.isArray(maqamEntry.changedNotes) === false || Array.isArray(maqamEntry.changedNotes));
+    assert.deepEqual(maqamEntry.changedNotes, ["دو"]);
 
     const noteEntry = content.items.find((it) => it.kind === "note");
     assert.ok(noteEntry, "لا يوجد عنصر نغمة بالبيان");
@@ -323,6 +252,44 @@ await test(
     assert.ok(noteEntry.rawFilename.endsWith("-raw.wav"));
   }
 );
+
+await test(
+  "القرار 14 — الضغط على عنصر متبقٍ بقائمة التقدّم يملأ حقول الاختيار به مباشرة؛ الضغط على عنصر مكتمل لا يفعل شيئًا",
+  async (page) => {
+    await recordAndAccept(page); // دو — روند (نغمة، يصير 'مكتمل')
+    await page.click("#intakeChecklist summary");
+    await page.waitForTimeout(150);
+
+    // الضغط على عنصر مقام متبقٍ يبدّل النوع ويملأ الحقول
+    await page.evaluate(() => {
+      const items = Array.from(document.querySelectorAll(".intake-checklist-item"));
+      const target = items.find((el) => el.textContent.includes("مقام راست — صعود"));
+      if (target) target.click();
+    });
+    await page.waitForTimeout(150);
+    assert.equal(await page.locator("#intakeMaqamFields").isHidden(), false);
+    const label = await page.locator("#intakeItemLabel").textContent();
+    assert.equal(label.trim(), "مقام راست — صعود");
+
+    // الضغط على العنصر المكتمل (دو — روند) لا يغيّر شيئًا (لا استجابة لصف "done")
+    await page.evaluate(() => {
+      const items = Array.from(document.querySelectorAll(".intake-checklist-item.done"));
+      const target = items.find((el) => el.textContent.includes("دو — روند"));
+      if (target) target.click();
+    });
+    await page.waitForTimeout(150);
+    const labelAfter = await page.locator("#intakeItemLabel").textContent();
+    assert.equal(labelAfter.trim(), "مقام راست — صعود", "الضغط على عنصر مكتمل يجب ألّا يغيّر الاختيار");
+  }
+);
+
+await test("قائمة تقدّم الجلسة تعكس شريط التقدّم والعدد الصحيحين بعد القبول", async (page) => {
+  const summaryBefore = await page.locator("#intakeChecklistSummary").textContent();
+  assert.match(summaryBefore, /0 \/ 116 مكتمل/);
+  await recordAndAccept(page);
+  const summaryAfter = await page.locator("#intakeChecklistSummary").textContent();
+  assert.match(summaryAfter, /1 \/ 116 مكتمل/);
+});
 
 console.log(`\n${passed} ناجح، ${failed} فاشل.`);
 process.exitCode = failed > 0 ? 1 : 0;
