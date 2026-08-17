@@ -51,7 +51,17 @@ function applyDynamicBottomClearance(container) {
     const clearance = Math.max(0, window.innerHeight - navRect.top) + 40;
     document.documentElement.style.setProperty("--dynamic-bottom-clearance", `${clearance}px`);
   }
+
+  // قياس فوري (يفيد أغلب الحالات)، ثم إعادة قياس مؤكَّدة بعد اكتمال العرض
+  // الفعلي عبر إطارَي رسم متتاليَين (نمط قياسي لضمان انتهاء التخطيط
+  // Layout فعليًا — تحسّبًا لتأخير محتمل بتحميل/تطبيق CSS الخارجي على
+  // متصفحات حقيقية لم يظهر أثره ببيئة الاختبار المحلية). ثم قياسات
+  // متكرّرة إضافية خلال أول ١.٥ ثانية كشبكة أمان أخيرة لأي تأخير آخر
+  // غير متوقَّع (خطوط، تخطيط متأخر، إلخ) — لا ضرر من تكرار قياس رخيص.
   measureAndApply();
+  requestAnimationFrame(() => requestAnimationFrame(measureAndApply));
+  [100, 300, 700, 1500].forEach((delay) => setTimeout(measureAndApply, delay));
+
   window.addEventListener("resize", measureAndApply);
   window.addEventListener("orientationchange", measureAndApply);
   if (document.fonts && document.fonts.ready) {
