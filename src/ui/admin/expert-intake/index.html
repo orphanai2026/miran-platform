@@ -47,14 +47,72 @@
     .intake-progress { color: var(--ink-soft); font-size: 0.85rem; margin-bottom: 6px; }
 
     .intake-checklist {
-      text-align: right; margin-bottom: 18px; border: 1px solid var(--hairline); border-radius: 14px;
-      padding: 10px 14px; background: rgba(255,255,255,.4);
+      text-align: right; margin-bottom: 18px; border: 1px solid var(--hairline); border-radius: 16px;
+      padding: 14px 16px; background: linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,.32));
+      box-shadow: 0 10px 26px rgba(71,50,24,.05);
     }
-    .intake-checklist summary { cursor: pointer; font-size: 0.85rem; font-weight: 700; color: var(--teal-deep); }
-    .intake-checklist-list { max-height: 260px; overflow-y: auto; margin-top: 10px; font-size: 0.78rem; color: var(--ink-soft); }
-    .intake-checklist-item { padding: 2px 0; }
+    .intake-checklist summary {
+      cursor: pointer; font-size: 0.85rem; font-weight: 700; color: var(--teal-deep);
+      list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    }
+    .intake-checklist summary::-webkit-details-marker { display: none; }
+    .intake-checklist summary::after {
+      content: "‹"; display: inline-block; font-size: 1.1rem; line-height: 1; color: var(--amber);
+      transform: rotate(-90deg); transition: transform .2s ease;
+    }
+    .intake-checklist[open] summary::after { transform: rotate(0deg); }
+
+    .intake-checklist-progress-track {
+      height: 6px; border-radius: 999px; background: var(--hairline); margin: 12px 0 4px; overflow: hidden;
+    }
+    .intake-checklist-progress-fill {
+      height: 100%; width: 0%; border-radius: 999px; background: linear-gradient(90deg, var(--teal), var(--teal-deep));
+      transition: width .35s ease;
+    }
+
+    .intake-checklist-list {
+      max-height: 280px; overflow-y: auto; margin-top: 10px; font-size: 0.8rem;
+      -webkit-mask-image: linear-gradient(to top, transparent 0, #000 22px);
+      mask-image: linear-gradient(to top, transparent 0, #000 22px);
+    }
+    .intake-checklist-list::-webkit-scrollbar { width: 7px; }
+    .intake-checklist-list::-webkit-scrollbar-track { background: transparent; }
+    .intake-checklist-list::-webkit-scrollbar-thumb { background: var(--teal-tint); border-radius: 999px; }
+
+    .intake-checklist-divider {
+      font-size: 0.72rem; font-weight: 700; color: var(--amber-ink); text-transform: none;
+      padding: 10px 8px 6px; margin-top: 4px; border-top: 1px solid var(--hairline);
+    }
+    .intake-checklist-divider:first-child { border-top: none; margin-top: 0; padding-top: 2px; }
+
+    .intake-checklist-item {
+      display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 8px;
+      color: var(--ink-soft);
+    }
+    .intake-checklist-item.pending:nth-child(even) { background: rgba(28,28,26,.02); }
+    .intake-checklist-item.current {
+      color: var(--amber-ink); font-weight: 700; background: var(--amber-tint);
+      border-radius: 999px; padding: 6px 12px;
+    }
     .intake-checklist-item.done { color: var(--teal-deep); }
-    .intake-checklist-item.current { color: var(--amber-ink); font-weight: 700; }
+    .intake-checklist-item.done .intake-checklist-text { text-decoration: line-through; text-decoration-color: rgba(7,61,52,.35); }
+
+    .intake-checklist-dot {
+      flex: none; width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid var(--hairline);
+      background: transparent; position: relative;
+    }
+    .intake-checklist-item.current .intake-checklist-dot {
+      border-color: var(--amber); background: var(--amber); box-shadow: 0 0 0 3px rgba(186,117,23,.18);
+    }
+    .intake-checklist-item.done .intake-checklist-dot {
+      border-color: var(--teal-deep); background: var(--teal-deep);
+    }
+    .intake-checklist-item.done .intake-checklist-dot::after {
+      content: ""; position: absolute; inset: 0; margin: auto; width: 3px; height: 5px;
+      border-right: 1.5px solid var(--cream); border-bottom: 1.5px solid var(--cream);
+      transform: translateY(-1px) rotate(45deg);
+    }
+    .intake-checklist-text { flex: 1; }
 
     .intake-item-label { font-family: "IBM Plex Sans Arabic", sans-serif; font-weight: 700; font-size: 2rem; margin: 0 0 6px; color: var(--teal-deep); }
     .intake-item-hint { color: var(--ink-soft); font-size: 0.9rem; margin: 0 0 24px; }

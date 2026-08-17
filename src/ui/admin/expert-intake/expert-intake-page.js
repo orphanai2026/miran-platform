@@ -83,6 +83,7 @@ export function mountExpertIntakePage(container) {
 
       <details class="intake-checklist" id="intakeChecklist">
         <summary id="intakeChecklistSummary">قائمة تقدّم الجلسة</summary>
+        <div class="intake-checklist-progress-track"><div class="intake-checklist-progress-fill" id="intakeChecklistProgressFill"></div></div>
         <div class="intake-checklist-list" id="intakeChecklistList"></div>
       </details>
 
@@ -107,6 +108,7 @@ export function mountExpertIntakePage(container) {
   const progressEl = container.querySelector("#intakeProgress");
   const checklistListEl = container.querySelector("#intakeChecklistList");
   const checklistSummaryEl = container.querySelector("#intakeChecklistSummary");
+  const checklistProgressFillEl = container.querySelector("#intakeChecklistProgressFill");
   const labelEl = container.querySelector("#intakeItemLabel");
   const hintEl = container.querySelector("#intakeItemHint");
   const prerollEl = container.querySelector("#intakePreroll");
@@ -244,19 +246,45 @@ export function mountExpertIntakePage(container) {
     prerollEl.textContent = prerollCount > 0 ? `استعد… ${prerollCount} / ${PREROLL_BEATS}` : "استعد…";
   }
 
+  /** يبني تسمية فاصل قسم عند انتقال نوع العنصر (نغمة → مقام) — بنية تحمل معنى فعلي، لا زخرفة (القرار 13.7 تحسين بصري). */
+  function checklistSectionLabel(prevKind, item) {
+    if (item.kind === "maqam" && prevKind !== "maqam") return "المقامات الثمانية";
+    return null;
+  }
+
+  /** يبني HTML صفوف قائمة التقدّم — مستخدَم أثناء الجلسة (مع تمييز العنصر الحالي) وعند نهايتها (بلا حالي). */
+  function buildChecklistRowsHtml(highlightIndex) {
+    let prevKind = null;
+    let html = "";
+    sessionItems.forEach((it, idx) => {
+      const sectionLabel = checklistSectionLabel(prevKind, it);
+      if (sectionLabel) {
+        html += `<div class="intake-checklist-divider">${escapeHtml(sectionLabel)}</div>`;
+      }
+      prevKind = it.kind;
+      const isDone = accepted.has(it.id);
+      const isCurrent = idx === highlightIndex;
+      const status = isDone ? "done" : isCurrent ? "current" : "pending";
+      html += `<div class="intake-checklist-item ${status}"><span class="intake-checklist-dot" aria-hidden="true"></span><span class="intake-checklist-text">${escapeHtml(
+        it.label
+      )}</span></div>`;
+    });
+    return html;
+  }
+
+  /** يحدّث شريط التقدّم المرئي أعلى القائمة (نسبة المقبول من الإجمالي). */
+  function updateChecklistProgressBar() {
+    const total = sessionItems.length;
+    const percent = total > 0 ? Math.round((accepted.size / total) * 100) : 0;
+    checklistProgressFillEl.style.width = `${percent}%`;
+  }
+
   /** قائمة تقدّم مرئية قابلة للطي — كل عناصر الجلسة الحيّة، مكتمل/حالي/متبقٍ (القرار 13.7). */
   function renderChecklist() {
     const total = sessionItems.length;
     checklistSummaryEl.textContent = `قائمة تقدّم الجلسة (${accepted.size} / ${total} مكتمل)`;
-    checklistListEl.innerHTML = sessionItems
-      .map((it, idx) => {
-        const isDone = accepted.has(it.id);
-        const isCurrent = idx === currentIndex;
-        const status = isDone ? "done" : isCurrent ? "current" : "";
-        const marker = isDone ? "✓" : isCurrent ? "▶" : "○";
-        return `<div class="intake-checklist-item ${status}">${marker} ${escapeHtml(it.label)}</div>`;
-      })
-      .join("");
+    updateChecklistProgressBar();
+    checklistListEl.innerHTML = buildChecklistRowsHtml(currentIndex);
   }
 
   function renderItem() {
@@ -497,11 +525,8 @@ export function mountExpertIntakePage(container) {
     reviewEl.hidden = true;
     reviewEl.innerHTML = "";
     checklistSummaryEl.textContent = `قائمة تقدّم الجلسة (${accepted.size} / ${sessionItems.length} مكتمل)`;
-    checklistListEl.innerHTML = sessionItems
-      .map((it) => `<div class="intake-checklist-item ${accepted.has(it.id) ? "done" : ""}">${
-        accepted.has(it.id) ? "✓" : "○"
-      } ${escapeHtml(it.label)}</div>`)
-      .join("");
+    updateChecklistProgressBar();
+    checklistListEl.innerHTML = buildChecklistRowsHtml(-1); // لا "عنصر حالي" — الجلسة انتهت
     summaryEl.innerHTML = `
       <p>تم قبول ${accepted.size} من أصل ${sessionItems.length} عنصرًا.</p>
       <button type="button" id="intakeDownloadAllBtn" class="btn-primary" ${accepted.size === 0 ? "disabled" : ""}>
