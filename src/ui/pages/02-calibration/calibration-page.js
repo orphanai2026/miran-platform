@@ -16,9 +16,11 @@ import { mountMiniMetronome } from "../../../metronome/metronome-ui-mini.js";
 import { loadRawState, saveRawState } from "./sample-store.js";
 
 const REGISTER_OPTIONS = [
+  { value: "قرار القرار", label: "قرار القرار" },
   { value: "قرار", label: "قرار" },
   { value: "جواب", label: "جواب" },
   { value: "جواب الجواب", label: "جواب الجواب" },
+  { value: "المبحوح", label: "المبحوح" },
 ];
 
 // النغمة الوحيدة المستخدَمة فعليًا بجلسات المعايرة حاليًا — دوكاه ناي
