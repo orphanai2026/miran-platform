@@ -45,8 +45,25 @@
     .page-sub { color: var(--ink-soft); margin: 0 0 28px; font-size: 0.88rem; }
 
     .intake-progress { color: var(--ink-soft); font-size: 0.85rem; margin-bottom: 6px; }
+
+    .intake-checklist {
+      text-align: right; margin-bottom: 18px; border: 1px solid var(--hairline); border-radius: 14px;
+      padding: 10px 14px; background: rgba(255,255,255,.4);
+    }
+    .intake-checklist summary { cursor: pointer; font-size: 0.85rem; font-weight: 700; color: var(--teal-deep); }
+    .intake-checklist-list { max-height: 260px; overflow-y: auto; margin-top: 10px; font-size: 0.78rem; color: var(--ink-soft); }
+    .intake-checklist-item { padding: 2px 0; }
+    .intake-checklist-item.done { color: var(--teal-deep); }
+    .intake-checklist-item.current { color: var(--amber-ink); font-weight: 700; }
+
     .intake-item-label { font-family: "IBM Plex Sans Arabic", sans-serif; font-weight: 700; font-size: 2rem; margin: 0 0 6px; color: var(--teal-deep); }
     .intake-item-hint { color: var(--ink-soft); font-size: 0.9rem; margin: 0 0 24px; }
+
+    .intake-preroll {
+      font-family: "IBM Plex Sans Arabic", sans-serif; font-weight: 700; font-size: 1.7rem;
+      color: var(--amber-ink); background: var(--amber-tint); border-radius: 16px;
+      padding: 14px; margin-bottom: 20px; font-variant-numeric: tabular-nums;
+    }
 
     .intake-live {
       font-family: "IBM Plex Sans Arabic", sans-serif; font-size: 2.6rem; font-weight: 700;
@@ -73,11 +90,27 @@
       background: transparent; cursor: pointer;
     }
 
+    .intake-alternate-panel {
+      background: rgba(255,255,255,.6); border: 1px solid var(--hairline); border-radius: 18px;
+      padding: 16px 18px; margin-bottom: 20px; text-align: right;
+    }
+    .intake-alt-panel-title { font-size: 0.88rem; color: var(--ink-soft); margin: 0 0 10px; }
+    .intake-alt-note-list {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 6px;
+      max-height: 220px; overflow-y: auto; margin-bottom: 14px; font-size: 0.85rem;
+    }
+    .intake-alt-note-option { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+    .intake-alt-panel-actions { display: flex; gap: 10px; justify-content: center; }
+
     .intake-review {
       background: rgba(255,255,255,.55); border: 1px solid var(--hairline); border-radius: 22px 9px 22px 9px; padding: 18px 20px; margin-bottom: 20px;
       box-shadow: 0 18px 44px rgba(71,50,24,.05);
     }
+    .intake-review-label { font-size: 0.82rem; color: var(--ink-soft); margin: 0 0 6px; text-align: right; }
+    .intake-review-label-secondary { margin-top: 12px; }
     .intake-audio-preview { width: 100%; margin-bottom: 10px; }
+    .intake-audio-preview-raw { opacity: 0.85; }
+    .intake-split-warning { font-size: 0.82rem; color: var(--amber-ink); background: var(--amber-tint); border-radius: 12px; padding: 8px 12px; margin: 0 0 12px; text-align: right; }
     .intake-measured { font-size: 0.88rem; margin: 0 0 14px; }
     .intake-measured strong { color: var(--teal-deep); }
     .intake-measured-none { color: var(--ink); font-weight: 700; }
@@ -91,7 +124,7 @@
   <div class="page-shell">
     <span class="admin-banner">صفحة إدارية — غير مُدرَجة بالتنقّل العام</span>
     <h1>جلسة تسجيل خبير</h1>
-    <p class="page-sub">25 نغمة مفردة + 8 مقامات كاملة — تسجيل ناي حقيقي لمكتبة الاستماع المرجعية (القرار 9.2/9.4)</p>
+    <p class="page-sub">100 نغمة (25 × 4 قيم إيقاعية) + 16 تسجيل مقام إلزامي (صعود+هبوط شائع) + هبوطات بديلة اختيارية — تسجيل ناي حقيقي لمكتبة الاستماع المرجعية (القرارات 9.2/9.4/13.1–13.7)</p>
 
     <div id="app"></div>
   </div>
