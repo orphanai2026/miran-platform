@@ -143,6 +143,19 @@
   .lvl-lock{display:flex;align-items:center;gap:4px;margin-top:6px;color:var(--muted);
     font-family:var(--f-display);font-size:.68rem;position:relative;z-index:1}
   .lvl-lock svg{width:12px;height:12px;flex:none;opacity:.8}
+
+  /* إصلاح: لوح "اختر مسارًا" الفرعي (#rhythmSubRail) كان يرث نمط الشريط
+     الرئيسي (.lvl-chip{width:112px;display:block}) بلا صفّ flex يلفّه،
+     فتتكدّس البطاقات عموديًا. شبكة عمودين مقيَّدة بمعرّف الحاوية — صفر
+     تأثير على .lvlChipsRow (الشريط الرئيسي) أو أي id/class يعتمد عليه JS. */
+  #rhythmSubRail .lvl-rail{overflow-x:visible;display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  #rhythmSubRail .lvl-chip{width:auto}
+  #rhythmSubRail .lvl-chip:nth-child(3):last-child{grid-column:1/-1}
+  #rhythmSubRail .lvl-rail-wrap::before,#rhythmSubRail .lvl-rail-wrap::after{display:none}
+  @media(min-width:900px){
+    #rhythmSubRail .lvl-rail{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+  }
   .lvl-dots{display:flex;justify-content:center;gap:6px;margin:9px 0 4px}
   .lvl-dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.16);transition:.22s;cursor:pointer}
   .lvl-dot.sel{background:var(--gold);width:14px;border-radius:3px;box-shadow:0 0 6px rgba(230,184,92,.5)}
