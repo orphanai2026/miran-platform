@@ -71,8 +71,7 @@
     text-align:center;margin:4px 0 12px;opacity:.9;line-height:1.9}
   .phase-band{font-family:var(--f-head);font-weight:600;font-size:.78rem;color:var(--live);
     text-align:center;padding:7px 14px;border-radius:100px;background:var(--live-soft);
-    border:1px solid var(--hair-cool);display:inline-block;position:relative;left:50%;
-    transform:translateX(-50%);margin-bottom:8px}
+    border:1px solid var(--hair-cool);display:table;margin:0 auto 8px}
   .sky{margin:2px 0 4px}
   .sky svg{width:100%;height:auto;display:block;overflow:visible}
   .hint{font-family:var(--f-head);font-weight:400;font-size:.76rem;color:var(--muted);
@@ -468,15 +467,32 @@
      already works fine — nothing breaks, it just doesn't widen. ── */
   @media(min-width:700px){
     .wrap:has(> #view-home.active){max-width:920px}
-    .home-grid{display:grid;grid-template-columns:1fr 320px;gap:26px;align-items:start}
+    .home-grid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:26px;align-items:start}
     .home-side{position:sticky;top:18px}
   }
   @media(min-width:1100px){
     .wrap:has(> #view-home.active){max-width:1180px}
-    .home-grid{grid-template-columns:1fr 372px;gap:36px}
+    .home-grid{grid-template-columns:minmax(0,1fr) 372px}
   }
   @media(min-width:700px){
     .lvl-rail-wrap::before,.lvl-rail-wrap::after{width:40px}
+  }
+
+  /* ── مرحلة ١ (القرار 16): أساس متجاوب عام — كل شاشة غير الرحلة تبقى
+     460px على الجوال (بلا تغيير)، لكن تتّسع تدريجيًا بدل البقاء ثابتة على
+     شاشات أوسع. لا لمس لأي id/class تعتمد عليه js/*.js — قيم CSS فقط. ── */
+  @media(min-width:900px){
+    .wrap:not(:has(> #view-home.active)){max-width:640px}
+  }
+  @media(min-width:1300px){
+    .wrap:not(:has(> #view-home.active)){max-width:760px}
+  }
+
+  /* دليل الوضعية — الصورة تطفو بجانب النص بدل فوقه على الشاشات الأوسع
+     (إعادة ترتيب بصري فقط داخل نفس البطاقة، لا تغيير لتسلسل الخطوات) */
+  @media(min-width:900px){
+    #view-guide .card{overflow:auto}
+    #view-guide .guide-photo{float:inline-end;width:280px;margin:4px 0 12px 20px;max-width:40%}
   }
 
 </style>
